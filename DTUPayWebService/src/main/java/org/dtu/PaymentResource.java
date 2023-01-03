@@ -29,7 +29,7 @@ public class PaymentResource {
         int id;
         try {
             id = paymentRegistration.postPayment(payment);
-            return Response.created(new URI("{..}/payments/"+id)).build();
+            return Response.created(new URI("/payments/"+id)).build();
         } catch (PaymentAlreadyExistsException e) {
             throw new InvalidAttributeIdentifierException();
         }
