@@ -79,7 +79,6 @@ public class DTUPaySteps {
         } catch (CustomerDoesNotExist | MerchantDoesNotExist e) {
             successful = false;
             errorMessage = e.getMessage();
-            System.out.println("insteps" + errorMessage);
         }
     }
 
@@ -90,7 +89,6 @@ public class DTUPaySteps {
 
     @And("an error message is returned saying {string}")
     public void anErrorMessageIsReturnedSaying(String errorString) {
-        System.out.println(errorMessage);
         assertTrue(errorMessage.contains(errorString));
     }
 }

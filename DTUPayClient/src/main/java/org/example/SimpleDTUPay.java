@@ -44,7 +44,6 @@ public class SimpleDTUPay {
                     .get(Payment.class);
         }
         catch (NotFoundException e) {
-            System.out.println("I threw it");
             throw new PaymentDoesNotExist();
         }
     }
