@@ -35,7 +35,7 @@ public class PaymentResource {
                     .build();
         } catch (PaymentNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Payment with id " + id + " not found")
+                    .entity("payment with id " + id + " not found")
                     .build();
         }
     }
@@ -50,7 +50,7 @@ public class PaymentResource {
                     .build();
         } catch (PaymentNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Payment with id " + id + " not found")
+                    .entity("payment with id " + id + " not found")
                     .build();
         }
     }
@@ -65,7 +65,7 @@ public class PaymentResource {
                     .build();
         } catch (PaymentNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Payment with id " + id + " not found")
+                    .entity("payment with id " + id + " not found")
                     .build();
         }
     }
@@ -80,7 +80,7 @@ public class PaymentResource {
                     .build();
         } catch (PaymentNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
-                    .entity("Payment with id " + id + " not found")
+                    .entity("payment with id " + id + " not found")
                     .build();
         }
     }
@@ -99,15 +99,15 @@ public class PaymentResource {
                     .build();
         } catch (PaymentAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
-                    .entity("A payment with the id " + payment.getId() + " already exists")
+                    .entity("a payment with the id " + payment.getId() + " already exists")
                     .build();
         } catch (InvalidCustomerIdException e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Invalid customer id")
+                    .entity("customer with id " + payment.cid + " is unknown")
                     .build();
         } catch (InvalidMerchantIdException e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("Invalid merchant id")
+                    .entity("merchant with id " + payment.mid + " is unknown")
                     .build();
         }
     }
