@@ -2,13 +2,11 @@ package org.dtu;
 
 import org.dtu.resources.Payment;
 
-import javax.naming.directory.InvalidAttributeIdentifierException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 
 
 @Path("/payments")
@@ -17,20 +15,27 @@ public class PaymentResource {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public ArrayList<Payment> getPayments() {
-        return paymentRegistration.getPayments();
+    public Response getPayments() {
+        return Response.status(Response.Status.OK)
+                .entity(paymentRegistration.getPayments())
+                .build();
     }
 
     @Path("/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Payment getPayment(@PathParam("id") Integer id) {
+    public Response getPayment(@PathParam("id") Integer id) {
         try {
-            return paymentRegistration.getPayment(id);
+            return Response.status(Response.Status.OK)
+                    .entity(paymentRegistration.getPayment(id))
+                    .build();
         } catch (PaymentNotFoundException e) {
-            throw new NotFoundException("Payment not found");
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("Payment with id " + id + " not found")
+                    .build();
         }
     }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postPayment(Payment payment) throws URISyntaxException {
@@ -39,11 +44,17 @@ public class PaymentResource {
             id = paymentRegistration.postPayment(payment);
             return Response.created(new URI("/payments/"+id)).build();
         } catch (PaymentAlreadyExistsException e) {
-            throw new WebApplicationException(Response.Status.CONFLICT);
+            return Response.status(Response.Status.CONFLICT)
+                    .entity("A payment with the id " + payment.getId() + " already exists")
+                    .build();
         } catch (InvalidCustomerIdException e) {
-            throw new BadRequestException("Invalid customer id");
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Invalid customer id")
+                    .build();
         } catch (InvalidMerchantIdException e) {
-            throw new BadRequestException("Invalid merchant id");
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("Invalid merchant id")
+                    .build();
         }
     }
 
