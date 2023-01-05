@@ -1,13 +1,13 @@
-package org.dtu.steps;
+package org.dtu;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.example.CustomerDoesNotExist;
-import org.example.MerchantDoesNotExist;
-import org.example.Payment;
-import org.example.SimpleDTUPay;
+import org.dtu.CustomerDoesNotExist;
+import org.dtu.MerchantDoesNotExist;
+import org.dtu.Payment;
+import org.dtu.SimpleDTUPay;
 
 import java.util.List;
 

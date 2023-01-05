@@ -1,4 +1,4 @@
-package org.example;
+package org.dtu;
 
 public class MerchantDoesNotExist extends Throwable {
     //setup exception

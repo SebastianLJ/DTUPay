@@ -1,4 +1,4 @@
-package org.example;
+package org.dtu;
 
 public class PaymentDoesNotExist extends Throwable {
     //setup exception
