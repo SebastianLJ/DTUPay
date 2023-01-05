@@ -11,7 +11,9 @@ import java.net.URISyntaxException;
 
 @Path("/payments")
 public class PaymentResource {
-    PaymentRegistration paymentRegistration = new PaymentRegistration();
+    PaymentService paymentRegistration = new PaymentService();
+
+    static RegistrationResource registrationResource = new RegistrationResource();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)

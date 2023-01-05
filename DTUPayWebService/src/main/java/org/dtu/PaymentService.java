@@ -6,7 +6,7 @@ import javax.inject.Singleton;
 import java.util.ArrayList;
 
 @Singleton
-public class PaymentRegistration {
+public class PaymentService {
     int maxId = 1;
 
     public ArrayList<Payment> getPayments() {
@@ -15,15 +15,13 @@ public class PaymentRegistration {
 
     ArrayList<Payment> payments = new ArrayList<>();
 
-    public PaymentRegistration() {
-        /*
-        this.payments.add(new Payment(1, "cid1", "mid1", 20));
-        this.maxId++;
-        */
+
+    public PaymentService() {
+
     }
 
     public Payment getPayment(int id) throws PaymentNotFoundException {
-        for (Payment payment:
+        for (Payment payment :
                 this.payments) {
             if (payment.getId() == id) {
                 return payment;
@@ -33,11 +31,13 @@ public class PaymentRegistration {
     }
 
     public int postPayment(Payment payment) throws PaymentAlreadyExistsException, InvalidMerchantIdException, InvalidCustomerIdException {
-        if (!payment.mid.equals("mid1")) {
-            throw new InvalidMerchantIdException();
-        } else if (!payment.cid.equals("cid1")) {
-            throw new InvalidCustomerIdException();
-        }
+        CustomerService customerService = new CustomerService();
+        MerchantService merchantService = new MerchantService();
+        // if cid is not in the customers list in customerservice throw InvalidCustomerIdException
+        CustomerService.getCustomer(payment.cid);
+        // if mid is not in the merchants list in merchantservice throw InvalidMerchantIdException
+        MerchantService.getMerchant(payment.mid);
+        // if payment is already in the payments list throw PaymentAlreadyExistsException
         try {
             this.getPayment(this.maxId);
             throw new PaymentAlreadyExistsException();
@@ -47,5 +47,7 @@ public class PaymentRegistration {
             this.maxId++;
             return payment.getId();
         }
+
+
     }
 }
