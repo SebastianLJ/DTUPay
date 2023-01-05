@@ -7,16 +7,8 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.dtu.CustomerDoesNotExist;
-import org.dtu.MerchantDoesNotExist;
-import org.dtu.Payment;
-import org.dtu.SimpleDTUPay;
 import io.cucumber.java.After;
-import org.example.CustomerDoesNotExist;
-import org.example.MerchantDoesNotExist;
-import org.example.Payment;
-import org.example.SimpleDTUPay;
-;
+
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -78,18 +70,6 @@ public class DTUPaySteps {
     @When("the manager asks for a list of payments")
     public void theManagerAsksForAListOfPayments() {
         payments = dtuPay.getPayments();
-    }
-
-    @Then("the list contains a payment where customer {string} paid {string} kr to merchant {string}")
-    public void theListContainsAPaymentWhereCustomerPaidKrToMerchant(String cid, String amount, String mid) {
-        boolean found = false;
-        for (Payment p : payments) {
-            if (p.getCid().equals(cid) && p.getMid().equals(mid) && p.getAmount() == Integer.parseInt(amount)) {
-                found = true;
-            }
-        }
-        assertTrue(found);
-
     }
 
     @When("the merchant initiates a payment for {string} kr by the customer")
@@ -183,5 +163,16 @@ public class DTUPaySteps {
             }
         }
 
+    }
+
+    @Then("the list contains a payment where the customer paid {string} kr to the merchant")
+    public void theListContainsAPaymentWhereTheCustomerPaidKrToTheMerchant(String amount) {
+        boolean found = false;
+        for (Payment p : payments) {
+            if (p.getCid().equals(cid) && p.getMid().equals(mid) && p.getAmount() == Integer.parseInt(amount)) {
+                found = true;
+            }
+        }
+        assertTrue(found);
     }
 }

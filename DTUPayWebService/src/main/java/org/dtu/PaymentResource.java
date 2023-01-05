@@ -105,11 +105,11 @@ public class PaymentResource {
                     .build();
         } catch (InvalidCustomerIdException e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("customer with id " + payment.cid + " is unknown")
+                    .entity("customer is unknown")
                     .build();
         } catch (InvalidMerchantIdException e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("merchant with id " + payment.mid + " is unknown")
+                    .entity("merchant is unknown")
                     .build();
         }
     }

@@ -18,10 +18,10 @@ public class SimpleDTUPay {
     Client c = ClientBuilder.newClient();
     WebTarget r = c.target("http://localhost:8080/");
     public boolean pay(String cid, String mid, int amount) throws CustomerDoesNotExist, MerchantDoesNotExist, BankServiceException_Exception {
-        bank.transferMoneyFromTo(cid,mid,new BigDecimal(amount),"DTUPay");
         Payment payment = new Payment(mid, cid, amount);
         Response response = r.path("payments").request().post(Entity.entity(payment, MediaType.APPLICATION_JSON));
             if (response.getStatus() == 201) {
+                bank.transferMoneyFromTo(cid,mid,new BigDecimal(amount),"DTUPay");
                 return true;
             }
             else if (response.getStatus() == 400) {
