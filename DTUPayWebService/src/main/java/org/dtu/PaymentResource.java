@@ -27,6 +27,7 @@ public class PaymentResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPayment(@PathParam("id") int id) throws URISyntaxException {
+
         try {
             return Response.status(Response.Status.OK)
                     .entity(paymentRegistration.getPayment(id))
@@ -57,7 +58,7 @@ public class PaymentResource {
         }
     }
 
-    @Path("/{id}/cid")
+    @Path("/cid/{id}/")
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public Response getCid(@PathParam("id") int id) {
@@ -72,7 +73,7 @@ public class PaymentResource {
         }
     }
 
-    @Path("/{id}/mid")
+    @Path("/mid/{id}/")
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public Response getMid(@PathParam("id") int id) {

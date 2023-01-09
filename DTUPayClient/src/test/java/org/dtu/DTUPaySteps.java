@@ -31,21 +31,12 @@ public class DTUPaySteps {
     User merchant = new User();
     List<User> users = new ArrayList<>();
 
-    @Given("a customer with id {string}")
-    public void aCustomerWithId(String cid) {
-        this.cid = cid;
-    }
-
-    @And("a merchant with id {string}")
-    public void aMerchantWithId(String mid) {
-        this.mid = mid;
-    }
 
     @When("the merchant initiates a payment for {int} kr by the customer")
     public void theMerchantInitiatesAPaymentForKrByTheCustomer(int amount) {
         try {
             successful = dtuPay.pay(cid, mid, amount);
-        } catch (CustomerDoesNotExist | MerchantDoesNotExist | BankServiceException_Exception e) {
+        } catch (CustomerDoesNotExist | MerchantDoesNotExist | BankServiceException_Exception | PaymentAlreadyExists e) {
             successful = false;
             errorMessage = e.getMessage();
         }
@@ -60,7 +51,7 @@ public class DTUPaySteps {
     public void aSuccessfulPaymentOfKrFromCustomerToMerchant(String amount, String cid, String mid) {
         try {
             successful = dtuPay.pay(cid,mid,Integer.parseInt(amount));
-        } catch (CustomerDoesNotExist | MerchantDoesNotExist | BankServiceException_Exception e) {
+        } catch (CustomerDoesNotExist | MerchantDoesNotExist | BankServiceException_Exception | PaymentAlreadyExists e) {
             successful = false;
             errorMessage = e.getMessage();
         }
@@ -72,15 +63,7 @@ public class DTUPaySteps {
         payments = dtuPay.getPayments();
     }
 
-    @When("the merchant initiates a payment for {string} kr by the customer")
-    public void theMerchantInitiatesAPaymentForKrByTheCustomer(String amount) {
-        try {
-            successful = dtuPay.pay(cid, mid, Integer.parseInt(amount));
-        } catch (CustomerDoesNotExist | MerchantDoesNotExist | BankServiceException_Exception e) {
-            successful = false;
-            errorMessage = e.getMessage();
-        }
-    }
+
 
     @Then("the payment is not successful")
     public void thePaymentIsNotSuccessful() {

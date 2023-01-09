@@ -1,8 +1,6 @@
 package org.dtu;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -40,6 +38,34 @@ public class RegistrationResource {
         } catch (MerchantAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
                     .entity("merchant with id " + id + " already exists")
+                    .build();
+        }
+    }
+
+    @Path("/cid/{id}/")
+    @GET
+    public Response getCustomer(@PathParam("id") String id) {
+        try {
+            customerRegistration.getCustomer(id);
+            return Response.status(Response.Status.OK)
+                    .build();
+        } catch (InvalidCustomerIdException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("customer with id " + id + " not found")
+                    .build();
+        }
+    }
+
+    @Path("mid/{id}/")
+    @GET
+    public Response getMerchant(@PathParam("id") String id) {
+        try {
+            merchantRegistration.getMerchant(id);
+            return Response.status(Response.Status.OK)
+                    .build();
+        } catch (InvalidMerchantIdException e) {
+            return Response.status(Response.Status.NOT_FOUND)
+                    .entity("merchant with id " + id + " not found")
                     .build();
         }
     }

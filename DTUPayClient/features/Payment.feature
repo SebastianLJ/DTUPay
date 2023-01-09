@@ -6,6 +6,7 @@ Feature: Payment
     Given a merchant with a bank account with balance 2000
     And that the merchant is registered with DTU Pay
     When the merchant initiates a payment for 100 kr by the customer
+    Then the payment is successful
     And the manager asks for a list of payments
     Then the list contains a payment where the customer paid "100" kr to the merchant
 
@@ -13,7 +14,7 @@ Feature: Payment
     Given a merchant with a bank account with balance 2000
     And that the merchant is registered with DTU Pay
     Given a customer with a bank account with balance 1000
-    When the merchant initiates a payment for "10" kr by the customer
+    When the merchant initiates a payment for 10 kr by the customer
     Then the payment is not successful
     And an error message is returned saying "customer is unknown"
 
@@ -21,7 +22,7 @@ Feature: Payment
     Given a customer with a bank account with balance 1000
     And that the customer is registered with DTU Pay
     Given a merchant with a bank account with balance 2000
-    When the merchant initiates a payment for "10" kr by the customer
+    When the merchant initiates a payment for 10 kr by the customer
     Then the payment is not successful
     And an error message is returned saying "merchant is unknown"
 

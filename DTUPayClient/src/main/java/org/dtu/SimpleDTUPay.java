@@ -17,7 +17,7 @@ public class SimpleDTUPay {
     BankService bank = new BankServiceService().getBankServicePort();
     Client c = ClientBuilder.newClient();
     WebTarget r = c.target("http://localhost:8080/");
-    public boolean pay(String cid, String mid, int amount) throws CustomerDoesNotExist, MerchantDoesNotExist, BankServiceException_Exception {
+    public boolean pay(String cid, String mid, int amount) throws CustomerDoesNotExist, MerchantDoesNotExist, PaymentAlreadyExists, BankServiceException_Exception {
         Payment payment = new Payment(mid, cid, amount);
         Response response = r.path("payments").request().post(Entity.entity(payment, MediaType.APPLICATION_JSON));
             if (response.getStatus() == 201) {
@@ -26,18 +26,28 @@ public class SimpleDTUPay {
             }
             else if (response.getStatus() == 400) {
                 String message = response.readEntity(String.class);
-                if (message.contains("customer")) {
+                //if response contains "payment", payment already exists
+                if (message.contains("payment")) {
+                    throw new PaymentAlreadyExists(message);
+                }
+
+              //if response contains "customer" then throw CustomerDoesNotExist
+                else if (message.contains("customer")) {
                     throw new CustomerDoesNotExist(message);
                 }
+                //if response contains "merchant" then throw MerchantDoesNotExist
                 else if (message.contains("merchant")) {
                     throw new MerchantDoesNotExist(message);
                 }
+                //if response contains "BankServiceException" then throw BankServiceException
+                else if (message.contains("BankServiceException")) {
+                    throw new BankServiceException_Exception(message, new BankServiceException());
+                }
+
             }
             return false;
         }
 
-        //cast response to payment
-        //if response is successful return true
 
 
     public Payment getPayment(String id) throws PaymentDoesNotExist {
