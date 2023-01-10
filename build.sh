@@ -8,7 +8,7 @@ mvn clean install
 popd
 
 pushd DTUPayWebService
-mvn clean package
+mvn package
 popd
 
 
