@@ -9,14 +9,13 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PaymentRepository {
-    private static ArrayList<Payment> payments = new ArrayList<>();
+    private ArrayList<Payment> payments = new ArrayList<>();
 
     public PaymentRepository() {
 
     }
 
-    public void addPayment(Payment payment) {
-        payment.id = UUID.randomUUID();
+    public void save(Payment payment) {
         payments.add(payment);
     }
 
@@ -29,5 +28,9 @@ public class PaymentRepository {
          } else {
              throw new PaymentNotFoundException("Payment with id " + id + " not found");
          }
+    }
+
+    public ArrayList<Payment> getPayments() {
+        return payments;
     }
 }

@@ -11,8 +11,8 @@ public class Payment {
 
     }
 
-    public Payment(UUID id, UUID cid, UUID mid, int amount) {
-        this.id = id;
+    public Payment(UUID cid, UUID mid, int amount) {
+        this.id = UUID.randomUUID();
         this.cid = cid;
         this.mid = mid;
         this.amount = amount;

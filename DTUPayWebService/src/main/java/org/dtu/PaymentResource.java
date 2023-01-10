@@ -1,6 +1,7 @@
 package org.dtu;
 
 import org.dtu.aggregate.Payment;
+import org.dtu.services.PaymentService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -94,7 +95,7 @@ public class PaymentResource {
     public Response postPayment(Payment payment) throws URISyntaxException {
         int id;
         try {
-            payment = paymentRegistration.postPayment(payment);
+            payment = paymentRegistration.createPayment(payment);
             return Response.created(new URI("/payments/"+payment.id))
                     .link(new URI("/payments/"+payment.id), "self")
                     .link(new URI("/payments/"+payment.id+"/amount"), "amount")
