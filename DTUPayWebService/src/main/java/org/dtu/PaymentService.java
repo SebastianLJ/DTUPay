@@ -45,7 +45,5 @@ public class PaymentService {
             this.maxId++;
             return payment.getId();
         }
-
-
     }
 }

@@ -3,6 +3,7 @@ package org.dtu;
 import org.dtu.aggregate.User;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class CustomerService {
     //contains a list of all customers
@@ -15,18 +16,18 @@ public class CustomerService {
 
     }
 
-    public static User getCustomer (String id) throws InvalidCustomerIdException {
+    public static User getCustomer (UUID id) throws InvalidCustomerIdException {
         for (User customer:
                 customers)  {
-            if (customer.getId().equals(id)) {
+            if (customer.getUserId().getUuid().equals(id)) {
                 return customer;
             }
         }
         throw new InvalidCustomerIdException();
     }
 
-    public void addCustomer(String id) throws CustomerAlreadyExistsException {
-        User newUser = new User(id);
+    public void addCustomer(String firstName, String lastName) throws CustomerAlreadyExistsException {
+        User newUser = new User(firstName, lastName);
         customers.add(newUser);
     }
 

@@ -3,6 +3,7 @@ package org.dtu;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.UUID;
 
 @Path("/registration")
 public class RegistrationResource {
@@ -12,15 +13,15 @@ public class RegistrationResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/customers")
-    public Response addCustomer(String id) {
+    public Response addCustomer(String firstName, String lastName) {
         try {
-            customerRegistration.addCustomer(id);
+            customerRegistration.addCustomer(firstName, lastName);
             return Response.status(Response.Status.CREATED)
-                    .entity("customer with id " + id + " created")
+                    .entity("customer with id " + " created")
                     .build();
         } catch (CustomerAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
-                    .entity("customer with id " + id + " already exists")
+                    .entity("customer with id " + " already exists")
                     .build();
         }
     }
@@ -29,22 +30,22 @@ public class RegistrationResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/merchants")
-    public Response addMerchant(String id) {
+    public Response addMerchant(String firstName, String lastName) {
         try {
-            merchantRegistration.addMerchant(id);
+            merchantRegistration.addMerchant(firstName, lastName);
             return Response.status(Response.Status.CREATED)
-                    .entity("merchant with id " + id + " created")
+                    .entity("merchant with id " + " created")
                     .build();
         } catch (MerchantAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
-                    .entity("merchant with id " + id + " already exists")
+                    .entity("merchant with id " + " already exists")
                     .build();
         }
     }
 
     @Path("/cid/{id}/")
     @GET
-    public Response getCustomer(@PathParam("id") String id) {
+    public Response getCustomer(@PathParam("id") UUID id) {
         try {
             customerRegistration.getCustomer(id);
             return Response.status(Response.Status.OK)
@@ -58,7 +59,7 @@ public class RegistrationResource {
 
     @Path("mid/{id}/")
     @GET
-    public Response getMerchant(@PathParam("id") String id) {
+    public Response getMerchant(@PathParam("id") UUID id) {
         try {
             merchantRegistration.getMerchant(id);
             return Response.status(Response.Status.OK)

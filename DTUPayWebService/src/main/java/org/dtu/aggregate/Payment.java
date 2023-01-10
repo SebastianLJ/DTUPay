@@ -1,15 +1,17 @@
 package org.dtu.aggregate;
 
+import java.util.UUID;
+
 public class Payment {
     public int id;
-    public String cid, mid;
+    public UUID cid, mid;
     public int amount;
 
     public Payment() {
 
     }
 
-    public Payment(int id, String cid, String mid, int amount) {
+    public Payment(int id, UUID cid, UUID mid, int amount) {
         this.id = id;
         this.cid = cid;
         this.mid = mid;

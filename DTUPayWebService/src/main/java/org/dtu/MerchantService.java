@@ -3,6 +3,7 @@ package org.dtu;
 import org.dtu.aggregate.User;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class MerchantService {
     static ArrayList<User> merchants = new ArrayList<>();
@@ -14,25 +15,20 @@ public class MerchantService {
 
     }
 
-    public static User getMerchant (String id) throws InvalidMerchantIdException {
+    public static User getMerchant (UUID id) throws InvalidMerchantIdException {
         for (User merchant:
                 merchants)  {
-            if (merchant.getId().equals(id)) {
+            if (merchant.getUserId().getUuid().equals(id)) {
                 return merchant;
             }
         }
         throw new InvalidMerchantIdException();
     }
 
-    public void addMerchant(String id) throws MerchantAlreadyExistsException {
+    public void addMerchant(String firstName, String lastName) throws MerchantAlreadyExistsException {
         // if merchant already exists, throw MerchantAlreadyExists exception
-        try {
-            getMerchant(id);
-            throw new MerchantAlreadyExistsException();
-        } catch (InvalidMerchantIdException e) {
-            User merchant = new User(id);
-            merchants.add(merchant);
-        }
+        User merchant = new User(firstName, lastName);
+        merchants.add(merchant);
     }
 
 }
