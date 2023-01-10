@@ -3,6 +3,7 @@ package org.dtu.repositories;
 import org.dtu.PaymentNotFoundException;
 import org.dtu.aggregate.Payment;
 
+import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.Optional;
 import java.util.UUID;

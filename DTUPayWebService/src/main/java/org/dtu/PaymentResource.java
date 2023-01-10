@@ -1,6 +1,7 @@
 package org.dtu;
 
 import org.dtu.aggregate.Payment;
+import org.dtu.factories.PaymentFactory;
 import org.dtu.services.PaymentService;
 
 import javax.ws.rs.*;
@@ -13,8 +14,8 @@ import java.util.UUID;
 
 @Path("/payments")
 public class PaymentResource {
-    PaymentService paymentRegistration = new PaymentService();
-
+    PaymentService paymentRegistration = new PaymentFactory().getService();
+    
     static RegistrationResource registrationResource = new RegistrationResource();
 
     @GET

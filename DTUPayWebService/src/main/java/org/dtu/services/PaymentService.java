@@ -8,10 +8,8 @@ import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.UUID;
 
-@Singleton
 public class PaymentService {
     PaymentRepository repository;
-    ArrayList<Payment> payments = new ArrayList<>();
 
     public ArrayList<Payment> getPayments() {
         return repository.getPayments();
@@ -40,7 +38,6 @@ public class PaymentService {
             this.getPayment(payment.getId());
             throw new PaymentAlreadyExistsException();
         } catch (PaymentNotFoundException e) {
-            this.payments.add(payment);
             repository.save(payment);
             return payment;
         }
