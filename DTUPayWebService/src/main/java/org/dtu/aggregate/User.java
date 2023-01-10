@@ -44,8 +44,7 @@ public class User {
 
     public User(String firstName, String lastName) {
         this.userId = new UserId(UUID.randomUUID());
-        this.firstName = new firstName;
-        this.lastName = new lastName;
+        this.name = new Name(firstName, lastName);
     }
 
 

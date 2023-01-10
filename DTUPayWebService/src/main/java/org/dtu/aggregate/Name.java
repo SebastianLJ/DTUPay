@@ -9,5 +9,8 @@ public class Name {
     private String firstName;
     private String lastName;
 
-
+    public Name(String firstname, String lastName){
+        this.firstName = firstname;
+        this.lastName = lastName;
+    }
 }
