@@ -3,7 +3,7 @@ package org.dtu.aggregate;
 import java.util.UUID;
 
 public class Payment {
-    public int id;
+    public UUID id;
     public UUID cid, mid;
     public int amount;
 
@@ -11,18 +11,18 @@ public class Payment {
 
     }
 
-    public Payment(int id, UUID cid, UUID mid, int amount) {
-        this.id = id;
+    public Payment(UUID cid, UUID mid, int amount) {
+        this.id = UUID.randomUUID();
         this.cid = cid;
         this.mid = mid;
         this.amount = amount;
     }
 
-    public int getId() {
+    public UUID getId() {
         return this.id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
