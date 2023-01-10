@@ -28,6 +28,7 @@ import java.util.UUID;
  */
 public class User {
 
+    UserId name;
 
     String id;
 
