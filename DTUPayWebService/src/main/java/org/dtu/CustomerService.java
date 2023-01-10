@@ -26,9 +26,10 @@ public class CustomerService {
         throw new InvalidCustomerIdException();
     }
 
-    public void addCustomer(String firstName, String lastName) throws CustomerAlreadyExistsException {
+    public User addCustomer(String firstName, String lastName) throws CustomerAlreadyExistsException {
         User newUser = new User(firstName, lastName);
         customers.add(newUser);
+        return newUser;
     }
 
 }
