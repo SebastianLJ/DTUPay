@@ -1,5 +1,7 @@
 package org.dtu;
 
+import org.dtu.aggregate.User;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -14,14 +16,15 @@ public class RegistrationResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/customers")
     public Response addCustomer(String firstName, String lastName) {
+        User newUser;
         try {
-            customerRegistration.addCustomer(firstName, lastName);
+            newUser = customerRegistration.addCustomer(firstName, lastName);
             return Response.status(Response.Status.CREATED)
-                    .entity("customer with id " + " created")
+                    .entity("customer with id " + newUser.getUserId().getUuid() + " created")
                     .build();
         } catch (CustomerAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
-                    .entity("customer with id " + " already exists")
+                    .entity("customer with the same id already exists")
                     .build();
         }
     }
@@ -32,13 +35,13 @@ public class RegistrationResource {
     @Path("/merchants")
     public Response addMerchant(String firstName, String lastName) {
         try {
-            merchantRegistration.addMerchant(firstName, lastName);
+            User newUser = merchantRegistration.addMerchant(firstName, lastName);
             return Response.status(Response.Status.CREATED)
-                    .entity("merchant with id " + " created")
+                    .entity("merchant with id " + newUser.getUserId().getUuid() + " created")
                     .build();
         } catch (MerchantAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
-                    .entity("merchant with id " + " already exists")
+                    .entity("merchant with the same id already exists")
                     .build();
         }
     }
