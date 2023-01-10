@@ -1,4 +1,4 @@
-package org.dtu.resources;
+package org.dtu.aggregate;
 
 public class Payment {
     public int id;
