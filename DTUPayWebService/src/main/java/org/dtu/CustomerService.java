@@ -1,5 +1,7 @@
 package org.dtu;
 
+import org.dtu.resources.User;
+
 import java.util.ArrayList;
 
 public class CustomerService {
