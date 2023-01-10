@@ -25,10 +25,10 @@ public class MerchantService {
         throw new InvalidMerchantIdException();
     }
 
-    public void addMerchant(String firstName, String lastName) throws MerchantAlreadyExistsException {
-        // if merchant already exists, throw MerchantAlreadyExists exception
+    public User addMerchant(String firstName, String lastName) throws MerchantAlreadyExistsException {
         User merchant = new User(firstName, lastName);
         merchants.add(merchant);
+        return merchant;
     }
 
 }
