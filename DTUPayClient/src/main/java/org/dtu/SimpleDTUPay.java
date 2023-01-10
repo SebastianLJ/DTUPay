@@ -1,5 +1,6 @@
 package org.dtu;
 
+import aggregate.Name;
 import dtu.ws.fastmoney.*;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.client.Client;
@@ -67,13 +68,13 @@ public class SimpleDTUPay {
                 .get(new GenericType<List<Payment>>() {});
     }
 
-    public boolean createDTUPayCustomerAccount(String id){
-        Response response = r.path("/registration/customers").request().post(Entity.entity(id, MediaType.APPLICATION_JSON));
+    public boolean createDTUPayCustomerAccount(String firstName, String lastName){
+        Response response = r.path("/registration/customers").request().post(Entity.entity(new Name(firstName, lastName), MediaType.APPLICATION_JSON));
         return response.getStatus() == 201;
     }
 
-    public boolean createDTUPayMerchantAccount(String id){
-        Response response = r.path("/registration/merchants").request().post(Entity.entity(id, MediaType.APPLICATION_JSON));
+    public boolean createDTUPayMerchantAccount(String firstName, String lastName){
+        Response response = r.path("/registration/merchants").request().post(Entity.entity(new Name(firstName, lastName), MediaType.APPLICATION_JSON));
         return response.getStatus() == 201;
     }
 

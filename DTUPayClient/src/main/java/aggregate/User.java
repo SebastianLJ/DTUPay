@@ -1,5 +1,5 @@
 
-package org.dtu.aggregate;
+package aggregate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +43,7 @@ public class User {
     }
 
     public User(String firstName, String lastName) {
-        this.userId = new UserId(java.util.UUID.randomUUID());
+        this.userId = new UserId(UUID.randomUUID());
         this.name = new Name(firstName, lastName);
     }
 
