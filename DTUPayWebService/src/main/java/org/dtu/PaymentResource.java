@@ -1,6 +1,6 @@
 package org.dtu;
 
-import org.dtu.resources.Payment;
+import org.dtu.aggregate.Payment;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

@@ -1,6 +1,6 @@
 package org.dtu;
 
-import org.dtu.resources.Payment;
+import org.dtu.aggregate.Payment;
 
 import javax.inject.Singleton;
 import java.util.ArrayList;

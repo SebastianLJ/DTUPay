@@ -1,6 +1,6 @@
 package org.dtu;
 
-import org.dtu.resources.User;
+import org.dtu.aggregate.User;
 
 import java.util.ArrayList;
 
