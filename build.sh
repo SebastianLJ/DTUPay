@@ -2,7 +2,7 @@
 # Enforces build script fails on anything but SUCCESS codes
 set -e
 
-# Clean old builds, Repeat for all maven projects
+# Clean and build projects
 pushd DTUPayMessageQueue
 mvn clean install
 popd
@@ -11,14 +11,12 @@ pushd DTUPayWebService
 mvn package
 popd
 
+# Prune unused docker images
+docker image prune -f
 
 # Build the docker images and run them
-docker-compose build
-docker-compose up -d
-
-# Clean up any images and container not in use
-docker image prune -f
-docker container prune
+docker-compose up -d rabbitMq
+docker-compose up -d DTUPayWebService
 
 # Wait for any builds to run
 sleep 2
@@ -27,3 +25,6 @@ sleep 2
 pushd DTUPayClient
 mvn test
 popd
+
+# Clean images
+docker image prune -f
