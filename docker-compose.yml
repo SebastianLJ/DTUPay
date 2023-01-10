@@ -3,6 +3,12 @@ services:
   server:
     build: DTUPayWebService
     image: server
-    container_name: server
+    container_name: DTUPayWebService
     ports:
       - "8080:8080"
+  rabbitMq:
+    image: rabbitmq:3-management
+    container_name: DTUPayMessageQueue
+    ports:
+      - "5672:5672"
+      - "15672:15672"
