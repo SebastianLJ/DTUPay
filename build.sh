@@ -5,9 +5,13 @@ set -e
 # Clean old builds, Repeat for all maven projects
 pushd DTUPayWebService
 mvn clean package
+popd
+
+pushd DTUPayMessageQueue
+mvn clean install
+popd
 
 # Build the docker images and run them
-popd
 docker-compose build
 docker-compose up -d
 
