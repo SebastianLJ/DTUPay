@@ -31,8 +31,6 @@ public class PaymentService {
     }
 
     public int postPayment(Payment payment) throws PaymentAlreadyExistsException, InvalidMerchantIdException, InvalidCustomerIdException {
-        CustomerService customerService = new CustomerService();
-        MerchantService merchantService = new MerchantService();
         // if cid is not in the customers list in customerservice throw InvalidCustomerIdException
         CustomerService.getCustomer(payment.cid);
         // if mid is not in the merchants list in merchantservice throw InvalidMerchantIdException
