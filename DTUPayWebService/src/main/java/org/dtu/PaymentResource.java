@@ -1,18 +1,21 @@
 package org.dtu;
 
 import org.dtu.aggregate.Payment;
+import org.dtu.factories.PaymentFactory;
+import org.dtu.services.PaymentService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.UUID;
 
 
 @Path("/payments")
 public class PaymentResource {
-    PaymentService paymentRegistration = new PaymentService();
-
+    PaymentService paymentRegistration = new PaymentFactory().getService();
+    
     static RegistrationResource registrationResource = new RegistrationResource();
 
     @GET
@@ -26,7 +29,7 @@ public class PaymentResource {
     @Path("/{id}")
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getPayment(@PathParam("id") int id) throws URISyntaxException {
+    public Response getPayment(@PathParam("id") UUID id) throws URISyntaxException {
 
         try {
             return Response.status(Response.Status.OK)
@@ -46,7 +49,7 @@ public class PaymentResource {
     @Path("/{id}/amount")
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public Response getAmount(@PathParam("id") int id) {
+    public Response getAmount(@PathParam("id") UUID id) {
         try {
             return Response.status(Response.Status.OK)
                     .entity(paymentRegistration.getPayment(id).amount)
@@ -61,7 +64,7 @@ public class PaymentResource {
     @Path("/cid/{id}/")
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public Response getCid(@PathParam("id") int id) {
+    public Response getCid(@PathParam("id") UUID id) {
         try {
             return Response.status(Response.Status.OK)
                     .entity(paymentRegistration.getPayment(id).cid)
@@ -76,7 +79,7 @@ public class PaymentResource {
     @Path("/mid/{id}/")
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public Response getMid(@PathParam("id") int id) {
+    public Response getMid(@PathParam("id") UUID id) {
         try {
             return Response.status(Response.Status.OK)
                     .entity(paymentRegistration.getPayment(id).mid)
@@ -93,12 +96,12 @@ public class PaymentResource {
     public Response postPayment(Payment payment) throws URISyntaxException {
         int id;
         try {
-            id = paymentRegistration.postPayment(payment);
-            return Response.created(new URI("/payments/"+id))
-                    .link(new URI("/payments/"+id), "self")
-                    .link(new URI("/payments/"+id+"/amount"), "amount")
-                    .link(new URI("/payments/"+id+"/cid"), "cid")
-                    .link(new URI("/payments/"+id+"/mid"), "mid")
+            payment = paymentRegistration.createPayment(payment);
+            return Response.created(new URI("/payments/"+payment.id))
+                    .link(new URI("/payments/"+payment.id), "self")
+                    .link(new URI("/payments/"+payment.id+"/amount"), "amount")
+                    .link(new URI("/payments/"+payment.id+"/cid"), "cid")
+                    .link(new URI("/payments/"+payment.id+"/mid"), "mid")
                     .build();
         } catch (PaymentAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)

@@ -1,49 +1,45 @@
-package org.dtu;
+package org.dtu.services;
 
+import org.dtu.*;
 import org.dtu.aggregate.Payment;
+import org.dtu.repositories.PaymentRepository;
 
 import javax.inject.Singleton;
 import java.util.ArrayList;
+import java.util.UUID;
 
-@Singleton
 public class PaymentService {
-    int maxId = 1;
+    PaymentRepository repository;
 
     public ArrayList<Payment> getPayments() {
-        return payments;
+        return repository.getPayments();
     }
-
-    ArrayList<Payment> payments = new ArrayList<>();
 
 
     public PaymentService() {
-
+        repository = new PaymentRepository();
     }
 
-    public Payment getPayment(int id) throws PaymentNotFoundException {
-        for (Payment payment :
-                this.payments) {
-            if (payment.getId() == id) {
-                return payment;
-            }
+    public Payment getPayment(UUID id) throws PaymentNotFoundException {
+        try {
+            return repository.getPaymentById(id);
+        } catch (PaymentNotFoundException e) {
+            throw new PaymentNotFoundException();
         }
-        throw new PaymentNotFoundException();
     }
 
-    public int postPayment(Payment payment) throws PaymentAlreadyExistsException, InvalidMerchantIdException, InvalidCustomerIdException {
+    public Payment createPayment(Payment payment) throws PaymentAlreadyExistsException, InvalidMerchantIdException, InvalidCustomerIdException {
         // if cid is not in the customers list in customerservice throw InvalidCustomerIdException
         CustomerService.getCustomer(payment.cid);
         // if mid is not in the merchants list in merchantservice throw InvalidMerchantIdException
         MerchantService.getMerchant(payment.mid);
         // if payment is already in the payments list throw PaymentAlreadyExistsException
         try {
-            this.getPayment(this.maxId);
+            this.getPayment(payment.getId());
             throw new PaymentAlreadyExistsException();
         } catch (PaymentNotFoundException e) {
-            payment.setId(this.maxId);
-            this.payments.add(payment);
-            this.maxId++;
-            return payment.getId();
+            repository.save(payment);
+            return payment;
         }
     }
 }
