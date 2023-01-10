@@ -1,20 +1,24 @@
 #!/bin/bash
+# Enforces build script fails on anything but SUCCESS codes
 set -e
 
-# Clean old builds
+# Clean old builds, Repeat for all maven projects
 pushd DTUPayWebService
 mvn clean package
 
-# Build the docker image and run it
+# Build the docker images and run them
 popd
 docker-compose build
 docker-compose up -d
-docker image prune -f
 
-# Wait for web server to run
+# Clean up any images and container not in use
+docker image prune -f
+docker container prune
+
+# Wait for any builds to run
 sleep 2
 
-# Run the client tests against the server
+# Run project tests
 pushd DTUPayClient
 mvn test
 popd
