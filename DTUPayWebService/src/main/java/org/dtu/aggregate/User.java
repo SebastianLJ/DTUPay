@@ -28,29 +28,27 @@ import java.util.UUID;
  */
 public class User {
 
-    UserId name;
-
-    String id;
+    Name name;
 
     UserId userId;
 
     List<Payment> payments = new ArrayList<Payment>();
 
-    public User() {
+    public Name getName() {
+        return name;
+    }
+
+    public UserId getUserId() {
+        return userId;
+    }
+
+    public User(String firstName, String lastName) {
         this.userId = new UserId(UUID.randomUUID());
+        this.firstName = new firstName;
+        this.lastName = new lastName;
     }
 
-    public User(String id) {
-        this.id = id;
-    }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public List<Payment> getPayments() {
         return payments;
