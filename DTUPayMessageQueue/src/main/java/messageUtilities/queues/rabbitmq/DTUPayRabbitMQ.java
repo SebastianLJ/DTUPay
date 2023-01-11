@@ -1,56 +1,66 @@
-package messageQueue;
+package messageUtilities.queues.rabbitmq;
 
-import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
+import messageUtilities.queues.IDTUPayMessage;
+import messageUtilities.queues.IDTUPayMessageQueue;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.*;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
-public class DTUPayMessageQueue implements IDTUPayMessageQueue {
+public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
 
-    private static final String DEFAULT_HOSTNAME = "etst.DTUPayMessageQueue";
+    private static final String DEFAULT_HOSTNAME = "DTUPayMessageQueue";
     private static final String EXCHANGE_NAME = "eventsExchange";
     private final QueueType queueType;
     private final Channel channel;
 
-    public DTUPayMessageQueue(QueueType queueType) {
+    public DTUPayRabbitMQ(QueueType queueType) {
         this.queueType = queueType;
         this.channel = setUpChannel();
     }
 
     @Override
-    public void publish(Event event) {
-        String message = new Gson().toJson(event);
-        System.out.println("[x] Publish event " + message);
+    public void publish(IDTUPayMessage event) {
         try {
-            channel.basicPublish(EXCHANGE_NAME, queueType.toString(), null, message.getBytes(StandardCharsets.UTF_8));
-        } catch (IOException e) {
+            byte[] data;
+
+            try (ByteArrayOutputStream file = new ByteArrayOutputStream();
+                 ObjectOutputStream out = new ObjectOutputStream(file);) {
+
+                out.writeObject(event);
+                data = file.toByteArray();
+            }
+            channel.basicPublish(EXCHANGE_NAME, queueType.name(), null, data);
+        } catch (Exception e) {
             throw new Error(e);
         }
     }
 
     @Override
-    public void addHandler(EventType eventType, Consumer<Event> handler) {
+    public void addHandler(Class<? extends IDTUPayMessage> event, Consumer<IDTUPayMessage> handler) {
         Channel channel = setUpChannel();
-        System.out.println("[x] handler " + handler + " for event type " + eventType + " installed");
         try {
             String queueName = channel.queueDeclare().getQueue();
             channel.queueBind(queueName, EXCHANGE_NAME, queueType.toString());
 
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-                String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
 
-                System.out.println("[x] handle event " + message);
+                IDTUPayMessage message = null;
+                try (ByteArrayInputStream file = new ByteArrayInputStream(delivery.getBody());
+                     ObjectInputStream in = new ObjectInputStream(file);) {
 
-                Event event = new Gson().fromJson(message, Event.class);
-
-                if (eventType.equals(event.getEventType())) {
-                    handler.accept(event);
+                    try {
+                        message = (IDTUPayMessage) in.readObject();
+                    } catch (ClassNotFoundException e) {
+                        throw new Error(e);
+                    }
+                }
+                if (event.equals(message.getClass())) {
+                    handler.accept(message);
                 }
             };
             channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {

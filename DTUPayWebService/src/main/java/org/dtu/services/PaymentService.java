@@ -11,13 +11,14 @@ import org.dtu.repositories.MerchantRepository;
 import org.dtu.repositories.PaymentRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class PaymentService {
     PaymentRepository repository;
 
 
-    public ArrayList<Payment> getPayments() {
+    public List<Payment> getPayments() {
         return repository.getPayments();
     }
 

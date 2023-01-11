@@ -16,6 +16,7 @@ import org.dtu.services.PaymentService;
 import org.dtu.exceptions.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +30,7 @@ public class PaymentServiceSteps {
     User merchant = null;
     Payment payment = null;
     Payment result = null;
-    ArrayList<Payment> payments = new ArrayList<>();
+    List<Payment> payments = new ArrayList<>();
 
     @Given("^there is a registered customer$")
     public void thereIsARegisteredCustomer() {
@@ -126,7 +127,7 @@ public class PaymentServiceSteps {
 
     @After
     public void afterScenario() {
-        ArrayList<Payment> paymentsToDelete = paymentRegistration.getPayments();
+        List<Payment> paymentsToDelete = paymentRegistration.getPayments();
         for (Payment payment:
              paymentsToDelete) {
             try {
