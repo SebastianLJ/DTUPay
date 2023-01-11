@@ -1,5 +1,6 @@
 package org.dtu.repositories;
 
+import org.dtu.aggregate.Token;
 import org.dtu.exceptions.PaymentNotFoundException;
 import org.dtu.aggregate.Payment;
 
@@ -44,6 +45,12 @@ public class PaymentRepository {
     public List<Payment> getPaymentsByCustomerId(UUID customerId) {
         return payments.stream()
                 .filter(payment -> payment.cid.equals(customerId))
+                .collect(Collectors.toList());
+    }
+
+    public List<Payment> getPaymentsByToken(Token token) {
+        return payments.stream()
+                .filter(payment -> payment.getToken().equals(token))
                 .collect(Collectors.toList());
     }
 
