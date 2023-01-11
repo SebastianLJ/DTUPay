@@ -1,4 +1,4 @@
-package messageQueue;
+package messageUtilities.events;
 
 public enum EventType {
     CustomerTokensRequest,

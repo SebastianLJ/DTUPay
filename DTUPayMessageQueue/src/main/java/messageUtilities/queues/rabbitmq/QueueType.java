@@ -1,4 +1,4 @@
-package messageQueue;
+package messageUtilities.queues.rabbitmq;
 
 public enum QueueType {
     Customer_DTUPay,
