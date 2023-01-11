@@ -1,7 +1,9 @@
 package org.dtu;
 
+import messageQueue.DTUPayMessageQueue;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello world!");
+        DTUPayMessageQueue messageQueue = new DTUPayMessageQueue();
     }
 }

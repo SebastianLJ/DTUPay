@@ -1,3 +1,5 @@
+package messageQueue;
+
 public enum EventType {
     CustomerTokensRequest,
     CustomerTokensRequestResult,

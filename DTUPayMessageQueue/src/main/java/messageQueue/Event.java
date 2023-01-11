@@ -1,3 +1,5 @@
+package messageQueue;
+
 import com.google.gson.Gson;
 
 import java.io.Serializable;
@@ -33,7 +35,7 @@ public class Event implements Serializable {
 
     @Override
     public String toString() {
-        return "Event{" +
+        return "etst.Event{" +
                 "eventType=" + eventType +
                 ", arguments=" + Arrays.toString(arguments) +
                 '}';

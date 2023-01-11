@@ -25,6 +25,11 @@
             <version>RELEASE</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.dtu.group04</groupId>
+            <artifactId>DTUPayMessageQueue</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
 </project>

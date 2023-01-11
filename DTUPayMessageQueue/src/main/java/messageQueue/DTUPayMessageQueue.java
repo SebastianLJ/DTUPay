@@ -1,3 +1,5 @@
+package messageQueue;
+
 import com.google.gson.Gson;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -11,7 +13,7 @@ import java.util.function.Consumer;
 
 public class DTUPayMessageQueue implements IDTUPayMessageQueue {
 
-    private static final String DEFAULT_HOSTNAME = "DTUPayMessageQueue";
+    private static final String DEFAULT_HOSTNAME = "etst.DTUPayMessageQueue";
     private static final String EXCHANGE_NAME = "eventsExchange";
     private final QueueType queueType;
     private final Channel channel;

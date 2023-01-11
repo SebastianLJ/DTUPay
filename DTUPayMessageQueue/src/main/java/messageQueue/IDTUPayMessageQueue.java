@@ -1,3 +1,5 @@
+package messageQueue;
+
 import java.util.function.Consumer;
 
 public interface IDTUPayMessageQueue {
