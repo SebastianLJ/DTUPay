@@ -41,20 +41,20 @@ public class MerchantRepository {
         return merchants;
     }
 
-   /* public User getMerchantById(UUID id) throws PaymentNotFoundException {
+   /* public User getMerchantById(UUID id) throws MerchantNotFoundException {
         Optional<User> result = merchants.stream()
-                .filter(payment -> payment.id == id)
+                .filter(merchant -> merchant.id == id)
                 .findAny();
         if (result.isPresent()) {
             return result.get();
         } else {
-            throw new PaymentNotFoundException("Payment with id " + id + " not found");
+            throw new MerchantNotFoundException("Merchant with id " + id + " not found");
         }
     }*/
 
-    public User deleteMerchant(UUID id) throws MerchantNotFoundException, InvalidMerchantIdException {
+    public User deleteMerchant(UUID id) throws InvalidMerchantIdException {
         User merchantToRemove = getMerchant(id);
-        this.getMerchantList().remove(merchantToRemove);
+        this.merchants.remove(merchantToRemove);
         return merchantToRemove;
     }
 }

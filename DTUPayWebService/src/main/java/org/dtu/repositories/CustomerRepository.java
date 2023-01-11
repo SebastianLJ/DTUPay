@@ -2,8 +2,9 @@ package org.dtu.repositories;
 
 
 import org.dtu.aggregate.User;
-import org.dtu.exceptions.CustomerAlreadyExistsException;
-import org.dtu.exceptions.InvalidCustomerIdException;
+import org.dtu.exceptions.*;
+import org.dtu.exceptions.InvalidMerchantIdException;
+import org.dtu.exceptions.MerchantNotFoundException;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -35,6 +36,12 @@ public class CustomerRepository {
     }
 
     public ArrayList<User> getCustomerList() {
-        return customers;
+        return new ArrayList<>(customers);
+    }
+
+    public User deleteCustomer(UUID id) throws InvalidCustomerIdException {
+        User customerToRemove = getCustomer(id);
+        this.customers.remove(customerToRemove);
+        return customerToRemove;
     }
 }

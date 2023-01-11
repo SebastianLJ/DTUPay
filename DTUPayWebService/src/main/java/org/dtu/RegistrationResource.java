@@ -5,6 +5,8 @@ import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.exceptions.InvalidMerchantIdException;
 import org.dtu.exceptions.MerchantAlreadyExistsException;
+import org.dtu.factories.CustomerFactory;
+import org.dtu.factories.MerchantFactory;
 import org.dtu.factories.PaymentFactory;
 import org.dtu.services.CustomerService;
 import org.dtu.services.MerchantService;
@@ -17,8 +19,9 @@ import java.util.UUID;
 
 @Path("/registration")
 public class RegistrationResource {
-    CustomerService customerRegistration = new CustomerService();
-    MerchantService merchantRegistration = new MerchantService();
+    CustomerService customerRegistration = new CustomerFactory().getService();
+    MerchantService merchantRegistration = new MerchantFactory().getService();
+
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -80,5 +83,15 @@ public class RegistrationResource {
                     .entity("merchant with id " + id + " not found")
                     .build();
         }
+    }
+
+    @Path("/customerlist")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getCustomerList() throws CustomerAlreadyExistsException {
+        //customerRegistration.addCustomer("Frank", "ocean");
+        return Response.status(Response.Status.OK)
+                .entity(customerRegistration.getCustomerList())
+                .build();
     }
 }

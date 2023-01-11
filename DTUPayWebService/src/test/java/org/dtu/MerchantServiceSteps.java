@@ -13,6 +13,7 @@ import org.dtu.factories.MerchantFactory;
 import org.dtu.services.MerchantService;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 

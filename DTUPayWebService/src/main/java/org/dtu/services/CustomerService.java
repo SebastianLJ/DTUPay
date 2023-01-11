@@ -34,4 +34,8 @@ public class CustomerService {
     public ArrayList<User> getCustomerList() {
         return repository.getCustomerList();
     }
+
+    public User deleteCustomer(UUID id) throws InvalidCustomerIdException {
+        return repository.deleteCustomer(id);
+    }
 }
