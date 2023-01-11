@@ -1,16 +1,13 @@
 package org.dtu;
 
-import io.cucumber.java.After;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
-import org.dtu.exceptions.InvalidMerchantIdException;
-import org.dtu.exceptions.MerchantAlreadyExistsException;
-import org.dtu.exceptions.MerchantNotFoundException;
-import org.dtu.exceptions.PaymentNotFoundException;
+import org.dtu.exceptions.*;
 import org.dtu.factories.MerchantFactory;
 import org.dtu.services.MerchantService;
+import org.junit.After;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +44,11 @@ public class MerchantServiceSteps {
     @Then("the merchant can't be found")
     public void theMerchantIsNotFound() {
         assertNull(result);
+    }
+
+    @After
+    public void afterScenario() throws InvalidCustomerIdException, MerchantNotFoundException, PaymentNotFoundException, InvalidMerchantIdException {
+        merchantRegistration.deleteMerchant(merchant.getUserId().getUuid());
     }
 }
 

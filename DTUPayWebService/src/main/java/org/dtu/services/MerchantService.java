@@ -10,12 +10,17 @@ import org.dtu.exceptions.PaymentNotFoundException;
 import org.dtu.repositories.MerchantRepository;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class MerchantService {
     MerchantRepository repository;
 
     public MerchantService() {repository = new MerchantRepository();}
+
+    public List<User> getMerchants() {
+        return repository.getMerchantList();
+    }
 
     public User getMerchant (UUID id) throws InvalidMerchantIdException {
         try {
