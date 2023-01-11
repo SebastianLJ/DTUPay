@@ -2,27 +2,20 @@ package org.dtu.repository;
 
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.UserId;
+import org.dtu.exceptions.InvalidTokenAmountException;
+import org.dtu.exceptions.TokenAmountExeededException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class TokenRepository {
 
     private HashMap<UserId, ArrayList<Token>> tokenRepository = new HashMap<>();
     private HashMap<UserId, ArrayList<Token>> usedTokenRepository = new HashMap<>();
 
-    public ArrayList<Token> createUser(UserId userId){
-        ArrayList<Token> tokenArrayList = new ArrayList<Token>();
-
-        while(tokenArrayList.size() < 6){
-            tokenArrayList.add(new Token(UUID.randomUUID()));
-        }
-
-        return tokenArrayList;
-
+    private void createUser(UserId userId){
+        tokenRepository.put(userId, new ArrayList<>());
     }
+
     private void save(UserId userId, Token token) {
 
         if (tokenRepository.get(userId).size() != 6)
@@ -34,11 +27,26 @@ public class TokenRepository {
         return tokenRepository.get(userId).size();
     }
 
-    public Token generateToken(UserId userid){
-        UUID uuid = UUID.randomUUID();
-        Token token = new Token(uuid);
-        save(userid, token);
-        return token;
+    public ArrayList<Token> generateToken(UserId userid, int amount) throws TokenAmountExeededException, InvalidTokenAmountException {
+
+        ArrayList<Token> generatedTokens = new ArrayList<>();
+
+        if (amount < 0 || amount > 5) throw new InvalidTokenAmountException(); //amount input not allowed
+
+        if (tokenRepository.get(userid) == null) createUser(userid); //create user if not already in repository
+
+        //can only request tokens if 1 or 0 already in possesion
+        int length = tokenRepository.get(userid).size();
+        if (!(length == 1 || length == 0)) throw new TokenAmountExeededException();
+
+
+        for (int i = 0; i < amount; i++) {
+            UUID uuid = UUID.randomUUID();
+            Token token = new Token(uuid);
+            save(userid, token);
+            generatedTokens.add(token);
+        }
+        return generatedTokens;
     }
 
     public Boolean validateToken(UserId userid, Token token) {

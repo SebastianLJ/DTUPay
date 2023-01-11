@@ -21,16 +21,13 @@ public class TokenService {
         return tokenRepository.getTokensByUserId(userId);
     }
 
-    public ArrayList<Token> createUser(UserId userId) {
-        return tokenRepository.createUser(userId);
-    }
-
     public Boolean consumeToken(UserId userId, Token token){
         return tokenRepository.validateToken(userId, token);
     }
 
-    public void generateTokens(){
-
+    public List<Token> generateTokens(UserId userId, int amount){
+        boolean status = tokenRepository.generateToken(userId, amount);
+        return
     }
 
     public Boolean containsUser(UserId userId){
