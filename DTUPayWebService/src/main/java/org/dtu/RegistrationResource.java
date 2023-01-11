@@ -1,6 +1,10 @@
 package org.dtu;
 
 import org.dtu.aggregate.User;
+import org.dtu.exceptions.CustomerAlreadyExistsException;
+import org.dtu.exceptions.InvalidCustomerIdException;
+import org.dtu.exceptions.InvalidMerchantIdException;
+import org.dtu.exceptions.MerchantAlreadyExistsException;
 import org.dtu.services.CustomerService;
 import org.dtu.services.MerchantService;
 

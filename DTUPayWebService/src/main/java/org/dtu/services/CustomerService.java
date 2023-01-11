@@ -1,9 +1,9 @@
 package org.dtu.services;
 
-import org.dtu.CustomerAlreadyExistsException;
-import org.dtu.InvalidCustomerIdException;
-import org.dtu.PaymentNotFoundException;
+
 import org.dtu.aggregate.User;
+import org.dtu.exceptions.CustomerAlreadyExistsException;
+import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.repositories.CustomerRepository;
 
 import java.util.ArrayList;

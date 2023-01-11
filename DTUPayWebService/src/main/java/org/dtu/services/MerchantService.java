@@ -1,9 +1,9 @@
 package org.dtu.services;
 
-import org.dtu.InvalidCustomerIdException;
-import org.dtu.InvalidMerchantIdException;
-import org.dtu.MerchantAlreadyExistsException;
+
 import org.dtu.aggregate.User;
+import org.dtu.exceptions.InvalidMerchantIdException;
+import org.dtu.exceptions.MerchantAlreadyExistsException;
 import org.dtu.repositories.MerchantRepository;
 
 import java.util.ArrayList;

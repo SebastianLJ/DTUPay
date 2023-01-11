@@ -1,7 +1,6 @@
 package org.dtu.repositories;
 
-import org.dtu.CustomerAlreadyExistsException;
-import org.dtu.InvalidCustomerIdException;
+
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.InvalidCustomerIdException;

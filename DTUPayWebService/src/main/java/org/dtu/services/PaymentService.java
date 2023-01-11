@@ -2,6 +2,10 @@ package org.dtu.services;
 
 import org.dtu.*;
 import org.dtu.aggregate.Payment;
+import org.dtu.exceptions.InvalidCustomerIdException;
+import org.dtu.exceptions.InvalidMerchantIdException;
+import org.dtu.exceptions.PaymentAlreadyExistsException;
+import org.dtu.exceptions.PaymentNotFoundException;
 import org.dtu.repositories.CustomerRepository;
 import org.dtu.repositories.MerchantRepository;
 import org.dtu.repositories.PaymentRepository;
@@ -43,5 +47,9 @@ public class PaymentService {
             repository.save(payment);
             return payment;
         }
+    }
+
+    public Payment deletePayment(UUID id) throws PaymentNotFoundException {
+        return repository.deletePayment(id);
     }
 }

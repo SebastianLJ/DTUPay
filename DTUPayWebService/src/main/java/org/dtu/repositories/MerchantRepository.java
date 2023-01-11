@@ -1,7 +1,6 @@
 package org.dtu.repositories;
 
-import org.dtu.InvalidMerchantIdException;
-import org.dtu.MerchantAlreadyExistsException;
+
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.InvalidMerchantIdException;
 import org.dtu.exceptions.MerchantAlreadyExistsException;
