@@ -25,11 +25,7 @@ public class PaymentService {
     }
 
     public Payment getPayment(UUID id) throws PaymentNotFoundException {
-        try {
-            return repository.getPaymentById(id);
-        } catch (PaymentNotFoundException e) {
-            throw new PaymentNotFoundException();
-        }
+        return repository.getPaymentById(id);
     }
 
     public Payment createPayment(Payment payment) throws PaymentAlreadyExistsException, InvalidMerchantIdException, InvalidCustomerIdException {
@@ -45,5 +41,9 @@ public class PaymentService {
             repository.save(payment);
             return payment;
         }
+    }
+
+    public Payment deletePayment(UUID id) throws PaymentNotFoundException {
+        return repository.deletePayment(id);
     }
 }

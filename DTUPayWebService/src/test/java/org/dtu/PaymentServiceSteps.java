@@ -1,5 +1,6 @@
 package org.dtu;
 
+import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -10,6 +11,7 @@ import org.dtu.aggregate.User;
 import org.dtu.factories.PaymentFactory;
 import org.dtu.services.PaymentService;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,6 +25,7 @@ public class PaymentServiceSteps {
     User merchant = null;
     Payment payment = null;
     Payment result = null;
+    ArrayList<Payment> payments = new ArrayList<>();
 
     @Given("^there is a registered customer$")
     public void thereIsARegisteredCustomer() {
@@ -103,6 +106,29 @@ public class PaymentServiceSteps {
         } catch (PaymentNotFoundException e) {
             //if payment is not found set result to null
             result = null;
+        }
+    }
+
+    @When("all payments are queried")
+    public void allPaymentsAreQueried() {
+        payments = paymentRegistration.getPayments();
+    }
+
+    @Then("a list containing {int} payments are returned")
+    public void aListContainingPaymentsAreReturned(int count) {
+        assertEquals(count, payments.size());
+    }
+
+    @After
+    public void afterScenario() {
+        ArrayList<Payment> paymentsToDelete = paymentRegistration.getPayments();
+        for (Payment payment:
+             paymentsToDelete) {
+            try {
+                paymentRegistration.deletePayment(payment.getId());
+            } catch (PaymentNotFoundException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
