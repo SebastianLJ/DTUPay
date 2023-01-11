@@ -15,10 +15,7 @@ import java.util.UUID;
 public class User {
 
     Name name;
-
     UserId userId;
-
-    List<Payment> payments = new ArrayList<Payment>();
 
     public User(String firstName, String lastName) {
         this.userId = new UserId(UUID.randomUUID());

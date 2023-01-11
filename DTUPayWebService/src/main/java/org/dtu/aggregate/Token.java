@@ -1,11 +1,11 @@
 package org.dtu.aggregate;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Data;
 
 import java.util.UUID;
 
-@Value
+@Data
 @AllArgsConstructor
 public class Token {
 

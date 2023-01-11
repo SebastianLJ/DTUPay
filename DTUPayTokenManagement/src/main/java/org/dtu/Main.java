@@ -1,9 +1,10 @@
 package org.dtu;
 
-import messageQueue.DTUPayMessageQueue;
+import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
+import messageUtilities.queues.rabbitmq.QueueType;
 
 public class Main {
     public static void main(String[] args) {
-        DTUPayMessageQueue messageQueue = new DTUPayMessageQueue();
+        DTUPayRabbitMQ messageQueue = new DTUPayRabbitMQ(QueueType.DTUPay_TokenManagement);
     }
 }
