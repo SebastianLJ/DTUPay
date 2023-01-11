@@ -1,6 +1,8 @@
 
 package org.dtu.aggregate;
 
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -26,6 +28,9 @@ import java.util.UUID;
  * 
  * 
  */
+
+
+@Getter
 public class User {
 
     Name name;
@@ -34,26 +39,12 @@ public class User {
 
     List<Payment> payments = new ArrayList<Payment>();
 
-    public Name getName() {
-        return name;
-    }
+    public User(){
 
-    public UserId getUserId() {
-        return userId;
     }
 
     public User(String firstName, String lastName) {
-        this.userId = new UserId(java.util.UUID.randomUUID());
+        this.userId = new UserId(UUID.randomUUID());
         this.name = new Name(firstName, lastName);
-    }
-
-
-
-    public List<Payment> getPayments() {
-        return payments;
-    }
-
-    public void setPayments(List<Payment> payments) {
-        this.payments = payments;
     }
 }

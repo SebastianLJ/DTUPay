@@ -1,12 +1,15 @@
 package aggregate;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-@Value
+@Data
 @AllArgsConstructor
-public class UserId {
+@NoArgsConstructor
+public class UserId implements Serializable {
     UUID uuid;
 }

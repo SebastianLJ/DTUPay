@@ -1,5 +1,6 @@
 package org.dtu;
 
+import org.dtu.aggregate.Name;
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.InvalidCustomerIdException;
@@ -17,14 +18,15 @@ public class RegistrationResource {
     MerchantService merchantRegistration = new MerchantService();
 
     @POST
+    @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/customers")
-    public Response addCustomer(String firstName, String lastName) {
+    public Response addCustomer(Name fullName) {
         User newUser;
         try {
-            newUser = customerRegistration.addCustomer(firstName, lastName);
+            newUser = customerRegistration.addCustomer(fullName.getFirstName(), fullName.getLastName());
             return Response.status(Response.Status.CREATED)
-                    .entity("customer with id " + newUser.getUserId().getUuid() + " created")
+                    .entity(newUser)
                     .build();
         } catch (CustomerAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
@@ -36,12 +38,13 @@ public class RegistrationResource {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/merchants")
-    public Response addMerchant(String firstName, String lastName) {
+    public Response addMerchant(Name fullName) {
         try {
-            User newUser = merchantRegistration.addMerchant(firstName, lastName);
+            User newUser = merchantRegistration.addMerchant(fullName.getFirstName(), fullName.getLastName());
             return Response.status(Response.Status.CREATED)
-                    .entity("merchant with id " + newUser.getUserId().getUuid() + " created")
+                    .entity(newUser)
                     .build();
         } catch (MerchantAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)

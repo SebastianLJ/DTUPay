@@ -1,11 +1,16 @@
 package aggregate;
 
 import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Value
+import java.io.Serializable;
+
+@Data
 @AllArgsConstructor
-public class Name {
-    private String firstName;
-    private String lastName;
+@NoArgsConstructor
+public class Name implements Serializable {
+    String firstName;
+    String lastName;
+
 }
