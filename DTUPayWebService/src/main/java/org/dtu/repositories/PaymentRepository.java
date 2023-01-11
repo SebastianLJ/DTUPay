@@ -4,8 +4,10 @@ import org.dtu.exceptions.PaymentNotFoundException;
 import org.dtu.aggregate.Payment;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class PaymentRepository {
     private ArrayList<Payment> payments = new ArrayList<>();
@@ -29,14 +31,25 @@ public class PaymentRepository {
          }
     }
 
-    public ArrayList<Payment> getPayments() {
+    public List<Payment> getPayments() {
         return new ArrayList<>(payments);
+    }
+
+    public List<Payment> getPaymentsByMerchantId(UUID merchantId) {
+        return payments.stream()
+                .filter(payment -> payment.mid.equals(merchantId))
+                .collect(Collectors.toList());
+    }
+
+    public List<Payment> getPaymentsByCustomerId(UUID customerId) {
+        return payments.stream()
+                .filter(payment -> payment.cid.equals(customerId))
+                .collect(Collectors.toList());
     }
 
     public Payment deletePayment(UUID id) throws PaymentNotFoundException {
         Payment paymentToRemove = this.getPaymentById(id);
         this.payments.remove(paymentToRemove);
         return paymentToRemove;
-
     }
 }
