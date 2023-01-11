@@ -4,6 +4,7 @@ import org.dtu.aggregate.Token;
 import org.dtu.aggregate.UserId;
 import org.dtu.exceptions.InvalidTokenAmountException;
 import org.dtu.exceptions.TokenAmountExeededException;
+import org.dtu.exceptions.UserNotFoundException;
 
 import java.util.*;
 
@@ -14,6 +15,7 @@ public class TokenRepository {
 
     private void createUser(UserId userId){
         tokenRepository.put(userId, new ArrayList<>());
+        usedTokenRepository.put(userId, new ArrayList<>());
     }
 
     private void save(UserId userId, Token token) {
@@ -23,8 +25,11 @@ public class TokenRepository {
         tokenRepository.get(userId).add(token);
     }
 
-    public int getTokenAmount(UserId userId){
-        return tokenRepository.get(userId).size();
+    public ArrayList<Token> getUsedTokens(UserId userId) throws UserNotFoundException {
+        ArrayList<Token> usedTokens = usedTokenRepository.get(userId);
+        if (usedTokens != null){
+            return usedTokens;
+        }else throw new UserNotFoundException();
     }
 
     public ArrayList<Token> generateToken(UserId userid, int amount) throws TokenAmountExeededException, InvalidTokenAmountException {
@@ -49,7 +54,7 @@ public class TokenRepository {
         return generatedTokens;
     }
 
-    public Boolean validateToken(UserId userid, Token token) {
+    public Boolean consumeToken(UserId userid, Token token) {
         ArrayList<Token> tokens = tokenRepository.get(userid);
         for (int i = 0 ; i<tokens.toArray().length ; i++){
             if (tokens.get(i).getId().compareTo(token.getId()) == 0){
@@ -61,16 +66,5 @@ public class TokenRepository {
         }
         return false;
     }
-
-    public Boolean containsUser(UserId userId){
-        return tokenRepository.containsKey(userId);
-    }
-
-    public ArrayList<Token> getTokensByUserId(UserId userId){
-        return tokenRepository.get(userId);
-    }
-
-
-
 
 }
