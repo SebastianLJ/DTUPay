@@ -32,6 +32,13 @@ public class TokenRepository {
         }else throw new UserNotFoundException();
     }
 
+    public ArrayList<Token> getTokens(UserId userId) throws UserNotFoundException {
+        ArrayList<Token> tokens = tokenRepository.get(userId);
+        if (tokens != null){
+            return tokens;
+        }else throw new UserNotFoundException();
+    }
+
     public ArrayList<Token> generateToken(UserId userid, int amount) throws TokenAmountExeededException, InvalidTokenAmountException {
 
         ArrayList<Token> generatedTokens = new ArrayList<>();

@@ -21,6 +21,10 @@ public class TokenService {
         return tokenRepository.getUsedTokens(userId);
     }
 
+    public ArrayList<Token> getTokens(UserId userId) throws UserNotFoundException {
+        return tokenRepository.getTokens(userId);
+    }
+
     public Boolean consumeToken(UserId userId, Token token){
         return tokenRepository.consumeToken(userId, token);
     }

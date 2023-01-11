@@ -7,6 +7,7 @@ import org.dtu.aggregate.Token;
 import org.dtu.aggregate.UserId;
 import org.dtu.exceptions.InvalidTokenAmountException;
 import org.dtu.exceptions.TokenAmountExeededException;
+import org.dtu.exceptions.UserNotFoundException;
 import org.dtu.factories.TokenFactory;
 import org.dtu.services.TokenService;
 
@@ -40,7 +41,7 @@ public class TokenServiceSteps {
     }
 
     @And("the user is registered")
-    public void theUserIsRegistered() {
+    public void theUserIsRegistered() throws UserNotFoundException {
         assertEquals(tokens1, tokenService.getTokens(userId1));
     }
 
