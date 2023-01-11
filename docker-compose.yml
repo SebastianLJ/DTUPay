@@ -4,7 +4,7 @@ services:
     image: rabbitmq:3-management
     container_name: rabbitMq_container
     ports:
-      - "5673:5673"
+      - "5672:5672"
       - "15672:15672"
     volumes:
       - "./custom_rabbitmq_config.conf:/etc/rabbitmq/rabbitmq.conf"

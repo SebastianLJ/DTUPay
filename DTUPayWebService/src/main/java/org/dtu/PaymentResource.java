@@ -15,8 +15,6 @@ import java.util.UUID;
 @Path("/payments")
 public class PaymentResource {
     PaymentService paymentRegistration = new PaymentFactory().getService();
-    
-    static RegistrationResource registrationResource = new RegistrationResource();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
