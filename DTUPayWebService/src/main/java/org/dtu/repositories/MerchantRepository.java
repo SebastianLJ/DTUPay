@@ -52,9 +52,9 @@ public class MerchantRepository {
         }
     }*/
 
-    public User deleteMerchant(UUID id) throws MerchantNotFoundException, InvalidMerchantIdException {
+    public User deleteMerchant(UUID id) throws InvalidMerchantIdException {
         User merchantToRemove = getMerchant(id);
-        this.getMerchantList().remove(merchantToRemove);
+        this.merchants.remove(merchantToRemove);
         return merchantToRemove;
     }
 }
