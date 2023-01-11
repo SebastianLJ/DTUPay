@@ -1,11 +1,15 @@
 package org.dtu.repositories;
 
 
+import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.InvalidMerchantIdException;
 import org.dtu.exceptions.MerchantAlreadyExistsException;
+import org.dtu.exceptions.MerchantNotFoundException;
+import org.dtu.exceptions.PaymentNotFoundException;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.UUID;
 
 public class MerchantRepository {
@@ -31,5 +35,26 @@ public class MerchantRepository {
             }
         }
         return targetMerchant;
+    }
+
+    public ArrayList<User> getMerchantList() {
+        return merchants;
+    }
+
+   /* public User getMerchantById(UUID id) throws PaymentNotFoundException {
+        Optional<User> result = merchants.stream()
+                .filter(payment -> payment.id == id)
+                .findAny();
+        if (result.isPresent()) {
+            return result.get();
+        } else {
+            throw new PaymentNotFoundException("Payment with id " + id + " not found");
+        }
+    }*/
+
+    public User deleteMerchant(UUID id) throws MerchantNotFoundException, InvalidMerchantIdException {
+        User merchantToRemove = getMerchant(id);
+        this.getMerchantList().remove(merchantToRemove);
+        return merchantToRemove;
     }
 }

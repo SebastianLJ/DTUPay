@@ -33,4 +33,8 @@ public class CustomerRepository {
         }
         return targetCustomer;
     }
+
+    public ArrayList<User> getCustomerList() {
+        return customers;
+    }
 }
