@@ -1,6 +1,10 @@
 package org.dtu;
 
 import org.dtu.aggregate.Payment;
+import org.dtu.exceptions.InvalidCustomerIdException;
+import org.dtu.exceptions.InvalidMerchantIdException;
+import org.dtu.exceptions.PaymentAlreadyExistsException;
+import org.dtu.exceptions.PaymentNotFoundException;
 import org.dtu.factories.PaymentFactory;
 import org.dtu.services.PaymentService;
 

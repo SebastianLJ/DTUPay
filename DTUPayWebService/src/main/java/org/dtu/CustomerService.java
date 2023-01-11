@@ -1,6 +1,8 @@
 package org.dtu;
 
 import org.dtu.aggregate.User;
+import org.dtu.exceptions.CustomerAlreadyExistsException;
+import org.dtu.exceptions.InvalidCustomerIdException;
 
 import java.util.ArrayList;
 import java.util.UUID;
