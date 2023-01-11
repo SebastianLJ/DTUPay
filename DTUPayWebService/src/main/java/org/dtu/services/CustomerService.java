@@ -31,4 +31,7 @@ public class CustomerService {
         }
     }
 
+    public ArrayList<User> getCustomerList() {
+        return repository.getCustomerList();
+    }
 }
