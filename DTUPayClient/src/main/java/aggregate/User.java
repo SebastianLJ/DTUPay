@@ -21,7 +21,6 @@ public class User {
 
     List<Payment> payments = new ArrayList<Payment>();
 
-    //default constructor
 
     public User(String firstName, String lastName) {
         this.userId = new UserId(UUID.randomUUID());
