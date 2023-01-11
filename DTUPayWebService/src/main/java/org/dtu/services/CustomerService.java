@@ -2,8 +2,7 @@ package org.dtu.services;
 
 
 import org.dtu.aggregate.User;
-import org.dtu.exceptions.CustomerAlreadyExistsException;
-import org.dtu.exceptions.InvalidCustomerIdException;
+import org.dtu.exceptions.*;
 import org.dtu.repositories.CustomerRepository;
 
 import java.util.ArrayList;
@@ -33,5 +32,9 @@ public class CustomerService {
 
     public ArrayList<User> getCustomerList() {
         return repository.getCustomerList();
+    }
+
+    public User deleteCustomer(UUID id) throws  InvalidCustomerIdException {
+        return repository.deleteCustomer(id);
     }
 }

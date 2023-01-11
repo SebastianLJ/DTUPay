@@ -19,7 +19,7 @@ public class MerchantService {
 
     public User getMerchant (UUID id) throws InvalidMerchantIdException {
         try {
-             return repository.getMerchant(id);
+             return MerchantRepository.getMerchant(id);
         } catch (InvalidMerchantIdException e) {
             throw new InvalidMerchantIdException();
         }
