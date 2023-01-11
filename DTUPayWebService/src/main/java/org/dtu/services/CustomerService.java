@@ -1,0 +1,34 @@
+package org.dtu.services;
+
+import org.dtu.CustomerAlreadyExistsException;
+import org.dtu.InvalidCustomerIdException;
+import org.dtu.PaymentNotFoundException;
+import org.dtu.aggregate.User;
+import org.dtu.repositories.CustomerRepository;
+
+import java.util.ArrayList;
+import java.util.UUID;
+
+public class CustomerService {
+   CustomerRepository repository;
+
+    public CustomerService() {repository = new CustomerRepository();}
+
+    public User getCustomer (UUID id) throws InvalidCustomerIdException {
+        try {
+            return repository.getCustomer(id);
+        } catch (InvalidCustomerIdException e) {
+            throw new InvalidCustomerIdException();
+        }
+    }
+
+    public User addCustomer(String firstName, String lastName) throws CustomerAlreadyExistsException {
+        try {
+            User newUser = repository.addCustomer(firstName, lastName);
+            return newUser;
+        } catch (CustomerAlreadyExistsException e) {
+            throw new CustomerAlreadyExistsException();
+        }
+    }
+
+}

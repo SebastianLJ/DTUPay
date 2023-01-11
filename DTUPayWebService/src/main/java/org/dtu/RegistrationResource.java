@@ -1,6 +1,8 @@
 package org.dtu;
 
 import org.dtu.aggregate.User;
+import org.dtu.services.CustomerService;
+import org.dtu.services.MerchantService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

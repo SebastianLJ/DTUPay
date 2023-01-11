@@ -4,17 +4,20 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.dtu.*;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
+import org.dtu.factories.CustomerFactory;
+import org.dtu.factories.MerchantFactory;
 import org.dtu.factories.PaymentFactory;
+import org.dtu.services.CustomerService;
+import org.dtu.services.MerchantService;
 import org.dtu.services.PaymentService;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class PaymentServiceSteps {
     PaymentService paymentRegistration = new PaymentFactory().getService();
-    CustomerService customerRegistration = new CustomerService();
-    MerchantService merchantRegistration = new MerchantService();
+    CustomerService customerRegistration = new CustomerFactory().getService();
+    MerchantService merchantRegistration = new MerchantFactory().getService();
 
     User customer = null;
     User merchant = null;
@@ -23,6 +26,7 @@ public class PaymentServiceSteps {
     @Given("^there is a registered customer$")
     public void thereIsARegisteredCustomer() {
         try {
+
             customer = customerRegistration.addCustomer("Fred", "Again");
         } catch (CustomerAlreadyExistsException e) {
             e.printStackTrace();
