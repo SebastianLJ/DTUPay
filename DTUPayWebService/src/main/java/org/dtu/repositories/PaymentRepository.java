@@ -32,7 +32,7 @@ public class PaymentRepository {
     }
 
     public ArrayList<Payment> getPayments() {
-        return new ArrayList<Payment>(payments);
+        return new ArrayList<>(payments);
     }
 
     public Payment deletePayment(UUID id) throws PaymentNotFoundException {
