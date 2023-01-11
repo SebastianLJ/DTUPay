@@ -32,6 +32,13 @@ public class PaymentRepository {
     }
 
     public ArrayList<Payment> getPayments() {
-        return payments;
+        return new ArrayList<Payment>(payments);
+    }
+
+    public Payment deletePayment(UUID id) throws PaymentNotFoundException {
+        Payment paymentToRemove = this.getPaymentById(id);
+        this.payments.remove(paymentToRemove);
+        return paymentToRemove;
+
     }
 }

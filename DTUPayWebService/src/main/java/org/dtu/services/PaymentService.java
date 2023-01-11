@@ -4,7 +4,6 @@ import org.dtu.*;
 import org.dtu.aggregate.Payment;
 import org.dtu.repositories.PaymentRepository;
 
-import javax.inject.Singleton;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -22,11 +21,7 @@ public class PaymentService {
     }
 
     public Payment getPayment(UUID id) throws PaymentNotFoundException {
-        try {
-            return repository.getPaymentById(id);
-        } catch (PaymentNotFoundException e) {
-            throw new PaymentNotFoundException();
-        }
+        return repository.getPaymentById(id);
     }
 
     public Payment createPayment(Payment payment) throws PaymentAlreadyExistsException, InvalidMerchantIdException, InvalidCustomerIdException {
@@ -42,5 +37,9 @@ public class PaymentService {
             repository.save(payment);
             return payment;
         }
+    }
+
+    public Payment deletePayment(UUID id) throws PaymentNotFoundException {
+        return repository.deletePayment(id);
     }
 }
