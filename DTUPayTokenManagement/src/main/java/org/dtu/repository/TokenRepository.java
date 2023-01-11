@@ -19,25 +19,30 @@ public class TokenRepository {
         tokenRepository.get(userId).add(token);
     }
 
+    public int getTokenAmount(UserId userId){
+        return tokenRepository.get(userId).size();
+    }
 
-    private Token generateToken(UserId userid){
+    public Token generateToken(UserId userid){
         UUID uuid = UUID.randomUUID();
         Token token = new Token(uuid);
         save(userid, token);
         return token;
     }
 
-    private Boolean validateToken(UserId userid, Token token) {
+    public Boolean validateToken(UserId userid, Token token) {
         List<Token> tokens = tokenRepository.get(userid);
         for (int i = 0 ; i<tokens.toArray().length ; i++){
             if (tokens.get(i).getUuid().compareTo(token.getUuid()) == 0){
-
+                tokens.remove(i);
+                usedTokenRepository.get(userid).add(token);
                 return true;
             }
-
         }
         return false;
     }
+
+
 
 
 }
