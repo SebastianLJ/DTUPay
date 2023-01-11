@@ -136,6 +136,18 @@
       <version>7.9.0</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.sun.xml.ws</groupId>
+      <artifactId>jaxws-ri</artifactId>
+      <version>4.0.0</version>
+      <type>pom</type>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.platform</groupId>
+      <artifactId>jakarta.jakartaee-api</artifactId>
+      <version>10.0.0</version>
+    </dependency>
+
   </dependencies>
   <build>
     <plugins>
@@ -196,6 +208,26 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.sun.xml.ws</groupId>
+        <artifactId>jaxws-maven-plugin</artifactId>
+        <version>4.0.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>wsimport</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <wsdlUrls>
+            <wsdlUrl>http://fm-00.compute.dtu.dk/BankService.wsdl.xml</wsdlUrl>
+          </wsdlUrls>
+          <keep>true</keep>
+          <packageName>dtu.ws.fastmoney</packageName>
+          <sourceDestDir>src/main/java/</sourceDestDir>
+        </configuration>
       </plugin>
     </plugins>
   </build>

@@ -1,4 +1,4 @@
-package messageQueue;
+package messageUtilities.events;
 
 import com.google.gson.Gson;
 

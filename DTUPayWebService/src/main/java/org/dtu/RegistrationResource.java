@@ -5,8 +5,10 @@ import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.exceptions.InvalidMerchantIdException;
 import org.dtu.exceptions.MerchantAlreadyExistsException;
+import org.dtu.factories.PaymentFactory;
 import org.dtu.services.CustomerService;
 import org.dtu.services.MerchantService;
+import org.dtu.services.PaymentService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;

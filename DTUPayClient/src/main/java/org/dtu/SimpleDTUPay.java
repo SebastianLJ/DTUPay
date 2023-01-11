@@ -1,6 +1,8 @@
+
 package org.dtu;
 
 import aggregate.Name;
+import aggregate.User;
 import dtu.ws.fastmoney.*;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.client.Client;
@@ -19,37 +21,36 @@ public class SimpleDTUPay {
     BankService bank = new BankServiceService().getBankServicePort();
     Client c = ClientBuilder.newClient();
     WebTarget r = c.target("http://localhost:8080/");
+
     public boolean pay(UUID cid, UUID mid, int amount) throws CustomerDoesNotExist, MerchantDoesNotExist, PaymentAlreadyExists, BankServiceException_Exception {
         Payment payment = new Payment(mid, cid, amount);
         Response response = r.path("payments").request().post(Entity.entity(payment, MediaType.APPLICATION_JSON));
-            if (response.getStatus() == 201) {
-                bank.transferMoneyFromTo(cid.toString(),mid.toString(),new BigDecimal(amount),"DTUPay");
-                return true;
+        if (response.getStatus() == 201) {
+            bank.transferMoneyFromTo(cid.toString(), mid.toString(), new BigDecimal(amount), "DTUPay");
+            return true;
+        } else if (response.getStatus() == 400) {
+            String message = response.readEntity(String.class);
+            //if response contains "payment", payment already exists
+            if (message.contains("payment")) {
+                throw new PaymentAlreadyExists(message);
             }
-            else if (response.getStatus() == 400) {
-                String message = response.readEntity(String.class);
-                //if response contains "payment", payment already exists
-                if (message.contains("payment")) {
-                    throw new PaymentAlreadyExists(message);
-                }
 
-              //if response contains "customer" then throw CustomerDoesNotExist
-                else if (message.contains("customer")) {
-                    throw new CustomerDoesNotExist(message);
-                }
-                //if response contains "merchant" then throw MerchantDoesNotExist
-                else if (message.contains("merchant")) {
-                    throw new MerchantDoesNotExist(message);
-                }
-                //if response contains "BankServiceException" then throw BankServiceException
-                else if (message.contains("BankServiceException")) {
-                    throw new BankServiceException_Exception(message, new BankServiceException());
-                }
-
+            //if response contains "customer" then throw CustomerDoesNotExist
+            else if (message.contains("customer")) {
+                throw new CustomerDoesNotExist(message);
             }
-            return false;
+            //if response contains "merchant" then throw MerchantDoesNotExist
+            else if (message.contains("merchant")) {
+                throw new MerchantDoesNotExist(message);
+            }
+            //if response contains "BankServiceException" then throw BankServiceException
+            else if (message.contains("BankServiceException")) {
+                throw new BankServiceException_Exception(message, new BankServiceException());
+            }
+
         }
-
+        return false;
+    }
 
 
     public Payment getPayment(String id) throws PaymentDoesNotExist {
@@ -57,8 +58,7 @@ public class SimpleDTUPay {
             return r.path("payment/" + id)
                     .request().accept(MediaType.APPLICATION_JSON)
                     .get(Payment.class);
-        }
-        catch (NotFoundException e) {
+        } catch (NotFoundException e) {
             throw new PaymentDoesNotExist();
         }
     }
@@ -66,10 +66,11 @@ public class SimpleDTUPay {
     public List<Payment> getPayments() {
         return r.path("payments")
                 .request().accept(MediaType.APPLICATION_JSON)
-                .get(new GenericType<List<Payment>>() {});
+                .get(new GenericType<List<Payment>>() {
+                });
     }
 
-    public aggregate.User createDTUPayCustomerAccount(String firstName, String lastName){
+    public aggregate.User createDTUPayCustomerAccount(String firstName, String lastName) {
         Name newName = new Name(firstName, lastName);
 
         Response response = r.path("/registration/customers").request().post(Entity.entity(newName, MediaType.APPLICATION_JSON));
@@ -79,7 +80,7 @@ public class SimpleDTUPay {
         throw new Error("There was a problem creating the customer account");
     }
 
-    public aggregate.User createDTUPayMerchantAccount(String firstName, String lastName){
+    public aggregate.User createDTUPayMerchantAccount(String firstName, String lastName) {
         Response response = r.path("/registration/merchants").request().post(Entity.entity(new Name(firstName, lastName), MediaType.APPLICATION_JSON));
         if (response.getStatus() == 201) {
             return response.readEntity(aggregate.User.class);
@@ -87,8 +88,8 @@ public class SimpleDTUPay {
         throw new Error("There was a problem creating the merchant account");
     }
 
-    public String createBankAccountWithBalance(User user, BigDecimal balance) throws BankServiceException_Exception {
-        String message =  bank.createAccountWithBalance(user, balance);
+    public String createBankAccountWithBalance(dtu.ws.fastmoney.User user, BigDecimal balance) throws BankServiceException_Exception {
+        String message = bank.createAccountWithBalance(user, balance);
         return message;
     }
 
