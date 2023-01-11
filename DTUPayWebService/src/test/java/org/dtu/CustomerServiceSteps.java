@@ -8,6 +8,7 @@ import org.dtu.exceptions.CustomerNotFoundException;
 import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.factories.CustomerFactory;
 import org.dtu.services.CustomerService;
+import org.junit.After;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -37,5 +38,10 @@ public class CustomerServiceSteps {
     @Then("can be found by his ID")
     public void can_be_found_by_his_id() throws InvalidCustomerIdException {
         assertEquals(customer, customerRegistration.getCustomer(customer.getUserId().getUuid()));
+    }
+
+    @After
+    public void afterScenario() throws InvalidCustomerIdException {
+        customerRegistration.deleteCustomer(customer.getUserId().getUuid());
     }
 }
