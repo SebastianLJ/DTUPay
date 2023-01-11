@@ -2,10 +2,11 @@ package org.dtu.services;
 
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.UserId;
+import org.dtu.exceptions.InvalidTokenAmountException;
+import org.dtu.exceptions.TokenAmountExeededException;
 import org.dtu.repository.TokenRepository;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class TokenService {
 
@@ -25,9 +26,8 @@ public class TokenService {
         return tokenRepository.validateToken(userId, token);
     }
 
-    public List<Token> generateTokens(UserId userId, int amount){
-        boolean status = tokenRepository.generateToken(userId, amount);
-        return
+    public ArrayList<Token> generateTokens(UserId userId, int amount) throws TokenAmountExeededException, InvalidTokenAmountException {
+        return tokenRepository.generateToken(userId, amount);
     }
 
     public Boolean containsUser(UserId userId){
