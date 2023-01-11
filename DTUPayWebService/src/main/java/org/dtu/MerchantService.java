@@ -1,6 +1,8 @@
 package org.dtu;
 
 import org.dtu.aggregate.User;
+import org.dtu.exceptions.InvalidMerchantIdException;
+import org.dtu.exceptions.MerchantAlreadyExistsException;
 
 import java.util.ArrayList;
 import java.util.UUID;

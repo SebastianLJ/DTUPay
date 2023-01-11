@@ -1,4 +1,4 @@
-package org.dtu;
+package org.dtu.exceptions;
 
 public class PaymentNotFoundException extends Exception {
     public PaymentNotFoundException() {

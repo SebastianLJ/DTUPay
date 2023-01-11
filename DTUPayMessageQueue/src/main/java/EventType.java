@@ -1,5 +1,8 @@
 public enum EventType {
-    CustomerRequest,
-    MerchantRequest,
-    BankRequest
+    CustomerTokensRequest,
+    CustomerTokensRequestResult,
+    DTUPayValidateTokenRequest,
+    DTUPayValidateTokenRequestResult,
+    MerchantPaymentRequest,
+    MerchantPaymentRequestResult
 }

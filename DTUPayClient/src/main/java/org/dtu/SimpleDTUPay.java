@@ -13,16 +13,17 @@ import jakarta.ws.rs.core.Response;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 
 public class SimpleDTUPay {
     BankService bank = new BankServiceService().getBankServicePort();
     Client c = ClientBuilder.newClient();
     WebTarget r = c.target("http://localhost:8080/");
-    public boolean pay(String cid, String mid, int amount) throws CustomerDoesNotExist, MerchantDoesNotExist, PaymentAlreadyExists, BankServiceException_Exception {
+    public boolean pay(UUID cid, UUID mid, int amount) throws CustomerDoesNotExist, MerchantDoesNotExist, PaymentAlreadyExists, BankServiceException_Exception {
         Payment payment = new Payment(mid, cid, amount);
         Response response = r.path("payments").request().post(Entity.entity(payment, MediaType.APPLICATION_JSON));
             if (response.getStatus() == 201) {
-                bank.transferMoneyFromTo(cid,mid,new BigDecimal(amount),"DTUPay");
+                bank.transferMoneyFromTo(cid.toString(),mid.toString(),new BigDecimal(amount),"DTUPay");
                 return true;
             }
             else if (response.getStatus() == 400) {
@@ -68,14 +69,22 @@ public class SimpleDTUPay {
                 .get(new GenericType<List<Payment>>() {});
     }
 
-    public boolean createDTUPayCustomerAccount(String firstName, String lastName){
-        Response response = r.path("/registration/customers").request().post(Entity.entity(new Name(firstName, lastName), MediaType.APPLICATION_JSON));
-        return response.getStatus() == 201;
+    public aggregate.User createDTUPayCustomerAccount(String firstName, String lastName){
+        Name newName = new Name(firstName, lastName);
+
+        Response response = r.path("/registration/customers").request().post(Entity.entity(newName, MediaType.APPLICATION_JSON));
+        if (response.getStatus() == 201) {
+            return response.readEntity(aggregate.User.class);
+        }
+        throw new Error("There was a problem creating the customer account");
     }
 
-    public boolean createDTUPayMerchantAccount(String firstName, String lastName){
+    public aggregate.User createDTUPayMerchantAccount(String firstName, String lastName){
         Response response = r.path("/registration/merchants").request().post(Entity.entity(new Name(firstName, lastName), MediaType.APPLICATION_JSON));
-        return response.getStatus() == 201;
+        if (response.getStatus() == 201) {
+            return response.readEntity(aggregate.User.class);
+        }
+        throw new Error("There was a problem creating the merchant account");
     }
 
     public String createBankAccountWithBalance(User user, BigDecimal balance) throws BankServiceException_Exception {

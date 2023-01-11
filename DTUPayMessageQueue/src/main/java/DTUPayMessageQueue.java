@@ -13,11 +13,11 @@ public class DTUPayMessageQueue implements IDTUPayMessageQueue {
 
     private static final String DEFAULT_HOSTNAME = "DTUPayMessageQueue";
     private static final String EXCHANGE_NAME = "eventsExchange";
-    private static final String QUEUE_TYPE = "topic";
-    private static final String TOPIC = "topic";
+    private final QueueType queueType;
     private final Channel channel;
 
-    public DTUPayMessageQueue() {
+    public DTUPayMessageQueue(QueueType queueType) {
+        this.queueType = queueType;
         this.channel = setUpChannel();
     }
 
@@ -26,7 +26,7 @@ public class DTUPayMessageQueue implements IDTUPayMessageQueue {
         String message = new Gson().toJson(event);
         System.out.println("[x] Publish event " + message);
         try {
-            channel.basicPublish(EXCHANGE_NAME, TOPIC, null, message.getBytes(StandardCharsets.UTF_8));
+            channel.basicPublish(EXCHANGE_NAME, queueType.toString(), null, message.getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
             throw new Error(e);
         }
@@ -38,7 +38,7 @@ public class DTUPayMessageQueue implements IDTUPayMessageQueue {
         System.out.println("[x] handler " + handler + " for event type " + eventType + " installed");
         try {
             String queueName = channel.queueDeclare().getQueue();
-            channel.queueBind(queueName, EXCHANGE_NAME, TOPIC);
+            channel.queueBind(queueName, EXCHANGE_NAME, queueType.toString());
 
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(), StandardCharsets.UTF_8);
@@ -65,7 +65,7 @@ public class DTUPayMessageQueue implements IDTUPayMessageQueue {
             factory.setHost(DEFAULT_HOSTNAME);
             Connection connection = factory.newConnection();
             chan = connection.createChannel();
-            chan.exchangeDeclare(EXCHANGE_NAME, QUEUE_TYPE);
+            chan.exchangeDeclare(EXCHANGE_NAME, queueType.toString());
         } catch (IOException | TimeoutException e) {
             throw new Error(e);
         }

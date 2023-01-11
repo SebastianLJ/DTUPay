@@ -1,4 +1,4 @@
-package org.dtu;
+package org.dtu.exceptions;
 
 public class CustomerAlreadyExistsException extends Throwable {
     public CustomerAlreadyExistsException() {
