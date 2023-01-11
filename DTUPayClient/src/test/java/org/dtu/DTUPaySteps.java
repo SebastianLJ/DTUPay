@@ -14,8 +14,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DTUPaySteps {
     String cid,mid;
@@ -27,15 +26,18 @@ public class DTUPaySteps {
 
     List<AccountInfo> accounts = new ArrayList<>();
 
-    User customer = new User();
-    User merchant = new User();
+    User customerBankAccount = new User();
+    User merchantBankAccount = new User();
     List<User> users = new ArrayList<>();
+
+    aggregate.User customerDTUPayAccount;
+    aggregate.User merchantDTUPayAccount;
 
 
     @When("the merchant initiates a payment for {int} kr by the customer")
     public void theMerchantInitiatesAPaymentForKrByTheCustomer(int amount) {
         try {
-            successful = dtuPay.pay(cid, mid, amount);
+            successful = dtuPay.pay(customerDTUPayAccount.getUserId().getUuid(), merchantDTUPayAccount.getUserId().getUuid(), amount);
         } catch (CustomerDoesNotExist | MerchantDoesNotExist | BankServiceException_Exception | PaymentAlreadyExists e) {
             successful = false;
             errorMessage = e.getMessage();
@@ -44,17 +46,6 @@ public class DTUPaySteps {
 
     @Then("the payment is successful")
     public void thePaymentIsSuccessful() {
-        assertTrue(successful);
-    }
-
-    @Given("a successful payment of {string} kr from customer {string} to merchant {string}")
-    public void aSuccessfulPaymentOfKrFromCustomerToMerchant(String amount, String cid, String mid) {
-        try {
-            successful = dtuPay.pay(cid,mid,Integer.parseInt(amount));
-        } catch (CustomerDoesNotExist | MerchantDoesNotExist | BankServiceException_Exception | PaymentAlreadyExists e) {
-            successful = false;
-            errorMessage = e.getMessage();
-        }
         assertTrue(successful);
     }
 
@@ -78,12 +69,12 @@ public class DTUPaySteps {
     @Given("a customer with a bank account with balance {int}")
     public void aCustomerWithABankAccountWithBalance(int amount) {
         //find the customer with amount
-        customer.setFirstName("John");
-        customer.setLastName("DeezNuts");
-        customer.setCprNumber("123456-1328");
-        users.add(customer);
+        customerBankAccount.setFirstName("John");
+        customerBankAccount.setLastName("DeezNuts");
+        customerBankAccount.setCprNumber("123456-1323");
+        users.add(customerBankAccount);
         try {
-            cid = dtuPay.createBankAccountWithBalance(customer, BigDecimal.valueOf(amount));
+            cid = dtuPay.createBankAccountWithBalance(customerBankAccount, BigDecimal.valueOf(amount));
         } catch (BankServiceException_Exception e) {
             throw new RuntimeException(e);
         }
@@ -91,17 +82,18 @@ public class DTUPaySteps {
 
     @And("that the customer is registered with DTU Pay")
     public void thatTheCustomerIsRegisteredWithDTUPay() {
-        assertTrue(dtuPay.createDTUPayCustomerAccount(cid));
+        customerDTUPayAccount = dtuPay.createDTUPayCustomerAccount(customerBankAccount.getFirstName(), customerBankAccount.getLastName());
+        assertNotNull(customerDTUPayAccount.getUserId().getUuid());
     }
 
     @Given("a merchant with a bank account with balance {int}")
     public void aMerchantWithABankAccountWithBalance(int amount) {
-        merchant.setFirstName("Bob");
-        merchant.setLastName("Doe");
-        merchant.setCprNumber("123456-9986");
-        users.add(merchant);
+        merchantBankAccount.setFirstName("Bob");
+        merchantBankAccount.setLastName("Doe");
+        merchantBankAccount.setCprNumber("123456-9982");
+        users.add(merchantBankAccount);
         try {
-            mid = dtuPay.createBankAccountWithBalance(merchant, BigDecimal.valueOf(amount));
+            mid = dtuPay.createBankAccountWithBalance(merchantBankAccount, BigDecimal.valueOf(amount));
         } catch (BankServiceException_Exception e) {
             throw new RuntimeException(e);
         }
@@ -109,7 +101,8 @@ public class DTUPaySteps {
 
     @And("that the merchant is registered with DTU Pay")
     public void thatTheMerchantIsRegisteredWithDTUPay() {
-        assertTrue(dtuPay.createDTUPayMerchantAccount(mid));
+        merchantDTUPayAccount = dtuPay.createDTUPayMerchantAccount(merchantBankAccount.getFirstName(), merchantBankAccount.getLastName());
+        assertNotNull(merchantDTUPayAccount.getUserId().getUuid());
     }
 
     @And("the balance of the customer at the bank is {int} kr")

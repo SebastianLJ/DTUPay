@@ -10,6 +10,7 @@ import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
 import org.dtu.factories.PaymentFactory;
 import org.dtu.services.PaymentService;
+import org.dtu.exceptions.*;
 
 import java.util.ArrayList;
 import java.util.UUID;
