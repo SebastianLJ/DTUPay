@@ -10,14 +10,12 @@ import java.util.UUID;
 public class PaymentService {
     PaymentRepository repository;
 
+    public PaymentService() {
+        repository = new PaymentRepository();
+    }
 
     public ArrayList<Payment> getPayments() {
         return repository.getPayments();
-    }
-
-
-    public PaymentService() {
-        repository = new PaymentRepository();
     }
 
     public Payment getPayment(UUID id) throws PaymentNotFoundException {
