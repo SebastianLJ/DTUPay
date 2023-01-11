@@ -1,9 +1,12 @@
 package org.dtu.services;
 
 
+import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.InvalidMerchantIdException;
 import org.dtu.exceptions.MerchantAlreadyExistsException;
+import org.dtu.exceptions.MerchantNotFoundException;
+import org.dtu.exceptions.PaymentNotFoundException;
 import org.dtu.repositories.MerchantRepository;
 
 import java.util.ArrayList;
@@ -25,6 +28,14 @@ public class MerchantService {
     public User addMerchant(String firstName, String lastName) throws MerchantAlreadyExistsException {
         User merchant = repository.addMerchant(firstName, lastName);
         return merchant;
+    }
+
+    public ArrayList<User> getMerchantList() {
+        return repository.getMerchantList();
+    }
+
+    public User deleteMerchant(UUID id) throws PaymentNotFoundException, MerchantNotFoundException, InvalidMerchantIdException {
+        return repository.deleteMerchant(id);
     }
 
 }
