@@ -35,6 +35,6 @@ public class CustomerRepository {
     }
 
     public ArrayList<User> getCustomerList() {
-        return customers;
+        return new ArrayList<>(customers);
     }
 }
