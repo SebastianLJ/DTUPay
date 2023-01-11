@@ -1,26 +1,40 @@
 package org.dtu.services;
 
 import org.dtu.aggregate.Token;
+import org.dtu.aggregate.UserId;
 import org.dtu.repository.TokenRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TokenService {
 
-    TokenRepository tokenRepository;
+    private TokenRepository tokenRepository;
 
 
-    public TokenService(TokenRepository tokenRepository){
-        this.tokenRepository = tokenRepository;
+    public TokenService(){
+        this.tokenRepository = new TokenRepository();
+    }
+
+
+    public ArrayList<Token> getTokens(UserId userId) {
+        return tokenRepository.getTokensByUserId(userId);
+    }
+
+    public ArrayList<Token> createUser(UserId userId) {
+        return tokenRepository.createUser(userId);
+    }
+
+    public Boolean consumeToken(UserId userId, Token token){
+        return tokenRepository.validateToken(userId, token);
+    }
+
+    public void generateTokens(){
 
     }
 
-    public List<Token> getTokens(){
-
-    }
-
-    public List<Token> createUser(){
-
+    public Boolean containsUser(UserId userId){
+        return tokenRepository.containsUser(userId);
     }
 
 }

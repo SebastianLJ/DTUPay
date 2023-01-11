@@ -9,5 +9,5 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Token {
 
-    UUID uuid;
+    UUID id;
 }
