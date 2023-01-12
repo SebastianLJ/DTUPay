@@ -5,33 +5,26 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.UserId;
-import org.dtu.exceptions.InvalidTokenAmountException;
-import org.dtu.exceptions.TokenAmountExeededException;
-import org.dtu.exceptions.UserNotFoundException;
+import org.dtu.exceptions.*;
 import org.dtu.factories.TokenFactory;
 import org.dtu.services.TokenService;
 
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TokenServiceSteps {
 
     TokenService tokenService = new TokenFactory().getService();
 
     UserId userId1 = new UserId(UUID.randomUUID());
+    UserId userId2 = new UserId(UUID.randomUUID());
     ArrayList<Token> tokens1 = new ArrayList<>();
+    ArrayList<Token> tokens2 = new ArrayList<>();
 
     @When("a user is created")
     public void aUserRequestsAnAccount() {
-        try{
-            tokens1 = tokenService.generateTokens(userId1, new Random().nextInt(6) );
-        } catch (TokenAmountExeededException | InvalidTokenAmountException e) {
-            e.printStackTrace();
-        }
+        tokens1 = tokenService.generateTokens(userId1, new Random().nextInt(5) );
     }
 
     @Then("the token list length is valid")
@@ -41,14 +34,36 @@ public class TokenServiceSteps {
     }
 
     @And("the user is registered")
-    public void theUserIsRegistered() throws UserNotFoundException {
-        assertEquals(tokens1, tokenService.getTokens(userId1));
+    public void theUserIsRegistered() throws TokenHasAlreadyBeenUsedException, TokenDoesNotExistException {
+        for (Token token : tokens1) {
+            UserId user = tokenService.consumeToken(token);
+            assertNotNull(user);
+        }
     }
 
-    @When("there exists a user")
-    public void thereExistsAUser() {
+    @And("a second is created")
+    public void aSecondIsCreated() {
+        tokens2 = tokenService.generateTokens(userId2, new Random().nextInt(5));
     }
+
     @Then("they must have different ids")
     public void theyMustHaveDifferentIds() {
+        assertNotSame(userId1, userId2);
+    }
+
+
+    @And("they must have different tokens")
+    public void theyMustHaveDifferentTokens() {
+        ArrayList<Token> common = new ArrayList<>(tokens1);
+        common.retainAll(tokens2);
+        assertEquals(0, common.size());
+    }
+
+    @Then("all tokens are unique")
+    public void allTokensAreUnique() {
+        Set<UUID> set = new HashSet<>();
+        for(Token token : tokens1){
+            assertTrue(set.add(token.getId()));
+        }
     }
 }

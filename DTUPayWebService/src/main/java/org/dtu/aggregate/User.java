@@ -20,4 +20,10 @@ public class User {
         this.userId = new UserId(UUID.randomUUID());
         this.name = new Name(firstName, lastName);
     }
+
+    public User(String firstName, String lastName, String bankAccountId) {
+        this.userId = new UserId(UUID.randomUUID());
+        this.name = new Name(firstName, lastName);
+        this.bankAccountId = bankAccountId;
+    }
 }

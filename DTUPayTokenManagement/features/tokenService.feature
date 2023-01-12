@@ -5,6 +5,11 @@ Feature: Token Service
     And the user is registered
 
   Scenario: Duplicate users cannot be created
-    When there exists a user
-    And a user is created
+    When a user is created
+    And a second is created
     Then they must have different ids
+    And they must have different tokens
+
+  Scenario: A user cannot have duplicate tokens
+    When a user is created
+    Then all tokens are unique
