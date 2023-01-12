@@ -8,11 +8,10 @@ import org.dtu.aggregate.User;
 import org.dtu.exceptions.*;
 import org.dtu.factories.MerchantFactory;
 import org.dtu.services.MerchantService;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class AccountServiceSteps {
+public class MerchantServiceSteps {
     MerchantService merchantService = new MerchantFactory().getService();
     User merchant;
 

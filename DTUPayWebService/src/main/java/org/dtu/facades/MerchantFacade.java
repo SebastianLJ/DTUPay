@@ -5,10 +5,8 @@ import org.dtu.aggregate.User;
 import org.dtu.exceptions.*;
 import org.dtu.factories.MerchantFactory;
 import org.dtu.factories.PaymentFactory;
-import org.dtu.repositories.MerchantRepository;
 import org.dtu.services.MerchantService;
 import org.dtu.services.PaymentService;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -80,7 +78,4 @@ public class MerchantFacade {
                     .build();
         }
     }
-
-
-
 }
