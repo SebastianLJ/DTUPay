@@ -25,6 +25,12 @@ public class MerchantRepository {
         return merchant;
     }
 
+    public User addMerchant(String firstName, String lastName, String bankAccount) {
+        User merchant = new User(firstName, lastName, bankAccount);
+        merchants.add(merchant);
+        return merchant;
+    }
+
     public static User getMerchant (UUID id) throws InvalidMerchantIdException {
         User targetMerchant = null;
         for (User merchant:

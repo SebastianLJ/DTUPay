@@ -19,9 +19,9 @@ public class MerchantFacade {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("/register")
-    public Response registerMerchant(String firstName, String lastName) {
+    public Response registerMerchant(String firstName, String lastName, String bankAccount) {
         try {
-            User newUser = merchantRegistration.addMerchant(firstName, lastName);
+            User newUser = merchantRegistration.addMerchant(firstName, lastName, bankAccount);
             return Response.status(Response.Status.CREATED)
                     .entity("merchant with id " + newUser.getUserId().getUuid() + " created")
                     .build();
