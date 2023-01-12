@@ -10,4 +10,8 @@ import java.util.UUID;
 public class Token {
 
     UUID id;
+
+    public Token(){
+        this.id = UUID.randomUUID();
+    }
 }

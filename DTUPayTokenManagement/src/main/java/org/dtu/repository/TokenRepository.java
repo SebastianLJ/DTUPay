@@ -15,7 +15,7 @@ public class TokenRepository {
     public ArrayList<Token> generateTokens(UserId userid, int amount) {
         ArrayList<Token> tokens = new ArrayList<>();
         for (int i = 0 ; i < amount ; i++){
-            Token token = new Token(UUID.randomUUID());
+            Token token = new Token();
             tokenRepository.put(token,userid);
             tokens.add(token);
         }

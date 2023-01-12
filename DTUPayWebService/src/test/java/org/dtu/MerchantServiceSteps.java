@@ -8,11 +8,10 @@ import org.dtu.aggregate.User;
 import org.dtu.exceptions.*;
 import org.dtu.factories.MerchantFactory;
 import org.dtu.services.MerchantService;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class AccountServiceSteps {
+public class MerchantServiceSteps {
     MerchantService merchantService = new MerchantFactory().getService();
     User merchant;
 
@@ -23,10 +22,9 @@ public class AccountServiceSteps {
     }
 
     @Then("a merchant is registered in the system")
-    public void aMerchantIsRegisteredInTheSystem() {
-
-        //search for merchant in getMerchants
-        assertEquals(merchant, merchantService.getMerchants().get(0));
+    public void theMerchantIsRegisteredInTheSystem() {
+        boolean merchantIsInTheSystem = merchantService.getMerchantList().stream().anyMatch(o -> o.getUserId().equals(merchant.getUserId()));
+        assertEquals(true, merchantIsInTheSystem);
     }
 
     @And("the merchant can be found by his ID.")

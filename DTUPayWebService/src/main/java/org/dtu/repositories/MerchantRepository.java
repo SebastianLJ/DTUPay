@@ -19,13 +19,13 @@ public class MerchantRepository {
 
     }
 
-    public User addMerchant(String firstName, String lastName) {
+    public User addMerchant(String firstName, String lastName) throws MerchantAlreadyExistsException {
         User merchant = new User(firstName, lastName);
         merchants.add(merchant);
         return merchant;
     }
 
-    public User addMerchant(String firstName, String lastName, String bankAccount) {
+    public User addMerchant(String firstName, String lastName, String bankAccount) throws MerchantAlreadyExistsException {
         User merchant = new User(firstName, lastName, bankAccount);
         merchants.add(merchant);
         return merchant;

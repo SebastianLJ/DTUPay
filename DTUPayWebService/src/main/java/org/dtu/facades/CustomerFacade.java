@@ -2,6 +2,7 @@ package org.dtu.facades;
 
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
+import org.dtu.aggregate.UserId;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.factories.CustomerFactory;
@@ -12,6 +13,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.UUID;
 
 @Path("/customers")
@@ -26,9 +28,9 @@ public class CustomerFacade {
         try {
             UUID uuid = UUID.fromString(id);
             //todo use token generator
-            Token token = new Token(uuid);
+            ArrayList<Token> tokens = customerService.getTokens(new UserId(uuid), tokenCount);
             return Response.status(Response.Status.OK)
-                    .entity(token)
+                    .entity(tokens)
                     .build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
