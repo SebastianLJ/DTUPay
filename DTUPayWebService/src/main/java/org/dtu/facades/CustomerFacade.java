@@ -2,7 +2,7 @@ package org.dtu.facades;
 
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
-import org.dtu.exceptions.CustomerAlreadyExistsException;
+import org.dtu.exceptions.*;
 import org.dtu.factories.CustomerFactory;
 import org.dtu.services.CustomerService;
 
@@ -50,5 +50,15 @@ public class CustomerFacade {
                     .entity("customer with the same id already exists")
                     .build();
         }
+    }
+
+    @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/unregister")
+    public Response deleteCustomer(UUID id) throws InvalidCustomerIdException {
+        User deletedUser = customerService.deleteCustomer(id);
+        return Response.status(Response.Status.CREATED)
+                .entity("customer with id " + deletedUser.getUserId().getUuid() + " has been unregistered")
+                .build();
     }
 }
