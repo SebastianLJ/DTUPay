@@ -23,6 +23,12 @@ public class CustomerRepository {
         return newUser;
     }
 
+    public User addCustomer(String firstName, String lastName, String bankAccount) throws CustomerAlreadyExistsException {
+        User newUser = new User(firstName, lastName, bankAccount);
+        customers.add(newUser);
+        return newUser;
+    }
+
     public static User getCustomer (UUID id) throws InvalidCustomerIdException{
         User targetCustomer = null;
         for (User customer:
@@ -44,4 +50,5 @@ public class CustomerRepository {
         this.customers.remove(customerToRemove);
         return customerToRemove;
     }
+
 }
