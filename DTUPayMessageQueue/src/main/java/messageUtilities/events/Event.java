@@ -6,5 +6,6 @@ import java.io.Serializable;
 
 public class Event implements IDTUPayMessage, Serializable {
 
+    public String message = "";
     public Event() { }
 }

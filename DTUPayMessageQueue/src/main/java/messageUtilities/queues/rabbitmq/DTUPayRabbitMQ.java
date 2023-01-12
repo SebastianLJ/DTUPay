@@ -6,6 +6,7 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.IDTUPayMessageQueue;
+import messageUtilities.queues.QueueType;
 
 import java.io.*;
 import java.util.concurrent.TimeoutException;
@@ -13,7 +14,7 @@ import java.util.function.Consumer;
 
 public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
 
-    private static final String DEFAULT_HOSTNAME = "DTUPayMessageQueue";
+    private static final String DEFAULT_HOSTNAME = "localhost";
     private static final String EXCHANGE_NAME = "eventsExchange";
     private final QueueType queueType;
     private final Channel channel;
@@ -66,20 +67,20 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
             channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
             });
         } catch (IOException e1) {
-            throw new Error(e1);
+            //throw new Error(e1);
         }
     }
 
     private Channel setUpChannel() {
-        Channel chan;
+        Channel chan = null;
         try {
             ConnectionFactory factory = new ConnectionFactory();
             factory.setHost(DEFAULT_HOSTNAME);
             Connection connection = factory.newConnection();
             chan = connection.createChannel();
-            chan.exchangeDeclare(EXCHANGE_NAME, queueType.toString());
+            chan.exchangeDeclare(EXCHANGE_NAME, "topic");
         } catch (IOException | TimeoutException e) {
-            throw new Error(e);
+            //throw new Error(e);
         }
         return chan;
     }
