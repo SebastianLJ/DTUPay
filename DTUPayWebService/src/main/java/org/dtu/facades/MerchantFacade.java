@@ -9,10 +9,7 @@ import org.dtu.repositories.MerchantRepository;
 import org.dtu.services.MerchantService;
 import org.dtu.services.PaymentService;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.DELETE;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.net.URI;
@@ -68,13 +65,21 @@ public class MerchantFacade {
     }
 
     @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/unregister")
-    public Response deleteMerchant(UUID id) throws MerchantNotFoundException, PaymentNotFoundException, InvalidMerchantIdException {
-        User deletedUser = merchantRegistration.deleteMerchant(id);
-        return Response.status(Response.Status.CREATED)
-                    .entity("merchant with id " + deletedUser.getUserId().getUuid() + " has been unregistered")
+    @Path("/{id}")
+    public Response deregister(@PathParam("id") String id) {
+        try {
+            UUID uuid = UUID.fromString(id);
+            User deletedUser = merchantRegistration.deleteMerchant(uuid);
+            return Response
+                    .status(Response.Status.OK)
+                    .entity(deletedUser)
                     .build();
+        } catch (IllegalArgumentException | InvalidMerchantIdException | PaymentNotFoundException | MerchantNotFoundException e) {
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
     }
 
 
