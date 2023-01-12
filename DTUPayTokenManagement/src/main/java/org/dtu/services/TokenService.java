@@ -1,6 +1,5 @@
 package org.dtu.services;
 
-import messageUtilities.events.Event;
 import messageUtilities.queues.IDTUPayMessageQueue;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.UserId;
@@ -24,16 +23,20 @@ public class TokenService {
         this.messageQueue.addHandler(ConsumeToken.class, e -> {
             try {
                 consumeToken((ConsumeToken) e);
-            } catch (TokenDoesNotExistException | TokenHasAlreadyBeenUsedException ex) {
+            } catch (TokenDoesNotExistException | TokenHasAlreadyBeenUsedException | NoMoreValidTokensException ex) {
                 throw new RuntimeException(ex);
             }
         });
         this.messageQueue.addHandler(GenerateToken.class, e -> {
-            generateTokens((GenerateToken) e);
+            try {
+                generateTokens((GenerateToken) e);
+            } catch (InvalidTokenAmountException ex) {
+                throw new RuntimeException(ex);
+            }
         });
     }
 
-    public void consumeToken(ConsumeToken event) throws TokenDoesNotExistException, TokenHasAlreadyBeenUsedException {
+    public void consumeToken(ConsumeToken event) throws TokenDoesNotExistException, TokenHasAlreadyBeenUsedException, NoMoreValidTokensException {
 
 
         UserId user = tokenRepository.consumeToken(event.getToken());
@@ -42,7 +45,7 @@ public class TokenService {
         messageQueue.publish(newEvent);
     }
 
-    public void generateTokens(GenerateToken event) {
+    public void generateTokens(GenerateToken event) throws InvalidTokenAmountException {
 
         ArrayList<Token> tokens = tokenRepository.generateTokens(event.getUserId(),event.getAmount());
 
@@ -51,11 +54,11 @@ public class TokenService {
         messageQueue.publish(newEvent);
     }
 
-    public UserId consumeToken(Token token) throws TokenDoesNotExistException, TokenHasAlreadyBeenUsedException {
+    public UserId consumeToken(Token token) throws TokenDoesNotExistException, TokenHasAlreadyBeenUsedException, NoMoreValidTokensException {
         return tokenRepository.consumeToken(token);
     }
 
-    public ArrayList<Token> generateTokens(UserId userId, int amount) {
+    public ArrayList<Token> generateTokens(UserId userId, int amount) throws InvalidTokenAmountException {
         return tokenRepository.generateTokens(userId, amount);
     }
 

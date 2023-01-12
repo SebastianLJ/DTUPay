@@ -23,7 +23,7 @@ public class TokenServiceSteps {
     ArrayList<Token> tokens2 = new ArrayList<>();
 
     @When("a user is created")
-    public void aUserRequestsAnAccount() {
+    public void aUserRequestsAnAccount() throws InvalidTokenAmountException {
         tokens1 = tokenService.generateTokens(userId1, new Random().nextInt(5) );
     }
 
@@ -34,7 +34,7 @@ public class TokenServiceSteps {
     }
 
     @And("the user is registered")
-    public void theUserIsRegistered() throws TokenHasAlreadyBeenUsedException, TokenDoesNotExistException {
+    public void theUserIsRegistered() throws TokenHasAlreadyBeenUsedException, TokenDoesNotExistException, NoMoreValidTokensException {
         for (Token token : tokens1) {
             UserId user = tokenService.consumeToken(token);
             assertNotNull(user);
@@ -42,7 +42,7 @@ public class TokenServiceSteps {
     }
 
     @And("a second is created")
-    public void aSecondIsCreated() {
+    public void aSecondIsCreated() throws InvalidTokenAmountException {
         tokens2 = tokenService.generateTokens(userId2, new Random().nextInt(5));
     }
 
