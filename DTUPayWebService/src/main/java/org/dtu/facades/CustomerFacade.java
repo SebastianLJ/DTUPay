@@ -3,10 +3,10 @@ package org.dtu.facades;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
+import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.factories.CustomerFactory;
 import org.dtu.services.CustomerService;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -48,6 +48,23 @@ public class CustomerFacade {
         } catch (CustomerAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
                     .entity("customer with the same id already exists")
+                    .build();
+        }
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public Response deregister(@PathParam("id") String id) {
+        try {
+            UUID uuid = UUID.fromString(id);
+            User deletedUser = customerService.deleteCustomer(uuid);
+            return Response
+                    .status(Response.Status.OK)
+                    .build();
+        } catch (IllegalArgumentException | InvalidCustomerIdException e) {
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
                     .build();
         }
     }
