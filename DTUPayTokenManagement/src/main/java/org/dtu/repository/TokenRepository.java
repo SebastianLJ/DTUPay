@@ -2,44 +2,45 @@ package org.dtu.repository;
 
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.UserId;
-import org.dtu.exceptions.InvalidTokenAmountException;
-import org.dtu.exceptions.TokenAmountExeededException;
-import org.dtu.exceptions.UserNotFoundException;
+import org.dtu.exceptions.TokenDoesNotExistException;
+import org.dtu.exceptions.TokenHasAlreadyBeenUsedException;
 
 import java.util.*;
 
 public class TokenRepository {
 
-    private HashMap<UserId, ArrayList<Token>> tokenRepository = new HashMap<>();
-    private HashMap<UserId, ArrayList<Token>> usedTokenRepository = new HashMap<>();
+    private HashMap<Token, UserId> tokenRepository = new HashMap<>();
+    private HashMap<Token, UserId> usedTokenRepository = new HashMap<>();
 
-    private void createUser(UserId userId){
+/*    private void createUser(UserId userId){
         tokenRepository.put(userId, new ArrayList<>());
         usedTokenRepository.put(userId, new ArrayList<>());
-    }
+    }*/
 
-    private void save(UserId userId, Token token) {
+/*    private void save(UserId userId, Token token) {
 
-        if (tokenRepository.get(userId).size() != 6)
+        if (tokenRepository.get(userId).size() != 6){
+
+        }
 
         tokenRepository.get(userId).add(token);
-    }
+    }*/
 
-    public ArrayList<Token> getUsedTokens(UserId userId) throws UserNotFoundException {
+/*    public ArrayList<Token> getUsedTokens(UserId userId) throws UserNotFoundException {
         ArrayList<Token> usedTokens = usedTokenRepository.get(userId);
         if (usedTokens != null){
             return usedTokens;
         }else throw new UserNotFoundException();
-    }
+    }*/
 
-    public ArrayList<Token> getTokens(UserId userId) throws UserNotFoundException {
+/*    public ArrayList<Token> getTokens(UserId userId) throws UserNotFoundException {
         ArrayList<Token> tokens = tokenRepository.get(userId);
         if (tokens != null){
             return tokens;
         }else throw new UserNotFoundException();
-    }
+    }*/
 
-    public ArrayList<Token> generateToken(UserId userid, int amount) throws TokenAmountExeededException, InvalidTokenAmountException {
+/*    public ArrayList<Token> generateToken(UserId userid, int amount) throws TokenAmountExeededException, InvalidTokenAmountException {
 
         ArrayList<Token> generatedTokens = new ArrayList<>();
 
@@ -47,7 +48,7 @@ public class TokenRepository {
 
         if (tokenRepository.get(userid) == null) createUser(userid); //create user if not already in repository
 
-        //can only request tokens if 1 or 0 already in possesion
+        //can only request tokens if 1 or 0 already in possession
         int length = tokenRepository.get(userid).size();
         if (!(length == 1 || length == 0)) throw new TokenAmountExeededException();
 
@@ -59,9 +60,19 @@ public class TokenRepository {
             generatedTokens.add(token);
         }
         return generatedTokens;
+    }*/
+
+    public ArrayList<Token> generateTokens(UserId userid, int amount) {
+        ArrayList<Token> tokens = new ArrayList<>();
+        for (int i = 0 ; i < amount ; i++){
+            Token token = new Token(UUID.randomUUID());
+            tokenRepository.put(token,userid);
+            tokens.add(token);
+        }
+        return tokens;
     }
 
-    public Boolean consumeToken(UserId userid, Token token) {
+/*    public Boolean consumeToken(UserId userid, Token token) {
         ArrayList<Token> tokens = tokenRepository.get(userid);
         for (int i = 0 ; i<tokens.toArray().length ; i++){
             if (tokens.get(i).getId().compareTo(token.getId()) == 0){
@@ -72,6 +83,15 @@ public class TokenRepository {
             }
         }
         return false;
+    }*/
+
+    public UserId consumeToken(Token token) throws TokenDoesNotExistException, TokenHasAlreadyBeenUsedException {
+        if (usedTokenRepository.containsKey(token)) throw new TokenHasAlreadyBeenUsedException();
+        UserId user = tokenRepository.get(token);
+        if (user == null) throw new TokenDoesNotExistException();
+        usedTokenRepository.put(token, user);
+        tokenRepository.remove(token);
+        return user;
     }
 
 }
