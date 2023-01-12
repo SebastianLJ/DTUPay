@@ -4,10 +4,7 @@ import org.dtu.aggregate.Token;
 import org.dtu.exceptions.PaymentNotFoundException;
 import org.dtu.aggregate.Payment;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PaymentRepository {
