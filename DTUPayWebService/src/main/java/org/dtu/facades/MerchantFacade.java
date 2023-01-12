@@ -42,11 +42,11 @@ public class MerchantFacade {
     public Response postPayment(Payment payment) throws URISyntaxException {
         try {
             payment = paymentRegistration.createPayment(payment);
-            return Response.created(new URI("/payments/"+payment.id))
-                    .link(new URI("/payments/"+payment.id), "self")
-                    .link(new URI("/payments/"+payment.id+"/amount"), "amount")
-                    .link(new URI("/payments/"+payment.id+"/cid"), "cid")
-                    .link(new URI("/payments/"+payment.id+"/mid"), "mid")
+            return Response.created(new URI("/payments/"+payment.getId()))
+                    .link(new URI("/payments/"+payment.getId()), "self")
+                    .link(new URI("/payments/"+payment.getId()+"/amount"), "amount")
+                    .link(new URI("/payments/"+payment.getId()+"/cid"), "cid")
+                    .link(new URI("/payments/"+payment.getId()+"/mid"), "mid")
                     .build();
         } catch (PaymentAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)

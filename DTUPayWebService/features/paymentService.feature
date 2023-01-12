@@ -3,7 +3,6 @@ Feature: Payment Service
     Given there is a registered customer
     And there is a registered merchant
     When the merchant creates a payment
-    And the customer approves it
     Then a payment is registered
 
   Scenario: Payment does not exists

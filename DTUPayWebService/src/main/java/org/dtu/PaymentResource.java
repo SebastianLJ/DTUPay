@@ -1,5 +1,7 @@
 package org.dtu;
 
+import dtu.ws.fastmoney.BankService;
+import dtu.ws.fastmoney.BankServiceService;
 import org.dtu.aggregate.Payment;
 import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.exceptions.InvalidMerchantIdException;
@@ -18,13 +20,14 @@ import java.util.UUID;
 
 @Path("/payments")
 public class PaymentResource {
-    PaymentService paymentRegistration = new PaymentFactory().getService();
+    PaymentService paymentService = new PaymentFactory().getService();
+    BankService bankService = new BankServiceService().getBankServicePort();
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPayments() {
         return Response.status(Response.Status.OK)
-                .entity(paymentRegistration.getPayments())
+                .entity(paymentService.getPayments())
                 .build();
     }
 
@@ -35,7 +38,7 @@ public class PaymentResource {
 
         try {
             return Response.status(Response.Status.OK)
-                    .entity(paymentRegistration.getPayment(id))
+                    .entity(paymentService.getPayment(id))
                     .link(new URI("/payments/"+id), "self")
                     .link(new URI("/payments/"+id+"/amount"), "amount")
                     .link(new URI("/payments/"+id+"/cid"), "cid")
@@ -54,7 +57,7 @@ public class PaymentResource {
     public Response getAmount(@PathParam("id") UUID id) {
         try {
             return Response.status(Response.Status.OK)
-                    .entity(paymentRegistration.getPayment(id).amount)
+                    .entity(paymentService.getPayment(id).getAmount())
                     .build();
         } catch (PaymentNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -69,7 +72,7 @@ public class PaymentResource {
     public Response getCid(@PathParam("id") UUID id) {
         try {
             return Response.status(Response.Status.OK)
-                    .entity(paymentRegistration.getPayment(id).cid)
+                    .entity(paymentService.getPayment(id).getCid())
                     .build();
         } catch (PaymentNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -84,7 +87,7 @@ public class PaymentResource {
     public Response getMid(@PathParam("id") UUID id) {
         try {
             return Response.status(Response.Status.OK)
-                    .entity(paymentRegistration.getPayment(id).mid)
+                    .entity(paymentService.getPayment(id).getMid())
                     .build();
         } catch (PaymentNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
@@ -96,14 +99,15 @@ public class PaymentResource {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postPayment(Payment payment) throws URISyntaxException {
-        int id;
         try {
-            payment = paymentRegistration.createPayment(payment);
-            return Response.created(new URI("/payments/"+payment.id))
-                    .link(new URI("/payments/"+payment.id), "self")
-                    .link(new URI("/payments/"+payment.id+"/amount"), "amount")
-                    .link(new URI("/payments/"+payment.id+"/cid"), "cid")
-                    .link(new URI("/payments/"+payment.id+"/mid"), "mid")
+
+            payment = paymentService.createPayment(payment);
+
+            return Response.created(new URI("/payments/"+payment.getId()))
+                    .link(new URI("/payments/"+payment.getId()), "self")
+                    .link(new URI("/payments/"+payment.getId()+"/amount"), "amount")
+                    .link(new URI("/payments/"+payment.getId()+"/cid"), "cid")
+                    .link(new URI("/payments/"+payment.getId()+"/mid"), "mid")
                     .build();
         } catch (PaymentAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
