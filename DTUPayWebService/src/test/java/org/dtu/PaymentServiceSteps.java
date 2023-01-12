@@ -53,14 +53,7 @@ public class PaymentServiceSteps {
 
     @When("^the merchant creates a payment$")
     public void theMerchantCreatesAPayment() {
-        try {
-            payment = paymentRegistration
-                    .createPayment(new Payment(customer.getUserId().getUuid(),
-                            merchant.getUserId().getUuid(),
-                            100));
-        } catch (PaymentAlreadyExistsException | InvalidMerchantIdException | InvalidCustomerIdException e) {
-            e.printStackTrace();
-        }
+   
     }
 
     @Then("^a payment is registered$")

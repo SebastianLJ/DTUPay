@@ -11,7 +11,7 @@ import org.dtu.services.MerchantService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class AccountServiceSteps {
+public class MerchantServiceSteps {
     MerchantService merchantService = new MerchantFactory().getService();
     User merchant;
     @When("a merchant is created")

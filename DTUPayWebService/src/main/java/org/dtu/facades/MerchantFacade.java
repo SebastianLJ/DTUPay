@@ -41,12 +41,12 @@ public class MerchantFacade {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postPayment(Payment payment) throws URISyntaxException {
         try {
-            payment = paymentRegistration.createPayment(payment);
-            return Response.created(new URI("/payments/"+payment.getId()))
-                    .link(new URI("/payments/"+payment.getId()), "self")
-                    .link(new URI("/payments/"+payment.getId()+"/amount"), "amount")
-                    .link(new URI("/payments/"+payment.getId()+"/cid"), "cid")
-                    .link(new URI("/payments/"+payment.getId()+"/mid"), "mid")
+            UUID paymentID = paymentRegistration.createPayment(payment);
+            return Response.created(new URI("/payments/"+paymentID))
+                    .link(new URI("/payments/"+paymentID), "self")
+                    .link(new URI("/payments/"+paymentID+"/amount"), "amount")
+                    .link(new URI("/payments/"+paymentID+"/cid"), "cid")
+                    .link(new URI("/payments/"+paymentID+"/mid"), "mid")
                     .build();
         } catch (PaymentAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
