@@ -9,9 +9,7 @@ import org.dtu.exceptions.*;
 import org.dtu.factories.TokenFactory;
 import org.dtu.services.TokenService;
 
-import java.util.ArrayList;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -59,5 +57,13 @@ public class TokenServiceSteps {
         ArrayList<Token> common = new ArrayList<>(tokens1);
         common.retainAll(tokens2);
         assertEquals(0, common.size());
+    }
+
+    @Then("all tokens are unique")
+    public void allTokensAreUnique() {
+        Set<UUID> set = new HashSet<>();
+        for(Token token : tokens1){
+            assertTrue(set.add(token.getId()));
+        }
     }
 }

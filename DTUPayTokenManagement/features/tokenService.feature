@@ -11,3 +11,5 @@ Feature: Token Service
     And they must have different tokens
 
   Scenario: A user cannot have duplicate tokens
+    When a user is created
+    Then all tokens are unique
