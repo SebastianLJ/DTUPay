@@ -3,6 +3,7 @@ package org.dtu.facades;
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.MerchantAlreadyExistsException;
 import org.dtu.factories.MerchantFactory;
+import org.dtu.repositories.MerchantRepository;
 import org.dtu.services.MerchantService;
 
 import javax.ws.rs.Consumes;
@@ -31,6 +32,7 @@ public class MerchantFacade {
                     .build();
         }
     }
+
 
 
 }
