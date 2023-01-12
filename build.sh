@@ -37,3 +37,5 @@ popd
 pushd DTUPayWebService
 mvn test
 popd
+
+./clean-docker.sh
