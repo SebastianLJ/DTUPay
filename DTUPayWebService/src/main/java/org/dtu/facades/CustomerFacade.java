@@ -60,6 +60,7 @@ public class CustomerFacade {
             User deletedUser = customerService.deleteCustomer(uuid);
             return Response
                     .status(Response.Status.OK)
+                    .entity(deletedUser)
                     .build();
         } catch (IllegalArgumentException | InvalidCustomerIdException e) {
             return Response
