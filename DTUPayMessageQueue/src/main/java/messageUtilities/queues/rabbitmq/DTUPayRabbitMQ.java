@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 
 public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
 
-    private static final String DEFAULT_HOSTNAME = "DTUPayMessageQueue";
+    private static final String DEFAULT_HOSTNAME = "localhost";
     private static final String EXCHANGE_NAME = "eventsExchange";
     private final QueueType queueType;
     private final Channel channel;
