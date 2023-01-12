@@ -30,7 +30,7 @@ public class TokenService {
         this.messageQueue.addHandler(GenerateToken.class, e -> {
             try {
                 generateTokens((GenerateToken) e);
-            } catch (InvalidTokenAmountException ex) {
+            } catch (InvalidTokenAmountException | InvalidTokenAmountRequestException ex) {
                 throw new RuntimeException(ex);
             }
         });
@@ -45,7 +45,7 @@ public class TokenService {
         messageQueue.publish(newEvent);
     }
 
-    public void generateTokens(GenerateToken event) throws InvalidTokenAmountException {
+    public void generateTokens(GenerateToken event) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
 
         ArrayList<Token> tokens = tokenRepository.generateTokens(event.getUserId(),event.getAmount());
 
@@ -58,7 +58,7 @@ public class TokenService {
         return tokenRepository.consumeToken(token);
     }
 
-    public ArrayList<Token> generateTokens(UserId userId, int amount) throws InvalidTokenAmountException {
+    public ArrayList<Token> generateTokens(UserId userId, int amount) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
         return tokenRepository.generateTokens(userId, amount);
     }
 
