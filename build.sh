@@ -34,5 +34,8 @@ pushd DTUPayMessageQueue
 mvn test
 popd
 
-# Clean images
-docker image prune -f
+pushd DTUPayWebService
+mvn test
+popd
+
+./clean-docker.sh

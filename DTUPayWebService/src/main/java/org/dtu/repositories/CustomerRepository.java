@@ -23,8 +23,8 @@ public class CustomerRepository {
         return newUser;
     }
 
-    public User addCustomer(String firstName, String lastName, String bankAccount) throws CustomerAlreadyExistsException {
-        User newUser = new User(firstName, lastName, bankAccount);
+    public User addCustomer(String firstName, String lastName, String bankNumber) throws CustomerAlreadyExistsException {
+        User newUser = new User(firstName, lastName, bankNumber);
         customers.add(newUser);
         return newUser;
     }
