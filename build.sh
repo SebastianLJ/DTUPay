@@ -15,7 +15,7 @@ popd
 docker image prune -f
 
 # Build the docker images and run them
-docker-compose up -d rabbitMq
+#docker-compose up -d rabbitMq
 docker-compose up -d DTUPayWebService
 
 # Wait for any builds to run
