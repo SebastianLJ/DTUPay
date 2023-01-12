@@ -15,14 +15,6 @@ public class TokenService {
         this.tokenRepository = new TokenRepository();
     }
 
-/*    public ArrayList<Token> getUsedTokens(UserId userId) throws UserNotFoundException {
-        return tokenRepository.getUsedTokens(userId);
-    }*/
-
-/*    public ArrayList<Token> getTokens(UserId userId) throws UserNotFoundException {
-        return tokenRepository.getTokens(userId);
-    }*/
-
     public UserId consumeToken(Token token) throws TokenDoesNotExistException, TokenHasAlreadyBeenUsedException {
         return tokenRepository.consumeToken(token);
     }
