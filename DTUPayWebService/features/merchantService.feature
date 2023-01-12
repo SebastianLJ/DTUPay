@@ -1,4 +1,4 @@
-Feature: Account Service
+Feature: Merchant Service
 
   Scenario: A merchant is successfully created
     When a merchant is created
