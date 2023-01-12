@@ -31,6 +31,15 @@ public class CustomerService {
         }
     }
 
+    public User addCustomer(String firstName, String lastName, String bankAccount) throws CustomerAlreadyExistsException {
+        try {
+            User newUser = repository.addCustomer(firstName, lastName, bankAccount);
+            return newUser;
+        } catch (CustomerAlreadyExistsException e) {
+            throw new CustomerAlreadyExistsException();
+        }
+    }
+
     public ArrayList<User> getCustomerList() {
         return repository.getCustomerList();
     }

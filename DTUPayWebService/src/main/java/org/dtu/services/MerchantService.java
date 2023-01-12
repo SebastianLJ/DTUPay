@@ -35,6 +35,7 @@ public class MerchantService {
         return merchant;
     }
 
+
     public ArrayList<User> getMerchantList() {
         return repository.getMerchantList();
     }
