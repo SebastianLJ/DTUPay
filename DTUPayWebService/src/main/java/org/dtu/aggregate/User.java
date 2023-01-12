@@ -14,16 +14,16 @@ public class User {
 
     Name name;
     UserId userId;
-    String bankAccountId;
+    String bankNumber;
 
     public User(String firstName, String lastName) {
         this.userId = new UserId(UUID.randomUUID());
         this.name = new Name(firstName, lastName);
     }
 
-    public User(String firstName, String lastName, String bankAccountId) {
+    public User(String firstName, String lastName, String bankNumber) {
         this.userId = new UserId(UUID.randomUUID());
         this.name = new Name(firstName, lastName);
-        this.bankAccountId = bankAccountId;
+        this.bankNumber = bankNumber;
     }
 }
