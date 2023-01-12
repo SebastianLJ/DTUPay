@@ -2,6 +2,8 @@
 # Enforces build script fails on anything but SUCCESS codes
 set -e
 
+docker-compose up -d rabbitMq
+
 # Clean and build projects
 pushd DTUPayMessageQueue
 mvn clean install
@@ -15,7 +17,6 @@ popd
 docker image prune -f
 
 # Build the docker images and run them
-#docker-compose up -d rabbitMq
 docker-compose up -d DTUPayWebService
 
 # Wait for any builds to run
