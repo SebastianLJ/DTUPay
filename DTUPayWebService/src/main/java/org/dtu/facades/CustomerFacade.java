@@ -18,10 +18,11 @@ import java.util.UUID;
 public class CustomerFacade {
     CustomerService customerService = new CustomerFactory().getService();
 
-    @Path("/{id}/{tokenCount}")
-    @GET
+    @Path("/{id}/tokens")
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getTokens(@PathParam("id") String id) {
+    public Response getTokens(@PathParam("id") String id, int tokenCount) {
         try {
             UUID uuid = UUID.fromString(id);
             //todo use token generator
@@ -35,6 +36,22 @@ public class CustomerFacade {
                     .build();
         }
     }
+
+   @Path("/{id}/report")
+   @GET
+   @Produces(MediaType.APPLICATION_JSON)
+   public Response getReport(@PathParam("id") String id) {
+        try {
+            UUID uuid = UUID.fromString(id);
+            return Response
+                    .status(Response.Status.OK)
+                    .build();
+        } catch (IllegalArgumentException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
+   }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
