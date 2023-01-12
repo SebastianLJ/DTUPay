@@ -2,5 +2,7 @@
 set -e
 
 docker-compose down
-docker container rm -f $'(docker container ls -aq)'
-docker rmi $'(docker images -q)'
+# shellcheck disable=SC2046
+docker rm $(docker ps -aq)
+# shellcheck disable=SC2046
+docker rmi $(docker images -q)
