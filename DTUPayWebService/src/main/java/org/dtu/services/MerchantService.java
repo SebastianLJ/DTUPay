@@ -35,6 +35,11 @@ public class MerchantService {
         return merchant;
     }
 
+    public User addMerchant(String firstName, String lastName, String bankAccount) throws MerchantAlreadyExistsException {
+        User merchant = repository.addMerchant(firstName, lastName, bankAccount);
+        return merchant;
+    }
+
 
     public ArrayList<User> getMerchantList() {
         return repository.getMerchantList();
