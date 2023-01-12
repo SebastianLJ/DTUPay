@@ -23,7 +23,7 @@ public class MerchantFacade {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/register")
+    @Path("/{id}")
     public Response registerMerchant(String firstName, String lastName, String bankAccount) {
         try {
             User newUser = merchantRegistration.addMerchant(firstName, lastName, bankAccount);
@@ -40,7 +40,6 @@ public class MerchantFacade {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postPayment(Payment payment) throws URISyntaxException {
-        int id;
         try {
             payment = paymentRegistration.createPayment(payment);
             return Response.created(new URI("/payments/"+payment.id))
