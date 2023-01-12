@@ -8,8 +8,8 @@ import org.dtu.aggregate.Token;
 
 @Value
 @AllArgsConstructor
-@EqualsAndHashCode
+@EqualsAndHashCode(callSuper = false)
 public class ConsumeToken extends Event {
 
-    private Token token;
+    Token token;
 }
