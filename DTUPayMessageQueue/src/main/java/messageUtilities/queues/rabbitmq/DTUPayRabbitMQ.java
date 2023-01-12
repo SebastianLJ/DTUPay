@@ -78,7 +78,7 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
             factory.setHost(DEFAULT_HOSTNAME);
             Connection connection = factory.newConnection();
             chan = connection.createChannel();
-            chan.exchangeDeclare(EXCHANGE_NAME, queueType.toString());
+            chan.exchangeDeclare(EXCHANGE_NAME, "topic");
         } catch (IOException | TimeoutException e) {
             throw new Error(e);
         }
