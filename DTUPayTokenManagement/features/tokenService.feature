@@ -9,3 +9,5 @@ Feature: Token Service
     And a second is created
     Then they must have different ids
     And they must have different tokens
+
+  Scenario: A user cannot have duplicate tokens
