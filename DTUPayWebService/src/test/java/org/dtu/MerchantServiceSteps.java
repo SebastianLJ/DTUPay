@@ -22,10 +22,9 @@ public class MerchantServiceSteps {
     }
 
     @Then("a merchant is registered in the system")
-    public void aMerchantIsRegisteredInTheSystem() {
-
-        //search for merchant in getMerchants
-        assertEquals(merchant, merchantService.getMerchants().get(0));
+    public void theMerchantIsRegisteredInTheSystem() {
+        boolean merchantIsInTheSystem = merchantService.getMerchantList().stream().anyMatch(o -> o.getUserId().equals(merchant.getUserId()));
+        assertEquals(true, merchantIsInTheSystem);
     }
 
     @And("the merchant can be found by his ID.")
