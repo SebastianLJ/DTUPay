@@ -2,7 +2,6 @@
 package org.dtu;
 
 import aggregate.Name;
-import aggregate.User;
 import dtu.ws.fastmoney.*;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.client.Client;
@@ -26,11 +25,9 @@ public class SimpleDTUPay {
         Payment payment = new Payment(mid, cid, amount);
         Response response = r.path("payments").request().post(Entity.entity(payment, MediaType.APPLICATION_JSON));
         if (response.getStatus() == 201) {
-            bank.transferMoneyFromTo(cid.toString(), mid.toString(), new BigDecimal(amount), "DTUPay");
             return true;
         } else if (response.getStatus() == 400) {
             String message = response.readEntity(String.class);
-            //if response contains "payment", payment already exists
             if (message.contains("payment")) {
                 throw new PaymentAlreadyExists(message);
             }

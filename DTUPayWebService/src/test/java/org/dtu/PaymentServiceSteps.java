@@ -63,10 +63,6 @@ public class PaymentServiceSteps {
         }
     }
 
-    @And("^the customer approves it$")
-    public void theCustomerApprovesIt() {
-    }
-
     @Then("^a payment is registered$")
     public void aPaymentIsRegistered() {
         try {
@@ -82,7 +78,6 @@ public class PaymentServiceSteps {
         this.thereIsARegisteredCustomer();
         this.thereIsARegisteredMerchant();
         this.theMerchantCreatesAPayment();
-        this.theCustomerApprovesIt();
         this.aPaymentIsRegistered();
     }
 

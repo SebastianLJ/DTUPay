@@ -20,7 +20,7 @@ public class PaymentRepository {
 
     public Payment getPaymentById(UUID id) throws PaymentNotFoundException {
          Optional<Payment> result = payments.stream()
-                 .filter(payment -> payment.id == id)
+                 .filter(payment -> payment.getId() == id)
                  .findAny();
          if (result.isPresent()) {
              return result.get();
@@ -35,13 +35,13 @@ public class PaymentRepository {
 
     public List<Payment> getPaymentsByMerchantId(UUID merchantId) {
         return payments.stream()
-                .filter(payment -> payment.mid.equals(merchantId))
+                .filter(payment -> payment.getMid().equals(merchantId))
                 .collect(Collectors.toList());
     }
 
     public List<Payment> getPaymentsByCustomerId(UUID customerId) {
         return payments.stream()
-                .filter(payment -> payment.cid.equals(customerId))
+                .filter(payment -> payment.getCid().equals(customerId))
                 .collect(Collectors.toList());
     }
 

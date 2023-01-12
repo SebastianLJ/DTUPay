@@ -1,5 +1,6 @@
 package org.dtu;
 
+import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.dtu.aggregate.User;
@@ -21,6 +22,7 @@ public class CustomerServiceSteps {
     public CustomerServiceSteps() {
     }
 
+    // Create customer scenario
     @When("a customer is created")
     public void a_customer_is_created() {
         try {
@@ -43,5 +45,19 @@ public class CustomerServiceSteps {
     @After
     public void afterScenario() throws InvalidCustomerIdException {
         customerRegistration.deleteCustomer(customer.getUserId().getUuid());
+    }
+
+    //Delete customer scenario
+    @Given("a customer is in the system")
+    public void a_customer_is_in_the_system() throws CustomerAlreadyExistsException {
+         customer = customerRegistration.addCustomer("Martin", "Nielsen");
+    }
+    @When("a customer is deleted")
+    public void a_customer_is_deleted() throws InvalidCustomerIdException {
+        customerRegistration.deleteCustomer(customer.getUserId().getUuid());
+    }
+    @Then("the customer cannot be found")
+    public void the_customer_cannot_be_found() throws InvalidCustomerIdException {
+        assertNull(customerRegistration.getCustomer(customer.getUserId().getUuid()));
     }
 }
