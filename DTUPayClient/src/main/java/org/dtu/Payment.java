@@ -1,26 +1,34 @@
 package org.dtu;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.UUID;
 
+@Getter
+@Setter
 public class Payment {
-    public UUID mid;
-    public UUID cid;
-    public int amount;
+    UUID id;
+    UUID cid, mid;
+    int amount;
 
     public Payment() {
+        this.id=UUID.randomUUID();
     }
-    public Payment(UUID mid, UUID cid, int amount) {
-        this.mid = mid;
+
+    public Payment(UUID cid, UUID mid, int amount) {
+        this.id = UUID.randomUUID();
         this.cid = cid;
+        this.mid = mid;
         this.amount = amount;
     }
-    public UUID getMid() {
-        return mid;
+
+    public UUID getId() {
+        return this.id;
     }
-    public UUID getCid() {
-        return cid;
+
+    public void setId(UUID id) {
+        this.id = id;
     }
-    public int getAmount() {
-        return amount;
-    }
+
 }

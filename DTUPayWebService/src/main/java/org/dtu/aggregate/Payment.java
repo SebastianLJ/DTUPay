@@ -1,15 +1,20 @@
 package org.dtu.aggregate;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.UUID;
 
+@Getter
+@Setter
 public class Payment {
-    public UUID id;
-    public UUID cid, mid;
-    public int amount;
+     UUID id;
+     UUID cid, mid;
+    int amount;
     Token token;
 
     public Payment() {
-
+        this.id=UUID.randomUUID();
     }
 
     public Payment(UUID cid, UUID mid, int amount) {

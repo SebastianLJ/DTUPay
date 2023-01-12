@@ -1,5 +1,7 @@
 package org.dtu.services;
 
+import dtu.ws.fastmoney.BankService;
+import dtu.ws.fastmoney.BankServiceService;
 import org.dtu.*;
 import org.dtu.aggregate.Payment;
 import org.dtu.exceptions.InvalidCustomerIdException;
@@ -16,6 +18,9 @@ import java.util.UUID;
 
 public class PaymentService {
     PaymentRepository repository;
+
+    BankService bankService = new BankServiceService().getBankServicePort();
+
 
 
     public List<Payment> getPayments() {
@@ -35,11 +40,12 @@ public class PaymentService {
         }
     }
 
+
     public Payment createPayment(Payment payment) throws PaymentAlreadyExistsException, InvalidMerchantIdException, InvalidCustomerIdException {
         // if cid is not in the customers list in customerservice throw InvalidCustomerIdException
-        CustomerRepository.getCustomer(payment.cid);
+        CustomerRepository.getCustomer(payment.getCid());
         // if mid is not in the merchants list in merchantservice throw InvalidMerchantIdException
-        MerchantRepository.getMerchant(payment.mid);
+        MerchantRepository.getMerchant(payment.getMid());
         // if payment is already in the payments list throw PaymentAlreadyExistsException
         try {
             this.getPayment(payment.getId());

@@ -1,5 +1,7 @@
 Feature: Payment
 
+  Scenario: Customer overdrafts their account
+
   Scenario: List of payments
     Given a customer with a bank account with balance 1000
     And that the customer is registered with DTU Pay
