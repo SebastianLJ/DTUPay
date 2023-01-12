@@ -2,11 +2,11 @@ package org.dtu.facades;
 
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
-import org.dtu.exceptions.*;
+import org.dtu.exceptions.CustomerAlreadyExistsException;
+import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.factories.CustomerFactory;
 import org.dtu.services.CustomerService;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -53,12 +53,20 @@ public class CustomerFacade {
     }
 
     @DELETE
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/unregister")
-    public Response deleteCustomer(UUID id) throws InvalidCustomerIdException {
-        User deletedUser = customerService.deleteCustomer(id);
-        return Response.status(Response.Status.CREATED)
-                .entity("customer with id " + deletedUser.getUserId().getUuid() + " has been unregistered")
-                .build();
+    @Path("/{id}")
+    public Response deregister(@PathParam("id") String id) {
+        try {
+            UUID uuid = UUID.fromString(id);
+            User deletedUser = customerService.deleteCustomer(uuid);
+            return Response
+                    .status(Response.Status.OK)
+                    .entity(deletedUser)
+                    .build();
+        } catch (IllegalArgumentException | InvalidCustomerIdException e) {
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
     }
 }
