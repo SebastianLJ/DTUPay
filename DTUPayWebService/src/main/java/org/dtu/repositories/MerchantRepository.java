@@ -1,15 +1,10 @@
 package org.dtu.repositories;
 
-
-import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.InvalidMerchantIdException;
 import org.dtu.exceptions.MerchantAlreadyExistsException;
-import org.dtu.exceptions.MerchantNotFoundException;
-import org.dtu.exceptions.PaymentNotFoundException;
 
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.UUID;
 
 public class MerchantRepository {

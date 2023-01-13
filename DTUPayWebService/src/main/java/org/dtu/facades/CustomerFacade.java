@@ -5,6 +5,7 @@ import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.InvalidCustomerIdException;
+import org.dtu.exceptions.InvalidCustomerNameException;
 import org.dtu.factories.CustomerFactory;
 import org.dtu.services.CustomerService;
 
@@ -57,16 +58,23 @@ public class CustomerFacade {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response register(User user) throws URISyntaxException {
         try {
-            User createdUser = customerService.addCustomer(user);
+            User createdUser = customerService.addCustomer(new User(user.getName(), user.getBankNumber()));
+            System.out.println("User: " + createdUser.getUserId());
             return Response.status(Response.Status.CREATED)
                     .link(new URI("/"+createdUser.getUserId().getUuid()+"/"+5), "getTokens")
-                    .entity(user)
+                    .entity(createdUser.getUserId())
+                    .type(MediaType.APPLICATION_JSON)
                     .build();
         } catch (CustomerAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
                     .entity("customer with the same id already exists")
+                    .build();
+        } catch (InvalidCustomerNameException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("invalid customer object")
                     .build();
         }
     }

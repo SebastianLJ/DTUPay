@@ -19,7 +19,7 @@ public class TokenRepository {
 
 
     private HashMap<Token, UserId> tokenRepository = new HashMap<>();
-    private HashMap<UserId, Integer> tokenAmountRepository = new HashMap<UserId, Integer>();
+    private HashMap<UserId, Integer> tokenAmountRepository = new HashMap<>();
     private HashMap<Token, UserId> usedTokenRepository = new HashMap<>();
 
     public ArrayList<Token> generateTokens(UserId userid, int amount) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {

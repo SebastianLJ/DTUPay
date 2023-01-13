@@ -3,8 +3,6 @@ package org.dtu.repositories;
 
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.*;
-import org.dtu.exceptions.InvalidMerchantIdException;
-import org.dtu.exceptions.MerchantNotFoundException;
 
 import java.util.ArrayList;
 import java.util.UUID;
@@ -23,10 +21,15 @@ public class CustomerRepository {
         return newUser;
     }
 
-    public User addCustomer(User user) throws CustomerAlreadyExistsException {
-        User newUser = new User(user.getName().getFirstName(), user.getName().getLastName(), user.getBankNumber());
-        customers.add(newUser);
-        return newUser;
+    public User addCustomer(User user) throws CustomerAlreadyExistsException, InvalidCustomerNameException {
+        try {
+            User newUser = new User(user.getName().getFirstName(), user.getName().getLastName(), user.getBankNumber());
+            customers.add(newUser);
+            return newUser;
+        } catch (NullPointerException e) {
+            throw new InvalidCustomerNameException();
+        }
+
     }
 
     public static User getCustomer (UUID id) throws InvalidCustomerIdException{
