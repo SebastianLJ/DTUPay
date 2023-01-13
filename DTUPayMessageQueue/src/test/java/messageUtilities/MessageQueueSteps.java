@@ -44,23 +44,25 @@ public class MessageQueueSteps {
         this.consumer = new ConsumerStub(this.messageQueue);
     }
 
-
-    @When("The ProducerStub sends a message via the queue")
-    public void theProducerStubSendsAMessageViaTheQueue() {
+    @When("The ProducerStub sends a {string} message via the queue")
+    public void theProducerStubSendsAMessageViaTheQueue(String arg0) {
+        EventRequestedStub eventRequestedStub = new EventRequestedStub();
+        eventRequestedStub.message = arg0;
         new Thread(() -> {
-            EventCreatedStub eventCreated = producer.produceEvent(new EventRequestedStub());
+            EventCreatedStub eventCreated = producer.produceEvent(eventRequestedStub);
             simpleRabbitMQSentFuture.complete(eventCreated);
         }).start();
     }
 
-    @When("The ConsumerStub receives the message via the queue")
-    public void theConsumerStubReceivesTheMessageViaTheQueue() {
+    @Then("The ConsumerStub receives a {string} message via the queue")
+    public void theConsumerStubReceivesAMessageViaTheQueue(String arg0) {
         EventRequestedStub eventRequestedStub = simpleRabbitMQReceivedFuture.join();
         assertNotNull(eventRequestedStub);
+        assertEquals(arg0, eventRequestedStub.message);
     }
 
-    @When("The ConsumerStub is finished doing work, the message is sent back into the queue")
-    public void theConsumerStubIsFinishedDoingWorkTheMessageIsSentBackIntoTheQueue() {
+    @When("The ConsumerStub is finished modifying the message and sends it back into the queue")
+    public void theConsumerStubIsFinishedModifyingTheMessageAndSendsItBackIntoTheQueue() {
         while (!simpleRabbitMQSentFuture.isDone()) {
             try {
                 Thread.sleep(500);
@@ -70,9 +72,10 @@ public class MessageQueueSteps {
         }
     }
 
-    @Then("The ProducerStub receives the message again via the queue")
-    public void theProducerStubReceivesTheMessageAgainViaTheQueue() {
+    @Then("The ProducerStub receives back a {string} message via the queue")
+    public void theProducerStubReceivesBackAMessageViaTheQueue(String arg0) {
         EventCreatedStub eventCreatedStub = simpleRabbitMQSentFuture.join();
         assertNotNull(eventCreatedStub);
+        assertEquals(arg0, eventCreatedStub.message);
     }
 }
