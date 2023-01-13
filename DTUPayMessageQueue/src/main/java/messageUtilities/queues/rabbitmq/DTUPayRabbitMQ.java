@@ -67,12 +67,12 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
             channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
             });
         } catch (IOException e1) {
-            //throw new Error(e1);
+            throw new Error(e1);
         }
     }
 
     private Channel setUpChannel() {
-        Channel chan = null;
+        Channel chan;
         try {
             ConnectionFactory factory = new ConnectionFactory();
             factory.setHost(DEFAULT_HOSTNAME);
@@ -80,7 +80,7 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
             chan = connection.createChannel();
             chan.exchangeDeclare(EXCHANGE_NAME, "topic");
         } catch (IOException | TimeoutException e) {
-            //throw new Error(e);
+            throw new Error(e);
         }
         return chan;
     }

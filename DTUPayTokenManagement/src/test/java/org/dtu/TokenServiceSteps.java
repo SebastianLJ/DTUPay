@@ -3,6 +3,8 @@ package org.dtu;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import messageUtilities.queues.QueueType;
+import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.UserId;
 import org.dtu.exceptions.*;
@@ -15,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TokenServiceSteps {
 
-    TokenService tokenService = new TokenFactory().getService();
+    TokenService tokenService = new TokenFactory(new DTUPayRabbitMQ(QueueType.DTUPay_TokenManagement)).getService();
 
     UserId userId1 = new UserId(UUID.randomUUID());
     UserId userId2 = new UserId(UUID.randomUUID());
@@ -23,8 +25,8 @@ public class TokenServiceSteps {
     ArrayList<Token> tokens2 = new ArrayList<>();
 
     @When("a user is created")
-    public void aUserRequestsAnAccount() {
-        tokens1 = tokenService.generateTokens(userId1, new Random().nextInt(5) );
+    public void aUserRequestsAnAccount() throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
+        tokens1 = tokenService.generateTokens(userId1, new Random().nextInt(5 - 1) + 1);
     }
 
     @Then("the token list length is valid")
@@ -34,7 +36,7 @@ public class TokenServiceSteps {
     }
 
     @And("the user is registered")
-    public void theUserIsRegistered() throws TokenHasAlreadyBeenUsedException, TokenDoesNotExistException {
+    public void theUserIsRegistered() throws TokenHasAlreadyBeenUsedException, TokenDoesNotExistException, NoMoreValidTokensException {
         for (Token token : tokens1) {
             UserId user = tokenService.consumeToken(token);
             assertNotNull(user);
@@ -42,8 +44,8 @@ public class TokenServiceSteps {
     }
 
     @And("a second is created")
-    public void aSecondIsCreated() {
-        tokens2 = tokenService.generateTokens(userId2, new Random().nextInt(5));
+    public void aSecondIsCreated() throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
+        tokens2 = tokenService.generateTokens(userId2, new Random().nextInt(5 - 1) + 1);
     }
 
     @Then("they must have different ids")
