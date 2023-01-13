@@ -23,8 +23,8 @@ public class CustomerSteps {
     @And("a customer is in the system")
     public void aCustomerIsInTheSystem() {
         try {
-            //customer = customerApp.register("Fred", "Again...", "MoneyInTheBank");
-            customer = dtuPay.createDTUPayCustomerAccount("fred", "again");
+            customer = customerApp.register("Fred", "Again...", "MoneyInTheBank");
+            //customer = dtuPay.createDTUPayCustomerAccount("fred", "again");
         } catch (Exception e) {
             e.printStackTrace();
         }
