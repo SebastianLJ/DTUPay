@@ -45,16 +45,29 @@ public class CustomerSteps {
     }
 
 
+    //Test of customer deleted along with its tokens
     @Given("a customer is already in the system")
     public void a_customer_is_already_in_the_system() {
-        // Write code here that turns the phrase above into concrete actions
+        try {
+            customer = customerApp.register("Jake", "Sully", "BankAccount112233");
+        } catch (Exception e){
+            e.printStackTrace();
+
+        }
         throw new io.cucumber.java.PendingException();
     }
     @When("a customer is deleted")
     public void a_customer_is_deleted() {
-        // Write code here that turns the phrase above into concrete actions
+        try {
+            customerApp.deRegisterCustomer(customer);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
         throw new io.cucumber.java.PendingException();
     }
+
+
     @Then("the customer is no longer in the system")
     public void the_customer_is_no_longer_in_the_system() {
         // Write code here that turns the phrase above into concrete actions
