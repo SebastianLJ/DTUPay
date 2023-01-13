@@ -55,9 +55,8 @@ public class PaymentService {
         //payment transfer
 
         // if payment is already in the payments list throw PaymentAlreadyExistsException
-        Payment newPayment = Payment.create(payment.getToken(), payment.getMid(), payment.getAmount());
-        repository.save(newPayment);
-        return newPayment.getId();
+        repository.save(payment);
+        return payment.getId();
     }
 
     public Payment deletePayment(UUID id) throws PaymentNotFoundException {

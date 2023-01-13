@@ -1,11 +1,16 @@
 package org.dtu;
 
+import dtu.ws.fastmoney.AccountInfo;
+import dtu.ws.fastmoney.BankService;
+import dtu.ws.fastmoney.BankServiceException_Exception;
+import dtu.ws.fastmoney.BankServiceService;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.dtu.aggregate.Payment;
+import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
 import org.dtu.factories.CustomerFactory;
 import org.dtu.factories.MerchantFactory;
@@ -15,6 +20,7 @@ import org.dtu.services.MerchantService;
 import org.dtu.services.PaymentService;
 import org.dtu.exceptions.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -26,8 +32,12 @@ public class PaymentServiceSteps {
     CustomerService customerRegistration = new CustomerFactory().getService();
     MerchantService merchantRegistration = new MerchantFactory().getService();
 
-    User customer = null;
-    User merchant = null;
+    BankService bankService = new BankServiceService().getBankServicePort();
+
+    dtu.ws.fastmoney.User customerBankUser, merchantBankUser;
+
+    List<dtu.ws.fastmoney.User> bankUsers = new ArrayList<>();
+    User customer, merchant = null;
     Payment payment = null;
     Payment result = null;
     List<Payment> payments = new ArrayList<>();
@@ -51,10 +61,6 @@ public class PaymentServiceSteps {
         }
     }
 
-    @When("^the merchant creates a payment$")
-    public void theMerchantCreatesAPayment() {
-   
-    }
 
     @Then("^a payment is registered$")
     public void aPaymentIsRegistered() {
@@ -70,7 +76,6 @@ public class PaymentServiceSteps {
     public void thereExistsAPayment() {
         this.thereIsARegisteredCustomer();
         this.thereIsARegisteredMerchant();
-        this.theMerchantCreatesAPayment();
         this.aPaymentIsRegistered();
     }
 
@@ -123,6 +128,86 @@ public class PaymentServiceSteps {
             } catch (PaymentNotFoundException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @Given("a customer with a bank account with balance {int}")
+    public void aCustomerWithABankAccountWithBalance(int amount) {
+        customerBankUser = new dtu.ws.fastmoney.User();
+        customerBankUser.setFirstName("Rob");
+        customerBankUser.setLastName("Banks");
+        customerBankUser.setCprNumber("123456-2339");
+        bankUsers.add(customerBankUser);
+        try {
+            bankService.createAccountWithBalance(customerBankUser, BigDecimal.valueOf(amount));
+        } catch (BankServiceException_Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    @And("that the customer is registered with DTU Pay")
+    public void thatTheCustomerIsRegisteredWithDTUPay() {
+        try {
+            customer = customerRegistration.addCustomer(customerBankUser.getFirstName(), customerBankUser.getLastName());
+        } catch (CustomerAlreadyExistsException e) {
+            fail();
+        }
+    }
+
+    @Given("a merchant with a bank account with balance {int}")
+    public void aMerchantWithABankAccountWithBalance(int amount) {
+        merchantBankUser = new dtu.ws.fastmoney.User();
+        merchantBankUser.setFirstName("John");
+        merchantBankUser.setLastName("Doe");
+        merchantBankUser.setCprNumber("123456-2311");
+        bankUsers.add(merchantBankUser);
+        try {
+            bankService.createAccountWithBalance(merchantBankUser, BigDecimal.valueOf(amount));
+        } catch (BankServiceException_Exception e) {
+            fail();
+        }
+    }
+
+    @And("that the merchant is registered with DTU Pay")
+    public void thatTheMerchantIsRegisteredWithDTUPay() {
+        try {
+            merchant = merchantRegistration.addMerchant(merchantBankUser.getFirstName(), merchantBankUser.getLastName());
+        } catch (MerchantAlreadyExistsException e) {
+            fail();
+        }
+    }
+
+    @After
+    public void deleteBankAccounts(){
+        //loop through bankservice.get accounts and delete the ones that are in the list of bank users, using the cpr number to match
+        for (dtu.ws.fastmoney.User bankUser:
+             bankUsers) {
+          //for each accountinfo in getaccounts
+            for (AccountInfo accountInfo:
+                 bankService.getAccounts()) {
+                //if the cpr number of the bank user is equal to the cpr number of the accountinfo
+                if(bankUser.getCprNumber().equals(accountInfo.getUser().getCprNumber())){
+                    //delete the account
+                    try {
+                        bankService.retireAccount(accountInfo.getAccountId());
+                    } catch (BankServiceException_Exception e) {
+                        fail();
+                    }
+                }
+            }
+        }
+
+
+    }
+
+    @When("the merchant initiates a payment for {int} kr by the customer")
+    public void theMerchantInitiatesAPaymentForKrByTheCustomer(int amount) {
+        Token token = new Token();
+        payment = new Payment(token, merchant.getUserId().getUuid(), amount);
+        try {
+            paymentRegistration.createPayment(payment);
+        }  catch (InvalidCustomerIdException | PaymentAlreadyExistsException | InvalidMerchantIdException e) {
+            throw new RuntimeException(e);
         }
     }
 }

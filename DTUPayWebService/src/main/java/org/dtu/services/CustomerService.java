@@ -1,12 +1,15 @@
 package org.dtu.services;
 
 
+import messageUtilities.events.Event;
 import messageUtilities.queues.IDTUPayMessageQueue;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
+import org.dtu.events.AccountDeletionRequested;
 import org.dtu.events.GeneratedToken;
 import org.dtu.events.TokenRequested;
+import org.dtu.events.TokensDeleted;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.repositories.CustomerRepository;
@@ -21,12 +24,15 @@ public class CustomerService {
 
     CompletableFuture<GeneratedToken> tokenEvent;
 
+    CompletableFuture<UUID> deletedStudent;
+
     public CustomerService() {repository = new CustomerRepository();}
 
     public CustomerService(IDTUPayMessageQueue messageQueue) {
         this.repository = new CustomerRepository();
         this.messageQueue = messageQueue;
         this.messageQueue.addHandler(GeneratedToken.class, e -> apply((GeneratedToken) e));
+        this.messageQueue.addHandler(TokensDeleted.class, e -> handleCustomerAccountDeleted((TokensDeleted) e));
 
     }
 
@@ -58,8 +64,13 @@ public class CustomerService {
         return repository.getCustomerList();
     }
 
-    public User deleteCustomer(UUID id) throws InvalidCustomerIdException {
-        return repository.deleteCustomer(id);
+    public UUID deleteCustomer(UUID id) throws InvalidCustomerIdException {
+    deletedStudent = new CompletableFuture<>();
+    Event event = new AccountDeletionRequested(id);
+    messageQueue.publish(event);
+    UUID deletedId = deletedStudent.join();
+    repository.deleteCustomer(deletedId);
+    return deletedId;
     }
 
     public ArrayList<Token> getTokens(UserId userId, int amount) {
@@ -72,4 +83,6 @@ public class CustomerService {
     public void apply(GeneratedToken event) {
         this.tokenEvent.complete(event);
     }
+
+    public void handleCustomerAccountDeleted(TokensDeleted event){this.deletedStudent.complete(event.getCustomerID());}
 }

@@ -76,10 +76,10 @@ public class CustomerFacade {
     public Response deregister(@PathParam("id") String id) {
         try {
             UUID uuid = UUID.fromString(id);
-            User deletedUser = customerService.deleteCustomer(uuid);
+            UUID deletedUserID = customerService.deleteCustomer(uuid);
             return Response
                     .status(Response.Status.OK)
-                    .entity(deletedUser)
+                    .entity(deletedUserID)
                     .build();
         } catch (IllegalArgumentException | InvalidCustomerIdException e) {
             return Response
