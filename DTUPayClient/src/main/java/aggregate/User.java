@@ -1,30 +1,31 @@
-
 package aggregate;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.Serializable;
 import java.util.UUID;
-
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class User {
+@AllArgsConstructor
+public class User implements Serializable {
 
     Name name;
-
     UserId userId;
-
-    List<Payment> payments = new ArrayList<Payment>();
-
+    String bankNumber;
 
     public User(String firstName, String lastName) {
         this.userId = new UserId(UUID.randomUUID());
         this.name = new Name(firstName, lastName);
     }
 
+    public User(String firstName, String lastName, String bankNumber) {
+        this.userId = new UserId(UUID.randomUUID());
+        this.name = new Name(firstName, lastName);
+        this.bankNumber = bankNumber;
+    }
 }

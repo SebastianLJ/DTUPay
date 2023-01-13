@@ -19,12 +19,15 @@ popd
 # Prune & build the docker images and run them
 printf "\n\033[94mStep 2/4: Prune and build the docker images and run them\033[0m\n"
 docker image prune -f
+docker-compose up -d rabbitMq
+sleep 5
 docker-compose up -d
 
 # Wait for any builds to run
 sleep 2
 
 # Run project tests
+printf "\n\033[94mStep 3/4: Run project tests\033[0m\n"
 pushd DTUPayMessageQueue
 mvn test -q
 popd
@@ -33,7 +36,6 @@ pushd DTUPayTokenManagement
 mvn test -q
 popd
 
-printf "\n\033[94mStep 3/4: Run project tests\033[0m\n"
 pushd DTUPayClient
 mvn test -q
 popd

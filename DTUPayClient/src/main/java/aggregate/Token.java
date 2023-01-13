@@ -1,8 +1,7 @@
-package org.dtu.aggregate;
+package aggregate;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -12,8 +11,4 @@ import java.util.UUID;
 public class Token implements Serializable {
 
     UUID id;
-
-    public Token(){
-        this.id = UUID.randomUUID();
-    }
 }

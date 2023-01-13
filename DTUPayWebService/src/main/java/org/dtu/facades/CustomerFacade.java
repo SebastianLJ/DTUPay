@@ -4,7 +4,9 @@ import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
+import org.dtu.exceptions.CustomerNotFoundException;
 import org.dtu.exceptions.InvalidCustomerIdException;
+import org.dtu.exceptions.InvalidCustomerNameException;
 import org.dtu.factories.CustomerFactory;
 import org.dtu.services.CustomerService;
 
@@ -57,16 +59,22 @@ public class CustomerFacade {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response register(String firstName, String lastName, String bankAccount) throws URISyntaxException {
+    public Response register(User user) throws URISyntaxException {
         try {
-            User user = customerService.addCustomer(firstName, lastName, bankAccount);
+            System.out.println("Adding customer");
+            User createdUser = customerService.addCustomer(user);
+            System.out.println("User: " + createdUser.getUserId());
             return Response.status(Response.Status.CREATED)
-                    .link(new URI("/"+user.getUserId().getUuid()+"/"+5), "tokens")
-                    .entity("customer with id " + user.getUserId().getUuid() + " created")
+                    .entity(createdUser)
                     .build();
         } catch (CustomerAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
                     .entity("customer with the same id already exists")
+                    .build();
+        } catch (InvalidCustomerNameException e) {
+            System.out.println("Invalid customer");
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("invalid customer object")
                     .build();
         }
     }
@@ -82,6 +90,24 @@ public class CustomerFacade {
                     .entity(deletedUserID)
                     .build();
         } catch (IllegalArgumentException | InvalidCustomerIdException e) {
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    @GET
+    @Path("{id}")
+    public Response getCustomer(@PathParam ("id") String id) {
+        try {
+            UUID uuid = UUID.fromString(id);
+            User user = customerService.getCustomer(uuid);
+            return Response
+                    .status(Response.Status.OK)
+                    .entity(user)
+                    .build();
+        } catch (CustomerNotFoundException | InvalidCustomerIdException e) {
             return Response
                     .status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
