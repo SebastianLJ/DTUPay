@@ -59,4 +59,16 @@ public class CustomerApp {
             throw new Exception("code: " + response.getStatus());
         }
     }
+
+    //TODO Implement exception
+    public User getCustomer(User user) {
+        return r.path("customer/" + user.getUserId().getUuid())
+                .request()
+                .accept(MediaType.APPLICATION_JSON)
+                .get(User.class);
+//        if(response.getStatus() == Response.Status.OK.getStatusCode()) {
+//            return response;
+//        }
+    }
+
 }
