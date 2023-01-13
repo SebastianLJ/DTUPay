@@ -1,5 +1,6 @@
 package org.dtu;
 
+import aggregate.User;
 import aggregate.UserId;
 import aggregate.Token;
 import io.cucumber.java.en.And;
@@ -16,7 +17,7 @@ public class CustomerSteps {
     SimpleDTUPay dtuPay = new SimpleDTUPay();
     CustomerApp customerApp = new CustomerApp();
 
-    UserId customer;
+    User customer;
     List<Token> tokens;
 
     @And("a customer is in the system")
@@ -31,7 +32,7 @@ public class CustomerSteps {
     @When("the customer requests {int} tokens")
     public void theCustomerRequestsTokens(int amount) {
         try {
-            tokens = customerApp.getTokens(customer, amount);
+            tokens = customerApp.getTokens(customer.getUserId(), amount);
         } catch (Exception e) {
             e.printStackTrace();
         }

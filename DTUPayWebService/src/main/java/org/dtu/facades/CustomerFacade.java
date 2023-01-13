@@ -66,7 +66,7 @@ public class CustomerFacade {
             System.out.println("User: " + createdUser.getUserId());
             return Response.status(Response.Status.CREATED)
                     .link(new URI("/"+createdUser.getUserId().getUuid()+"/"+5), "getTokens")
-                    .entity(createdUser.getUserId())
+                    .entity(createdUser)
                     .type(MediaType.APPLICATION_JSON)
                     .build();
         } catch (CustomerAlreadyExistsException e) {

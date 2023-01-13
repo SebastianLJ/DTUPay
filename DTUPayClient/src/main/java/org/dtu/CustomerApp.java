@@ -18,16 +18,16 @@ public class CustomerApp {
     Client c = ClientBuilder.newClient();
     WebTarget r = c.target("http://localhost:8080/");
 
-    public UserId register(String firstName, String lastName, String bankAccount) throws Exception {
-        User user = new User(firstName, lastName, bankAccount);
+    public User register(String firstName, String lastName, String bankNumber) throws Exception {
+        User user = new User(firstName, lastName, bankNumber);
         Response response = r.path("customers")
                 .request()
                 //.accept(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(user, MediaType.APPLICATION_JSON));
         if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
-            return response.readEntity(UserId.class);
+            return response.readEntity(User.class);
         } else {
-            System.out.println("!!!! " + response.readEntity(UserId.class) + " !!!!");
+            System.out.println("!!!! " + response.readEntity(User.class) + " !!!!");
             throw new Exception("code: " + response.getStatus());
         }
     }
