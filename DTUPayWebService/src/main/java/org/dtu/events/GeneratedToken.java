@@ -12,6 +12,7 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class GeneratedToken extends Event {
+    private static final long serialVersionUID = -1599019626118724482L;
 
     ArrayList<Token> tokens;
 }
