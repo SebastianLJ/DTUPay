@@ -3,7 +3,6 @@ package messageUtilities;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import messageUtilities.events.EventID;
 import messageUtilities.queues.IDTUPayMessageQueue;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
 import messageUtilities.queues.QueueType;
@@ -32,7 +31,7 @@ public class MessageQueueCucumberSteps {
 
     @Then("A EventRequestedStub is sent by the Producer with the message {string}")
     public void aEventRequestedStubIsSentByTheProducerWithTheMessage(String requestEvent) {
-        EventRequestedStub event = new EventRequestedStub(new EventID(UUID.randomUUID()));
+        EventRequestedStub event = new EventRequestedStub();
         event.message = requestEvent;
         eventCreated = this.producer.produceEvent(event);
         assertEquals(requestEvent, producer.currentEventRequested.message);
