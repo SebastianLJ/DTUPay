@@ -7,6 +7,7 @@ import org.dtu.event.ConsumeToken;
 import org.dtu.event.ConsumedToken;
 import org.dtu.event.GenerateToken;
 import org.dtu.event.GeneratedToken;
+import org.dtu.event.TokenRequested;
 import org.dtu.exceptions.*;
 import org.dtu.repository.TokenRepository;
 
@@ -34,6 +35,13 @@ public class TokenService {
                 throw new RuntimeException(ex);
             }
         });
+        this.messageQueue.addHandler(TokenRequested.class, e -> {
+            try {
+                generateTokens((TokenRequested) e);
+            } catch (InvalidTokenAmountException | InvalidTokenAmountRequestException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
 
     public void consumeToken(ConsumeToken event) throws TokenDoesNotExistException, TokenHasAlreadyBeenUsedException, NoMoreValidTokensException {
@@ -46,6 +54,15 @@ public class TokenService {
     }
 
     public void generateTokens(GenerateToken event) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
+
+        ArrayList<Token> tokens = tokenRepository.generateTokens(event.getUserId(),event.getAmount());
+
+        GeneratedToken newEvent = new GeneratedToken(tokens);
+
+        messageQueue.publish(newEvent);
+    }
+
+    public void generateTokens(TokenRequested event) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
 
         ArrayList<Token> tokens = tokenRepository.generateTokens(event.getUserId(),event.getAmount());
 
