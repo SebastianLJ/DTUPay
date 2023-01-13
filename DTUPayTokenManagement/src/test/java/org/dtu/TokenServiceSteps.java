@@ -26,7 +26,7 @@ public class TokenServiceSteps {
 
     @When("a user is created")
     public void aUserRequestsAnAccount() throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
-        tokens1 = tokenService.generateTokens(userId1, new Random().nextInt(5) );
+        tokens1 = tokenService.generateTokens(userId1, new Random().nextInt(5 - 1) + 1);
     }
 
     @Then("the token list length is valid")
