@@ -29,7 +29,7 @@ public class CustomerApp {
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(User.class);
         } else {
-            throw new Exception(response.toString());
+            throw new Exception("code: " + response.getStatus());
         }
     }
 
