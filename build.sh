@@ -19,6 +19,8 @@ popd
 # Prune & build the docker images and run them
 printf "\n\033[94mStep 2/4: Prune and build the docker images and run them\033[0m\n"
 docker image prune -f
+docker-compose up -d rabbitMq
+sleep 5
 docker-compose up -d
 
 # Wait for any builds to run
