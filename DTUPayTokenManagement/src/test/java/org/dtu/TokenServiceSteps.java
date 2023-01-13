@@ -3,6 +3,8 @@ package org.dtu;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import messageUtilities.queues.QueueType;
+import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.UserId;
 import org.dtu.exceptions.*;
@@ -15,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TokenServiceSteps {
 
-    TokenService tokenService = new TokenFactory().getService();
+    TokenService tokenService = new TokenFactory(new DTUPayRabbitMQ(QueueType.DTUPay_TokenManagement)).getService();
 
     UserId userId1 = new UserId(UUID.randomUUID());
     UserId userId2 = new UserId(UUID.randomUUID());

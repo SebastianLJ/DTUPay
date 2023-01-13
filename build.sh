@@ -8,6 +8,10 @@ pushd DTUPayMessageQueue
 mvn clean install -q -DskipTests
 popd
 
+pushd DTUPayTokenManagement
+mvn clean install -q -DskipTests
+popd
+
 pushd DTUPayWebService
 mvn clean package -q -DskipTests
 popd
