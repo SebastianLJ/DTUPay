@@ -1,6 +1,6 @@
 package org.dtu;
 
-import aggregate.User;
+import aggregate.UserId;
 import aggregate.Token;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
@@ -16,7 +16,7 @@ public class CustomerSteps {
     SimpleDTUPay dtuPay = new SimpleDTUPay();
     CustomerApp customerApp = new CustomerApp();
 
-    User customer;
+    UserId customer;
     List<Token> tokens;
 
     @And("a customer is in the system")

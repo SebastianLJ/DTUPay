@@ -3,6 +3,7 @@ package org.dtu;
 import aggregate.Name;
 import aggregate.Token;
 import aggregate.User;
+import aggregate.UserId;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -21,23 +22,23 @@ public class CustomerApp {
     Client c = ClientBuilder.newClient();
     WebTarget r = c.target("http://localhost:8080/");
 
-    public User register(String firstName, String lastName, String bankAccount) throws Exception {
+    public UserId register(String firstName, String lastName, String bankAccount) throws Exception {
         User user = new User(firstName, lastName, bankAccount);
         Response response = r.path("customers")
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(user, MediaType.APPLICATION_JSON));
         if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
-            return response.readEntity(User.class);
+            return response.readEntity(UserId.class);
         } else {
             throw new Exception("code: " + response.getStatus());
         }
     }
 
-    public List<Token> getTokens(User user, int tokenCount) throws Exception {
+    public List<Token> getTokens(UserId userId, int tokenCount) throws Exception {
         Response response = r.path(
                         "customers/"+
-                        user.getUserId().getUuid()+
+                        userId.getUuid()+
                         "/tokens"
                 ).request()
                 .accept(MediaType.APPLICATION_JSON)
