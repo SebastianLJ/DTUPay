@@ -49,9 +49,11 @@ public class TokenService {
 
         ArrayList<Token> tokens = tokenRepository.generateTokens(event.getUserId(),event.getAmount());
 
-        GeneratedToken newEvent = new GeneratedToken(tokens);
+        for (int i = 0; i < tokens.size(); i++) {
+            GeneratedToken newEvent = new GeneratedToken(tokens.get(i));
+            messageQueue.publish(newEvent);
+        }
 
-        messageQueue.publish(newEvent);
     }
 
     public UserId consumeToken(Token token) throws TokenDoesNotExistException, TokenHasAlreadyBeenUsedException, NoMoreValidTokensException {

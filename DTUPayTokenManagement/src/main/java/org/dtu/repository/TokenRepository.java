@@ -1,5 +1,6 @@
 package org.dtu.repository;
 
+import messageUtilities.queues.IDTUPayMessageQueue;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.UserId;
 import org.dtu.exceptions.*;
@@ -7,6 +8,15 @@ import org.dtu.exceptions.*;
 import java.util.*;
 
 public class TokenRepository {
+
+    private EventStore eventStore;
+
+    public TokenRepository(IDTUPayMessageQueue bus) {
+        eventStore = new EventStore(bus);
+    }
+
+
+
 
     private HashMap<Token, UserId> tokenRepository = new HashMap<>();
     private HashMap<UserId, Integer> tokenAmountRepository = new HashMap<UserId, Integer>();
