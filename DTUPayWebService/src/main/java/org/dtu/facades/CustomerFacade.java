@@ -58,16 +58,13 @@ public class CustomerFacade {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response register(User user) throws URISyntaxException {
         try {
             System.out.println("Adding customer");
             User createdUser = customerService.addCustomer(user);
             System.out.println("User: " + createdUser.getUserId());
             return Response.status(Response.Status.CREATED)
-                    .link(new URI("/"+createdUser.getUserId().getUuid()+"/"+5), "getTokens")
                     .entity(createdUser)
-                    .type(MediaType.APPLICATION_JSON)
                     .build();
         } catch (CustomerAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
