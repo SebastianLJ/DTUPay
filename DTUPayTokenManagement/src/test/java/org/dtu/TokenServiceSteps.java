@@ -45,7 +45,7 @@ public class TokenServiceSteps {
 
     @And("a second is created")
     public void aSecondIsCreated() throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
-        tokens2 = tokenService.generateTokens(userId2, new Random().nextInt(5));
+        tokens2 = tokenService.generateTokens(userId2, new Random().nextInt(5 - 1) + 1);
     }
 
     @Then("they must have different ids")
