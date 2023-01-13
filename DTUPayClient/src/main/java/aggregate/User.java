@@ -18,10 +18,6 @@ public class User implements Serializable {
     UserId userId;
     String bankNumber;
 
-    public User() {
-
-    }
-
     public User(String firstName, String lastName) {
         this.userId = new UserId(UUID.randomUUID());
         this.name = new Name(firstName, lastName);
