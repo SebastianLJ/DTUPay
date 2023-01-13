@@ -61,7 +61,8 @@ public class CustomerFacade {
     @Produces(MediaType.APPLICATION_JSON)
     public Response register(User user) throws URISyntaxException {
         try {
-            User createdUser = customerService.addCustomer(new User(user.getName(), user.getBankNumber()));
+            System.out.println("Adding customer");
+            User createdUser = customerService.addCustomer(user);
             System.out.println("User: " + createdUser.getUserId());
             return Response.status(Response.Status.CREATED)
                     .link(new URI("/"+createdUser.getUserId().getUuid()+"/"+5), "getTokens")
@@ -73,6 +74,7 @@ public class CustomerFacade {
                     .entity("customer with the same id already exists")
                     .build();
         } catch (InvalidCustomerNameException e) {
+            System.out.println("Invalid customer");
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("invalid customer object")
                     .build();

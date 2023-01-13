@@ -7,6 +7,7 @@ import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.InvalidCustomerIdException;
+import org.dtu.exceptions.InvalidCustomerNameException;
 import org.dtu.factories.CustomerFactory;
 import org.dtu.services.CustomerService;
 import org.junit.After;
@@ -29,8 +30,8 @@ public class CustomerServiceSteps {
     @When("a customer is created")
     public void a_customer_is_created() {
         try {
-            customer = service.addCustomer("Frank", "Ocean");
-        } catch (CustomerAlreadyExistsException e) {
+            customer = service.addCustomer(new User("Frank", "Ocean", "Bank"));
+        } catch (CustomerAlreadyExistsException | InvalidCustomerNameException e) {
             e.printStackTrace();
         }
     }
@@ -62,15 +63,5 @@ public class CustomerServiceSteps {
     @Then("the customer cannot be found")
     public void the_customer_cannot_be_found() throws InvalidCustomerIdException {
         assertNull(service.getCustomer(customer.getUserId().getUuid()));
-    }
-
-    @When("the customer requests {int} tokens")
-    public void theCustomerRequestsTokens(int tokenCount) {
-        tokens = service.getTokens(customer.getUserId(), tokenCount);
-    }
-
-    @Then("the customer receives {int} tokens")
-    public void theCustomerReceivesTokens(int tokenCount) {
-        assertEquals(tokenCount, tokens.size());
     }
 }
