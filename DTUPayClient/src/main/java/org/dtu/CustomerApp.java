@@ -26,7 +26,7 @@ public class CustomerApp {
         Response response = r.path("customers")
                 .request()
                 .post(Entity.entity(user, MediaType.APPLICATION_JSON));
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+        if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
             return response.readEntity(User.class);
         } else {
             throw new Exception("code: " + response.getStatus());
@@ -45,7 +45,7 @@ public class CustomerApp {
             return response.readEntity(new GenericType<List<Token>>() {
             });
         } else {
-            throw new Exception(response.toString());
+            throw new Exception("code: " + response.getStatus());
         }
     }
 }
