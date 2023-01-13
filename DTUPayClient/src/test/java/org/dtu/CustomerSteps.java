@@ -16,7 +16,7 @@ public class CustomerSteps {
     SimpleDTUPay dtuPay = new SimpleDTUPay();
     CustomerApp customerApp = new CustomerApp();
 
-    UUID customer;
+    User customer;
     List<Token> tokens;
 
     @And("a customer is in the system")

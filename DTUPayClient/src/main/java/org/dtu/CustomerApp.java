@@ -21,23 +21,23 @@ public class CustomerApp {
     Client c = ClientBuilder.newClient();
     WebTarget r = c.target("http://localhost:8080/");
 
-    public UUID register(String firstName, String lastName, String bankAccount) throws Exception {
+    public User register(String firstName, String lastName, String bankAccount) throws Exception {
         User user = new User(firstName, lastName, bankAccount);
         Response response = r.path("customers")
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(user, MediaType.APPLICATION_JSON));
         if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
-            return response.readEntity(UUID.class);
+            return response.readEntity(User.class);
         } else {
             throw new Exception("code: " + response.getStatus());
         }
     }
 
-    public List<Token> getTokens(UUID user, int tokenCount) throws Exception {
+    public List<Token> getTokens(User user, int tokenCount) throws Exception {
         Response response = r.path(
                         "customers/"+
-                        user+
+                        user.getUserId().getUuid()+
                         "/tokens"
                 ).request()
                 .accept(MediaType.APPLICATION_JSON)
