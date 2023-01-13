@@ -29,7 +29,7 @@ public class CustomerApp {
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(User.class);
         } else {
-            throw new Exception(response.getEntity().toString());
+            throw new Exception(response.toString());
         }
     }
 
@@ -45,7 +45,7 @@ public class CustomerApp {
             return response.readEntity(new GenericType<List<Token>>() {
             });
         } else {
-            throw new Exception(response.getEntity().toString());
+            throw new Exception(response.toString());
         }
     }
 }
