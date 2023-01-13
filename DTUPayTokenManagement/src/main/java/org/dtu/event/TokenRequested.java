@@ -1,4 +1,4 @@
-package org.dtu.events;
+package org.dtu.event;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
