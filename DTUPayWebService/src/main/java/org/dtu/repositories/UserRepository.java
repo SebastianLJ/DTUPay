@@ -1,6 +1,6 @@
 package org.dtu.repositories;
 
-import messageUtilities.events.IEventRepository;
+import messageUtilities.eventSource.IEventRepository;
 import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
 

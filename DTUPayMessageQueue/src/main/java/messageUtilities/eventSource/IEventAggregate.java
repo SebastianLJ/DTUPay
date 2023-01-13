@@ -1,4 +1,6 @@
-package messageUtilities.events;
+package messageUtilities.eventSource;
+
+import messageUtilities.events.Event;
 
 import java.util.stream.Stream;
 
