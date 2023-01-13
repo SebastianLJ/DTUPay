@@ -8,10 +8,10 @@ services:
       - "15672:15672"
     volumes:
       - "./custom_rabbitmq_config.conf:/etc/rabbitmq/rabbitmq.conf"
-  #DTUTokenManagement:
-    #build: DTUTokenManagement
-    #image: dtu_token_management
-    #container_name: DTUTokenManagement
+  DTUTokenManagement:
+    build: DTUTokenManagement
+    image: dtu_token_management
+    container_name: DTUTokenManagement
   DTUPayWebService:
     build: DTUPayWebService
     image: dtu_pay_web_service
