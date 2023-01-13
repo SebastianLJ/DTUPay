@@ -15,7 +15,10 @@ public class TokenRepository {
     public ArrayList<Token> generateTokens(UserId userid, int amount) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
         if (amount > 5 || amount < 1) throw new InvalidTokenAmountRequestException();
 
-        int tokensAmount = tokenAmountRepository.get(userid);
+        Integer tokensAmount = tokenAmountRepository.get(userid);
+        if (tokensAmount == null) {
+            tokensAmount = 0;
+        }
         if (tokensAmount > 1) throw new InvalidTokenAmountException();
         ArrayList<Token> tokens = new ArrayList<>();
         for (int i = 0 ; i < amount ; i++){
