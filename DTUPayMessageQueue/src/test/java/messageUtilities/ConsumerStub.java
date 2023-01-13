@@ -2,6 +2,8 @@ package messageUtilities;
 
 import messageUtilities.queues.IDTUPayMessageQueue;
 
+import java.util.UUID;
+
 public class ConsumerStub {
 
     public EventRequestedStub currentEventRequested;
