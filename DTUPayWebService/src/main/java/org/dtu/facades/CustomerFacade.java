@@ -62,7 +62,7 @@ public class CustomerFacade {
             User createdUser = customerService.addCustomer(user);
             return Response.status(Response.Status.CREATED)
                     .link(new URI("/"+createdUser.getUserId().getUuid()+"/"+5), "getTokens")
-                    .entity(user)
+                    .entity(createdUser)
                     .build();
         } catch (CustomerAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
