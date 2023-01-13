@@ -25,8 +25,7 @@ docker-compose up -d
 sleep 2
 
 # Run project tests
-printf "\n\033[94mStep 3/4: Run project tests\033[0m\n"
-pushd DTUPayClient
+pushd DTUPayMessageQueue
 mvn test -q
 popd
 
@@ -34,7 +33,8 @@ pushd DTUPayTokenManagement
 mvn test -q
 popd
 
-pushd DTUPayMessageQueue
+printf "\n\033[94mStep 3/4: Run project tests\033[0m\n"
+pushd DTUPayClient
 mvn test -q
 popd
 
