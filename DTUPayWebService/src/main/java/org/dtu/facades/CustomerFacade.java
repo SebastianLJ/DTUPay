@@ -4,6 +4,7 @@ import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
+import org.dtu.exceptions.CustomerNotFoundException;
 import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.exceptions.InvalidCustomerNameException;
 import org.dtu.factories.CustomerFactory;
@@ -89,6 +90,24 @@ public class CustomerFacade {
                     .entity(deletedUser)
                     .build();
         } catch (IllegalArgumentException | InvalidCustomerIdException e) {
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
+    @GET
+    @Path("{id}")
+    public Response getCustomer(@PathParam ("id") String id) {
+        try {
+            UUID uuid = UUID.fromString(id);
+            User user = customerService.getCustomer(uuid);
+            return Response
+                    .status(Response.Status.OK)
+                    .entity(user)
+                    .build();
+        } catch (CustomerNotFoundException | InvalidCustomerIdException e) {
             return Response
                     .status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())

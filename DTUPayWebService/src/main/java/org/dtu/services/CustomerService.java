@@ -8,6 +8,7 @@ import org.dtu.aggregate.UserId;
 import org.dtu.events.GeneratedToken;
 import org.dtu.events.TokenRequested;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
+import org.dtu.exceptions.CustomerNotFoundException;
 import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.exceptions.InvalidCustomerNameException;
 import org.dtu.repositories.CustomerRepository;
@@ -31,7 +32,7 @@ public class CustomerService {
 
     }
 
-    public User getCustomer (UUID id) throws InvalidCustomerIdException {
+    public User getCustomer (UUID id) throws InvalidCustomerIdException, CustomerNotFoundException {
         try {
             return repository.getCustomer(id);
         } catch (InvalidCustomerIdException e) {
