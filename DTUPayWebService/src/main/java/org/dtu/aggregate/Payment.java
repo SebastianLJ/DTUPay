@@ -1,7 +1,7 @@
 package org.dtu.aggregate;
 
 
-import messageUtilities.events.Event;
+import messageUtilities.cqrs.events.Event;
 import org.dtu.events.PaymentRequested;
 import lombok.Getter;
 import lombok.Setter;

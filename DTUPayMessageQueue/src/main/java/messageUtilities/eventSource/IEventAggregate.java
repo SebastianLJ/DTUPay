@@ -1,6 +1,6 @@
 package messageUtilities.eventSource;
 
-import messageUtilities.events.Event;
+import messageUtilities.cqrs.events.Event;
 
 import java.util.stream.Stream;
 

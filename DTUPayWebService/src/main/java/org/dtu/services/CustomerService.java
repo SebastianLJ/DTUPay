@@ -1,7 +1,7 @@
 package org.dtu.services;
 
 
-import messageUtilities.events.Event;
+import messageUtilities.cqrs.events.Event;
 import messageUtilities.queues.IDTUPayMessageQueue;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;

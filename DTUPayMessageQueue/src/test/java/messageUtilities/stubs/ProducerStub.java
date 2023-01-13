@@ -1,4 +1,4 @@
-package messageUtilities;
+package messageUtilities.stubs;
 
 import messageUtilities.queues.IDTUPayMessageQueue;
 
@@ -9,7 +9,7 @@ public class ProducerStub {
     public EventCreatedStub currentEventCreated;
     public EventRequestedStub currentEventRequested;
     private CompletableFuture<EventCreatedStub> eventCreatedFuture;
-    private IDTUPayMessageQueue messageQueue;
+    private final IDTUPayMessageQueue messageQueue;
 
     public ProducerStub(IDTUPayMessageQueue messageQueue) {
         this.messageQueue = messageQueue;

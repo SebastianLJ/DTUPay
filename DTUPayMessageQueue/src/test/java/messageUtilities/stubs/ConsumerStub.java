@@ -1,14 +1,12 @@
-package messageUtilities;
+package messageUtilities.stubs;
 
 import messageUtilities.queues.IDTUPayMessageQueue;
-
-import java.util.UUID;
 
 public class ConsumerStub {
 
     public EventRequestedStub currentEventRequested;
     public EventCreatedStub currentEventCreated;
-    private IDTUPayMessageQueue messageQueue;
+    private final IDTUPayMessageQueue messageQueue;
 
     public ConsumerStub(IDTUPayMessageQueue messageQueue) {
         this.messageQueue = messageQueue;

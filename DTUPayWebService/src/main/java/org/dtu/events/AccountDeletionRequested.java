@@ -3,7 +3,7 @@ package org.dtu.events;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import messageUtilities.events.Event;
+import messageUtilities.cqrs.events.Event;
 
 import java.util.UUID;
 

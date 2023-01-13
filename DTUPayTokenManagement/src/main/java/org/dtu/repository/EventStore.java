@@ -1,11 +1,9 @@
 package org.dtu.repository;
 
-import messageUtilities.events.Event;
+import messageUtilities.cqrs.events.Event;
 import messageUtilities.queues.IDTUPayMessageQueue;
 import org.dtu.aggregate.Token;
-import org.dtu.aggregate.UserId;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

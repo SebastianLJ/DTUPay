@@ -1,6 +1,6 @@
 package org.dtu.repositories.customer;
 
-import messageUtilities.events.Event;
+import messageUtilities.cqrs.events.Event;
 import messageUtilities.eventSource.IEventStore;
 import messageUtilities.queues.IDTUPayMessageQueue;
 import org.dtu.aggregate.UserId;

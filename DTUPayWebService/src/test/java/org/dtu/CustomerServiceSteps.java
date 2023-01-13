@@ -7,7 +7,6 @@ import dtu.ws.fastmoney.BankServiceService;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import messageUtilities.events.Event;
 import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.QueueType;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
@@ -50,12 +49,12 @@ public class CustomerServiceSteps {
 
     private DTUPayRabbitMQ q = new DTUPayRabbitMQ(QueueType.Customer_DTUPay) {
         @Override
-        public void publish(IDTUPayMessage event) {
-            publishedEvents.complete(event);
+        public void publish(IDTUPayMessage message) {
+            publishedEvents.complete(message);
         }
 
         @Override
-        public void addHandler(Class<? extends IDTUPayMessage> event, Consumer<IDTUPayMessage> handler) {
+        public void addHandler(Class<? extends IDTUPayMessage> message, Consumer<IDTUPayMessage> handler) {
 
         }
 
