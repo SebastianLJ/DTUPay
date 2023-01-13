@@ -32,6 +32,18 @@ public class CustomerApp {
         }
     }
 
+
+    public User deRegisterCustomer(User user) throws Exception {
+        return r.path(
+                        "customers/" + user.getUserId().getUuid()
+                )
+                .request()
+                .accept(MediaType.APPLICATION_JSON)
+                .delete(User.class);
+
+    }
+
+
     public List<Token> getTokens(UserId userId, int tokenCount) throws Exception {
         Response response = r.path(
                         "customers/"+
