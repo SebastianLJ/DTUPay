@@ -8,8 +8,7 @@ import org.junit.runner.RunWith;
 @CucumberOptions(
         plugin = {"json:target/cucumber.json"},
         features = "features",// directory of the feature files
-        glue = "org.dtu",
-        monochrome = true
+        glue = "org.dtu"
 )
 public class CucumberTest {
 }
