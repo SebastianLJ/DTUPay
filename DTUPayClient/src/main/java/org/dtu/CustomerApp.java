@@ -19,7 +19,7 @@ import java.util.UUID;
 
 public class CustomerApp {
     Client c = ClientBuilder.newClient();
-    WebTarget r = c.target("http://localhost:8080");
+    WebTarget r = c.target("http://localhost:8080/");
 
     public User register(String firstName, String lastName, String bankAccount) throws Exception {
         User user = new User(firstName, lastName, bankAccount);
