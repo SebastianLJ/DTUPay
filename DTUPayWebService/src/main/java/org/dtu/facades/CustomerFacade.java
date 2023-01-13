@@ -57,12 +57,12 @@ public class CustomerFacade {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response register(String firstName, String lastName, String bankAccount) throws URISyntaxException {
+    public Response register(User user) throws URISyntaxException {
         try {
-            User user = customerService.addCustomer(firstName, lastName, bankAccount);
+            User createdUser = customerService.addCustomer(user);
             return Response.status(Response.Status.CREATED)
-                    .link(new URI("/"+user.getUserId().getUuid()+"/"+5), "tokens")
-                    .entity("customer with id " + user.getUserId().getUuid() + " created")
+                    .link(new URI("/"+createdUser.getUserId().getUuid()+"/"+5), "getTokens")
+                    .entity(user)
                     .build();
         } catch (CustomerAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
