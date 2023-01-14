@@ -11,7 +11,7 @@ public class CustomerFactory {
 
     public synchronized CustomerService getService() {
         if (service == null) {
-            service = new CustomerService(new DTUPayRabbitMQ(QueueType.DTUPay_TokenManagement));
+            service = new CustomerService(new DTUPayRabbitMQ(QueueType.DTUPay));
         }
         return service;
     }

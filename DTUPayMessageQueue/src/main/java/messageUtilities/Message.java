@@ -17,7 +17,7 @@ public abstract class Message implements IDTUPayMessage, Serializable {
     private final Date date;
 
     public Message() {
-        this.correlationID = CorrelationID.randomID();
+        this.correlationID = null;
         this.message = "";
         this.date = new Date();
     }

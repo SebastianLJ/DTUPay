@@ -9,6 +9,7 @@ import messageUtilities.cqrs.events.Event;
 import java.util.UUID;
 
 @Value
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class TokensDeleted extends Event {
 

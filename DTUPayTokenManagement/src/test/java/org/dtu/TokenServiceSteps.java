@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TokenServiceSteps {
 
-    TokenService tokenService = new TokenFactory(new DTUPayRabbitMQ(QueueType.DTUPay_TokenManagement)).getService();
+    TokenService tokenService = new TokenFactory(new DTUPayRabbitMQ(QueueType.DTUPay)).getService();
 
     UserId userId1 = new UserId(UUID.randomUUID());
     UserId userId2 = new UserId(UUID.randomUUID());

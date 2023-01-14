@@ -64,10 +64,9 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
                     handler.accept(currentMessageInQueue);
                 }
             };
-            channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
-            });
-        } catch (IOException e1) {
-            throw new Error(e1);
+            channel.basicConsume(queueName, true, deliverCallback, consumerTag -> { });
+        } catch (Exception e) {
+            throw new Error(e);
         }
     }
 

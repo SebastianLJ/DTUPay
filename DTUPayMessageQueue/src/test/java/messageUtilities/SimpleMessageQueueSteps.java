@@ -32,7 +32,7 @@ public class SimpleMessageQueueSteps {
 
     @Given("DTUPayMessageQueue has been established")
     public void dtupaymessagequeueHasBeenEstablished() {
-        this.messageQueue = new DTUPayRabbitMQ(QueueType.DTUPay_TokenManagement) {
+        this.messageQueue = new DTUPayRabbitMQ(QueueType.DTUPay) {
             @Override
             public void publish(IDTUPayMessage message) {
                 if (message instanceof EventRequestedStub) {
@@ -51,7 +51,6 @@ public class SimpleMessageQueueSteps {
 
     @When("The ProducerStub sends a {string} message via the queue")
     public void theProducerStubSendsAMessageViaTheQueue(String arg0) {
-        requestedEvent1 = new EventRequestedStub(CorrelationID.randomID());
         requestedEvent1.setMessage(arg0);
         new Thread(() -> {
             EventCreatedStub eventCreated = producer.produceEvent(requestedEvent1);
@@ -145,5 +144,7 @@ public class SimpleMessageQueueSteps {
         assertEquals(arg0, createdEvent2.getMessage());
         assertEquals(requestedEvent1.getCorrelationID(), createdEvent1.getCorrelationID());
         assertEquals(requestedEvent2.getCorrelationID(), createdEvent2.getCorrelationID());
+        assertNotEquals(requestedEvent1.getCorrelationID(), requestedEvent2.getCorrelationID());
+        assertNotEquals(createdEvent1.getCorrelationID(), createdEvent2.getCorrelationID());
     }
 }

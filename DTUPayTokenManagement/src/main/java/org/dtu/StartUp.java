@@ -10,6 +10,6 @@ public class StartUp {
     }
 
     private void startTokenManagement() {
-        new TokenFactory(new DTUPayRabbitMQ(QueueType.DTUPay_TokenManagement));
+        new TokenFactory(new DTUPayRabbitMQ(QueueType.DTUPay));
     }
 }
