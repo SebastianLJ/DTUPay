@@ -1,6 +1,7 @@
 package org.dtu.services;
 
 
+import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
 import messageUtilities.queues.IDTUPayMessageQueue;
 import org.dtu.aggregate.Token;
@@ -70,7 +71,7 @@ public class CustomerService {
 
     public UUID deleteCustomer(UUID id) throws InvalidCustomerIdException {
     deletedStudent = new CompletableFuture<>();
-    Event event = new AccountDeletionRequested(id);
+    Event event = new AccountDeletionRequested(CorrelationID.randomID(), id);
     messageQueue.publish(event);
     UUID deletedId = deletedStudent.join();
     repository.deleteCustomer(deletedId);
@@ -79,7 +80,7 @@ public class CustomerService {
 
     public ArrayList<Token> getTokens(UserId userId, int amount) {
         this.tokenEvent = new CompletableFuture<>();
-        messageQueue.publish(new TokenRequested(amount, userId));
+        messageQueue.publish(new TokenRequested(CorrelationID.randomID(), amount, userId));
         GeneratedToken result = this.tokenEvent.join();
         return result.getTokens();
     }

@@ -7,17 +7,16 @@ import dtu.ws.fastmoney.BankServiceService;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import messageUtilities.CorrelationID;
 import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.QueueType;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
 import org.dtu.events.AccountDeletionRequested;
-import org.dtu.events.CustomerAccountDeleted;
 import org.dtu.events.TokensDeleted;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.InvalidCustomerIdException;
-import org.dtu.factories.CustomerFactory;
 import org.dtu.services.CustomerService;
 import org.junit.After;
 
@@ -165,13 +164,13 @@ public class CustomerServiceSteps {
 
     @Then("the AccountDeletionRequested event is sent")
     public void theAccountDeletionRequestedEventIsSent() {
-        AccountDeletionRequested event = new AccountDeletionRequested(customer.getUserId().getUuid());
+        AccountDeletionRequested event = new AccountDeletionRequested(CorrelationID.randomID(), customer.getUserId().getUuid());
         assertEquals(event, publishedEvents.join());
     }
 
     @When("the TokensDeleted event is received")
     public void theTokensDeletedEventIsReceived() {
-        TokensDeleted event = new TokensDeleted(customer.getUserId().getUuid());
+        TokensDeleted event = new TokensDeleted(CorrelationID.randomID(), customer.getUserId().getUuid());
         service.handleCustomerAccountDeleted(event);
     }
 

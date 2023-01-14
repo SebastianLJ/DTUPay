@@ -1,14 +1,17 @@
 package messageUtilities.stubs;
 
+import messageUtilities.CorrelationID;
 import messageUtilities.queues.IDTUPayMessageQueue;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 public class ProducerStub {
 
     public EventCreatedStub currentEventCreated;
     public EventRequestedStub currentEventRequested;
-    private CompletableFuture<EventCreatedStub> eventCreatedFuture;
+    private final Map<CorrelationID, CompletableFuture<EventCreatedStub>> correlations = new HashMap<>();
     private final IDTUPayMessageQueue messageQueue;
 
     public ProducerStub(IDTUPayMessageQueue messageQueue) {
@@ -18,13 +21,13 @@ public class ProducerStub {
 
     public EventCreatedStub produceEvent(EventRequestedStub event) {
         this.currentEventRequested = event;
-        eventCreatedFuture = new CompletableFuture<>();
+        correlations.put(event.getCorrelationID(), new CompletableFuture<>());
         messageQueue.publish(event);
-        return eventCreatedFuture.join();
+        return correlations.get(event.getCorrelationID()).join();
     }
 
     private void produceQueueEvent(EventCreatedStub event) {
         this.currentEventCreated = event;
-        eventCreatedFuture.complete(this.currentEventCreated);
+        correlations.get(event.getCorrelationID()).complete(event);
     }
 }

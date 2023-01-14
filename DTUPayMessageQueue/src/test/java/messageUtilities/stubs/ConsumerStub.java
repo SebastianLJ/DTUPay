@@ -15,8 +15,8 @@ public class ConsumerStub {
 
     private void consumeQueueEvent(EventRequestedStub event) {
         this.currentEventRequested = event;
-        this.currentEventCreated = new EventCreatedStub();
-        this.currentEventCreated.message = "World!";
+        this.currentEventCreated = new EventCreatedStub(event.getCorrelationID());
+        this.currentEventCreated.setMessage("World!");
         messageQueue.publish(this.currentEventCreated);
     }
 }

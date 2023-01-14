@@ -1,6 +1,7 @@
 package org.dtu.aggregate;
 
 
+import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
 import org.dtu.events.PaymentRequested;
 import lombok.Getter;
@@ -42,7 +43,7 @@ public class Payment {
     public static Payment create(Token token, UUID mid, int amount) {
         Payment payment = new Payment();
         payment.id = UUID.randomUUID();
-        PaymentRequested paymentRequested = new PaymentRequested(token.getId(), token.getId(), mid, amount);
+        PaymentRequested paymentRequested = new PaymentRequested(CorrelationID.randomID(), token.getId(), token.getId(), mid, amount);
         payment.appliedEvents.add(paymentRequested);
         return payment;
     }

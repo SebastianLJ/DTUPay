@@ -45,29 +45,20 @@ public class TokenService {
     }
 
     public void consumeToken(ConsumeToken event) throws TokenDoesNotExistException, TokenHasAlreadyBeenUsedException, NoMoreValidTokensException {
-
-
         UserId user = tokenRepository.consumeToken(event.getToken());
-
-        ConsumedToken newEvent = new ConsumedToken(user.getUuid());
+        ConsumedToken newEvent = new ConsumedToken(event.getCorrelationID(), user.getUuid());
         messageQueue.publish(newEvent);
     }
 
     public void generateTokens(GenerateToken event) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
-
         ArrayList<Token> tokens = tokenRepository.generateTokens(event.getUserId(),event.getAmount());
-
-        GeneratedToken newEvent = new GeneratedToken(tokens);
-
+        GeneratedToken newEvent = new GeneratedToken(event.getCorrelationID(), tokens);
         messageQueue.publish(newEvent);
     }
 
     public void generateTokens(TokenRequested event) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
-
         ArrayList<Token> tokens = tokenRepository.generateTokens(event.getUserId(),event.getAmount());
-
-        GeneratedToken newEvent = new GeneratedToken(tokens);
-
+        GeneratedToken newEvent = new GeneratedToken(event.getCorrelationID(), tokens);
         messageQueue.publish(newEvent);
     }
 
