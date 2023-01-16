@@ -20,7 +20,6 @@ import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.CustomerNotFoundException;
 import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.exceptions.InvalidCustomerNameException;
-import org.dtu.factories.CustomerFactory;
 import org.dtu.services.CustomerService;
 import org.junit.After;
 
