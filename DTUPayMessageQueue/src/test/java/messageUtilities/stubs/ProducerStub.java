@@ -1,5 +1,6 @@
 package messageUtilities.stubs;
 
+import com.rabbitmq.client.impl.ForgivingExceptionHandler;
 import messageUtilities.CorrelationID;
 import messageUtilities.queues.IDTUPayMessageQueue;
 
@@ -9,8 +10,6 @@ import java.util.concurrent.CompletableFuture;
 
 public class ProducerStub {
 
-    public EventCreatedStub currentEventCreated;
-    public EventRequestedStub currentEventRequested;
     private final Map<CorrelationID, CompletableFuture<EventCreatedStub>> correlations = new HashMap<>();
     private final IDTUPayMessageQueue messageQueue;
 
@@ -20,14 +19,17 @@ public class ProducerStub {
     }
 
     public EventCreatedStub produceEvent(EventRequestedStub event) {
-        this.currentEventRequested = event;
+        System.out.println(event.getCorrelationID().toString() + " " + event.getMessage());
         correlations.put(event.getCorrelationID(), new CompletableFuture<>());
         messageQueue.publish(event);
         return correlations.get(event.getCorrelationID()).join();
     }
 
     private void produceQueueEvent(EventCreatedStub event) {
-        this.currentEventCreated = event;
-        correlations.get(event.getCorrelationID()).complete(event);
+        try {
+            correlations.get(event.getCorrelationID()).complete(event);
+        } catch (Exception e) {
+
+        }
     }
 }

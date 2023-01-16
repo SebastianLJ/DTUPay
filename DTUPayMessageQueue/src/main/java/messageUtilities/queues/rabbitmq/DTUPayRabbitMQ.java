@@ -9,7 +9,6 @@ import messageUtilities.queues.IDTUPayMessageQueue;
 import messageUtilities.queues.QueueType;
 
 import java.io.*;
-import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
 public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
@@ -78,7 +77,7 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
             Connection connection = factory.newConnection();
             chan = connection.createChannel();
             chan.exchangeDeclare(EXCHANGE_NAME, "topic");
-        } catch (IOException | TimeoutException e) {
+        } catch (Exception e) {
             throw new Error(e);
         }
         return chan;

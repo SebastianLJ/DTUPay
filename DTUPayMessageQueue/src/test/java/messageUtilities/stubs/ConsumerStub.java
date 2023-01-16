@@ -3,9 +3,6 @@ package messageUtilities.stubs;
 import messageUtilities.queues.IDTUPayMessageQueue;
 
 public class ConsumerStub {
-
-    public EventRequestedStub currentEventRequested;
-    public EventCreatedStub currentEventCreated;
     private final IDTUPayMessageQueue messageQueue;
 
     public ConsumerStub(IDTUPayMessageQueue messageQueue) {
@@ -14,9 +11,9 @@ public class ConsumerStub {
     }
 
     private void consumeQueueEvent(EventRequestedStub event) {
-        this.currentEventRequested = event;
-        this.currentEventCreated = new EventCreatedStub(event.getCorrelationID());
-        this.currentEventCreated.setMessage("World!");
-        messageQueue.publish(this.currentEventCreated);
+        EventCreatedStub newEvent = new EventCreatedStub(event.getCorrelationID());
+        newEvent.setMessage("World!");
+        System.out.println(newEvent.getCorrelationID().toString() + " " + newEvent.getMessage());
+        messageQueue.publish(newEvent);
     }
 }
