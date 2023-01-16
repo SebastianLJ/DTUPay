@@ -4,6 +4,7 @@ import lombok.*;
 import messageUtilities.events.Event;
 import messageUtilities.queues.IDTUPayMessage;
 import org.dtu.event.GeneratedToken;
+import org.dtu.exceptions.*;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -24,6 +25,29 @@ public class Token {
         GeneratedToken generatedToken = new GeneratedToken(token);
         token.appliedEvents.add(generatedToken);
         return token;
+    }
+
+    public ArrayList<Token> generateTokens(UserId userid, int amount) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
+
+        ArrayList<Token> tokens = new ArrayList<>();
+        for (int i = 0 ; i < amount ; i++){
+            Token token = new Token();
+            tokenRepository.put(token,userid);
+            tokens.add(token);
+        }
+        tokenAmountRepository.put(userid, tokensAmount + tokens.size());
+        return tokens;
+    }
+
+    public UserId consumeToken(Token token) throws TokenDoesNotExistException, TokenHasAlreadyBeenUsedException, NoMoreValidTokensException {
+        if (usedTokenRepository.containsKey(token)) throw new TokenHasAlreadyBeenUsedException();
+        UserId user = tokenRepository.get(token);
+        if (user == null) throw new TokenDoesNotExistException();
+        if (tokenAmountRepository.get(user) == 0) throw new NoMoreValidTokensException();
+        usedTokenRepository.put(token, user);
+        tokenRepository.remove(token);
+        tokenAmountRepository.put(user, tokenAmountRepository.get(user) - 1);
+        return user;
     }
 
     public static Token createFromEvents(Stream<Event> events) {
