@@ -70,12 +70,8 @@ public class CustomerService {
     }
 
     public UUID deleteCustomer(UUID id) throws InvalidCustomerIdException {
-    deletedStudent = new CompletableFuture<>();
-    Event event = new AccountDeletionRequested(CorrelationID.randomID(), id);
-    messageQueue.publish(event);
-    UUID deletedId = deletedStudent.join();
-    repository.deleteCustomer(deletedId);
-    return deletedId;
+    repository.deleteCustomer(id);
+    return id;
     }
 
     public ArrayList<Token> getTokens(UserId userId, int amount) {

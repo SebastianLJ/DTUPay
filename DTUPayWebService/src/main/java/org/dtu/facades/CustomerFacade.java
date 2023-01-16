@@ -59,12 +59,13 @@ public class CustomerFacade {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response register(User user) throws URISyntaxException {
         try {
             System.out.println("Adding customer");
             User createdUser = customerService.addCustomer(user);
             System.out.println("User: " + createdUser.getUserId());
-            return Response.status(Response.Status.CREATED)
+            return Response.ok(Response.Status.CREATED)
                     .entity(createdUser)
                     .build();
         } catch (CustomerAlreadyExistsException e) {
@@ -80,11 +81,15 @@ public class CustomerFacade {
     }
 
     @DELETE
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     @Path("/{id}")
     public Response deregister(@PathParam("id") String id) {
         try {
+            System.out.println("Deleting customer");
             UUID uuid = UUID.fromString(id);
             UUID deletedUserID = customerService.deleteCustomer(uuid);
+            System.out.println("customer: " + uuid);
             return Response
                     .status(Response.Status.OK)
                     .entity(deletedUserID)
@@ -107,7 +112,7 @@ public class CustomerFacade {
                     .status(Response.Status.OK)
                     .entity(user)
                     .build();
-        } catch (CustomerNotFoundException | InvalidCustomerIdException e) {
+        } catch (CustomerNotFoundException | InvalidCustomerIdException | IllegalArgumentException e) {
             return Response
                     .status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())

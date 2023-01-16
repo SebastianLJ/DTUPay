@@ -16,9 +16,13 @@ pushd DTUPayWebService
 mvn clean package -q -DskipTests
 popd
 
-# Prune & build the docker images and run them
-printf "\n\033[94mStep 2/4: Prune and build the docker images and run them\033[0m\n"
+# Clean docker images
+printf "\n\033[94mStep 2/4: Clean docker images\033[0m\n"
+./clean-docker.sh
 docker image prune -f
+
+# Prune & build the docker images and run them
+printf "\n\033[94mStep 3/4: build the docker images and run them\033[0m\n"
 docker-compose up -d rabbitMq
 sleep 5
 docker-compose up -d
@@ -27,7 +31,7 @@ docker-compose up -d
 sleep 2
 
 # Run project tests
-printf "\n\033[94mStep 3/4: Run project tests\033[0m\n"
+printf "\n\033[94mStep 4/4: Run project tests\033[0m\n"
 pushd DTUPayMessageQueue
 #mvn test -q
 popd
@@ -43,7 +47,3 @@ popd
 pushd DTUPayWebService
 mvn test -q
 popd
-
-# Clean docker images
-printf "\n\033[94mStep 4/4: Clean docker images\033[0m\n"
-./clean-docker.sh

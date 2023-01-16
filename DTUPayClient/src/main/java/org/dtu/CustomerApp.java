@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
+import java.util.UUID;
 
 public class CustomerApp {
     Client c = ClientBuilder.newClient();
@@ -22,9 +23,9 @@ public class CustomerApp {
         User user = new User(firstName, lastName, bankNumber);
         Response response = r.path("customers")
                 .request()
-                //.accept(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(user, MediaType.APPLICATION_JSON));
-        if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(User.class);
         } else {
             System.out.println("!!!! " + response.readEntity(User.class) + " !!!!");
@@ -33,14 +34,17 @@ public class CustomerApp {
     }
 
 
-    public User deRegisterCustomer(User user) throws Exception {
-        return r.path(
-                        "customers/" + user.getUserId().getUuid()
-                )
+    public UUID deRegisterCustomer(User user) throws Exception {
+        Response response = r.path("customers/" + user.getUserId().getUuid())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
-                .delete(User.class);
+                .delete();
 
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(UUID.class);
+        } else {
+            throw new Exception("code: " + response.getStatus());
+        }
     }
 
 

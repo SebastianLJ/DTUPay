@@ -52,9 +52,7 @@ public class CustomerSteps {
             customer = customerApp.register("Jake", "Sully", "BankAccount112233");
         } catch (Exception e){
             e.printStackTrace();
-
         }
-        throw new io.cucumber.java.PendingException();
     }
     @When("a customer is deleted")
     public void a_customer_is_deleted() {
@@ -63,8 +61,6 @@ public class CustomerSteps {
         } catch (Exception e){
             e.printStackTrace();
         }
-
-        throw new io.cucumber.java.PendingException();
     }
 
 
