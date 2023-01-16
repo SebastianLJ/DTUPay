@@ -6,6 +6,7 @@ import io.cucumber.java.en.When;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
+import org.dtu.exceptions.CustomerNotFoundException;
 import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.exceptions.InvalidCustomerNameException;
 import org.dtu.factories.CustomerFactory;
@@ -42,7 +43,7 @@ public class CustomerServiceSteps {
             assertEquals(true, customerIsInSystem);
     }
     @Then("can be found by his ID")
-    public void can_be_found_by_his_id() throws InvalidCustomerIdException {
+    public void can_be_found_by_his_id() throws InvalidCustomerIdException, CustomerNotFoundException {
             assertEquals(customer, service.getCustomer(customer.getUserId().getUuid()));
     }
 
@@ -61,7 +62,7 @@ public class CustomerServiceSteps {
         service.deleteCustomer(customer.getUserId().getUuid());
     }
     @Then("the customer cannot be found")
-    public void the_customer_cannot_be_found() throws InvalidCustomerIdException {
+    public void the_customer_cannot_be_found() throws InvalidCustomerIdException, CustomerNotFoundException {
         assertNull(service.getCustomer(customer.getUserId().getUuid()));
     }
 }
