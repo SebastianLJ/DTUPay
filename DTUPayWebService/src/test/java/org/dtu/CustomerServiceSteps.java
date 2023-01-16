@@ -14,9 +14,13 @@ import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
 import org.dtu.events.AccountDeletionRequested;
+import org.dtu.events.CustomerAccountDeleted;
 import org.dtu.events.TokensDeleted;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
+import org.dtu.exceptions.CustomerNotFoundException;
 import org.dtu.exceptions.InvalidCustomerIdException;
+import org.dtu.exceptions.InvalidCustomerNameException;
+import org.dtu.factories.CustomerFactory;
 import org.dtu.services.CustomerService;
 import org.junit.After;
 
@@ -46,7 +50,7 @@ public class CustomerServiceSteps {
 
     CompletableFuture<IDTUPayMessage> publishedEvents = new CompletableFuture<>();
 
-    private DTUPayRabbitMQ q = new DTUPayRabbitMQ(QueueType.Customer_DTUPay) {
+    private DTUPayRabbitMQ q = new DTUPayRabbitMQ(QueueType.DTUPay) {
         @Override
         public void publish(IDTUPayMessage message) {
             publishedEvents.complete(message);
@@ -81,7 +85,7 @@ public class CustomerServiceSteps {
     }
 
     @Then("can be found by his ID")
-    public void can_be_found_by_his_id() throws InvalidCustomerIdException {
+    public void can_be_found_by_his_id() throws InvalidCustomerIdException, CustomerNotFoundException {
         assertEquals(customer, service.getCustomer(customer.getUserId().getUuid()));
     }
 
@@ -92,7 +96,7 @@ public class CustomerServiceSteps {
 
     //Delete customer scenario
     @Given("a customer is in the system")
-    public void a_customer_is_in_the_system() throws CustomerAlreadyExistsException {
+    public void a_customer_is_in_the_system() throws CustomerAlreadyExistsException, InvalidCustomerNameException {
         customerBankUser = new dtu.ws.fastmoney.User();
         customerBankUser.setFirstName("Martin");
         customerBankUser.setLastName("Nielsen");
@@ -104,7 +108,7 @@ public class CustomerServiceSteps {
         } catch (BankServiceException_Exception e) {
             throw new RuntimeException(e);
         }
-        customer = service.addCustomer(customerBankUser.getFirstName(), customerBankUser.getLastName(), bankNumber);
+        customer = service.addCustomer(new User(customerBankUser.getFirstName(), customerBankUser.getLastName(), bankNumber));
     }
 
     @When("the customer requests {int} tokens")
@@ -175,7 +179,7 @@ public class CustomerServiceSteps {
     }
 
     @Then("the customer is deleted")
-    public void theCustomerIsDeleted() {
+    public void theCustomerIsDeleted() throws CustomerNotFoundException {
         try {
             deletedStudent.join();
             assertNull(service.getCustomer(customer.getUserId().getUuid()));
