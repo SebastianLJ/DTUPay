@@ -11,7 +11,8 @@ public class CustomerFactory {
 
     public synchronized CustomerService getService() {
         if (service == null) {
-            service = new CustomerService(new DTUPayRabbitMQ(QueueType.DTUPay));
+            //service = new CustomerService(new DTUPayRabbitMQ(QueueType.DTUPay));
+            service = new CustomerService();
         }
         return service;
     }

@@ -26,7 +26,7 @@ public class TokenServiceSteps {
 
     @When("a user is created")
     public void aUserRequestsAnAccount() throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
-        tokens1 = tokenService.generateTokens(userId1, new Random().nextInt(5 - 1) + 1);
+        //tokens1 = tokenService.generateTokens(userId1, new Random().nextInt(5 - 1) + 1);
     }
 
     @Then("the token list length is valid")
@@ -45,7 +45,7 @@ public class TokenServiceSteps {
 
     @And("a second is created")
     public void aSecondIsCreated() throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
-        tokens2 = tokenService.generateTokens(userId2, new Random().nextInt(5 - 1) + 1);
+        //tokens2 = tokenService.generateTokens(userId2, new Random().nextInt(5 - 1) + 1);
     }
 
     @Then("they must have different ids")

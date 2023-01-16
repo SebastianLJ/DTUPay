@@ -1,7 +1,10 @@
 package org.dtu.aggregate;
 
-import lombok.*;
-import messageUtilities.events.Event;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+import messageUtilities.CorrelationID;
+import messageUtilities.cqrs.events.Event;
 import messageUtilities.queues.IDTUPayMessage;
 import org.dtu.event.GeneratedToken;
 import org.dtu.exceptions.*;
@@ -22,7 +25,7 @@ public class Token {
 
     public static Token create(){
         Token token = new Token();
-        GeneratedToken generatedToken = new GeneratedToken(token);
+        GeneratedToken generatedToken = new GeneratedToken(CorrelationID.randomID(), new ArrayList<>());
         token.appliedEvents.add(generatedToken);
         return token;
     }
@@ -32,22 +35,22 @@ public class Token {
         ArrayList<Token> tokens = new ArrayList<>();
         for (int i = 0 ; i < amount ; i++){
             Token token = new Token();
-            tokenRepository.put(token,userid);
+            //tokenRepository.put(token,userid);
             tokens.add(token);
         }
-        tokenAmountRepository.put(userid, tokensAmount + tokens.size());
+        //tokenAmountRepository.put(userid, tokensAmount + tokens.size());
         return tokens;
     }
 
     public UserId consumeToken(Token token) throws TokenDoesNotExistException, TokenHasAlreadyBeenUsedException, NoMoreValidTokensException {
-        if (usedTokenRepository.containsKey(token)) throw new TokenHasAlreadyBeenUsedException();
-        UserId user = tokenRepository.get(token);
-        if (user == null) throw new TokenDoesNotExistException();
-        if (tokenAmountRepository.get(user) == 0) throw new NoMoreValidTokensException();
-        usedTokenRepository.put(token, user);
-        tokenRepository.remove(token);
-        tokenAmountRepository.put(user, tokenAmountRepository.get(user) - 1);
-        return user;
+        //if (usedTokenRepository.containsKey(token)) throw new TokenHasAlreadyBeenUsedException();
+        //UserId user = tokenRepository.get(token);
+        //if (user == null) throw new TokenDoesNotExistException();
+        //if (tokenAmountRepository.get(user) == 0) throw new NoMoreValidTokensException();
+        //usedTokenRepository.put(token, user);
+        //tokenRepository.remove(token);
+        //tokenAmountRepository.put(user, tokenAmountRepository.get(user) - 1);
+        return null; //user;
     }
 
     public static Token createFromEvents(Stream<Event> events) {
@@ -83,7 +86,7 @@ public class Token {
     }
 
     private void apply(GeneratedToken event) {
-        id = event.getToken().id;
+        //id = event.getToken().id;
     }
 
     public void clearAppliedEvents() {
