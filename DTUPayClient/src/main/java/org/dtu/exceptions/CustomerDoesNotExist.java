@@ -1,4 +1,4 @@
-package org.dtu;
+package org.dtu.exceptions;
 
 public class CustomerDoesNotExist extends Throwable {
     //setup exception

@@ -11,6 +11,10 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.dtu.exceptions.CustomerDoesNotExist;
+import org.dtu.exceptions.MerchantDoesNotExist;
+import org.dtu.exceptions.PaymentAlreadyExists;
+import org.dtu.exceptions.PaymentDoesNotExist;
 
 import java.math.BigDecimal;
 import java.util.List;
