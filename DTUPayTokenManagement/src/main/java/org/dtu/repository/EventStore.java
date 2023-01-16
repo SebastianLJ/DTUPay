@@ -1,16 +1,13 @@
 package org.dtu.repository;
 
 import lombok.NonNull;
-import messageUtilities.events.Event;
+import messageUtilities.cqrs.events.Event;
 import messageUtilities.queues.IDTUPayMessageQueue;
-import org.dtu.aggregate.Token;
 import org.dtu.aggregate.TokenId;
-import org.dtu.aggregate.UserId;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
@@ -20,7 +17,7 @@ public class EventStore {
 
     private Map<TokenId, List<Event>> store = new ConcurrentHashMap<>();
 
-    public EventStore(IDTUPayMessageQueue messageQueue){
+    public EventStore(IDTUPayMessageQueue messageQueue) {
         this.messageQueue = messageQueue;
     }
 

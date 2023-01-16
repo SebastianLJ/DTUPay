@@ -24,7 +24,7 @@ public class TokenService {
     private HashMap<Token, UserId> usedTokenMap = new HashMap<>();
 
     public TokenService(IDTUPayMessageQueue messageQueue){
-        this.tokenRepository = new TokenRepository();
+        this.tokenRepository = new TokenRepository(messageQueue);
         this.messageQueue = messageQueue;
         this.messageQueue.addHandler(ConsumeToken.class, e -> {
             try {
@@ -50,21 +50,21 @@ public class TokenService {
     }
 
     public void consumeToken(ConsumeToken event) throws TokenDoesNotExistException, TokenHasAlreadyBeenUsedException, NoMoreValidTokensException {
-        UserId user = tokenRepository.consumeToken(event.getToken());
-        ConsumedToken newEvent = new ConsumedToken(event.getCorrelationID(), user.getUuid());
-        messageQueue.publish(newEvent);
+        //UserId user = tokenRepository.consumeToken(event.getToken());
+        //ConsumedToken newEvent = new ConsumedToken(event.getCorrelationID(), user.getUuid());
+        //messageQueue.publish(newEvent);
     }
 
     public void generateTokens(GenerateToken event) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
-        ArrayList<Token> tokens = tokenRepository.generateTokens(event.getUserId(),event.getAmount());
-        GeneratedToken newEvent = new GeneratedToken(event.getCorrelationID(), tokens);
-        messageQueue.publish(newEvent);
+        //ArrayList<Token> tokens = tokenRepository.generateTokens(event.getUserId(),event.getAmount());
+        //GeneratedToken newEvent = new GeneratedToken(event.getCorrelationID(), tokens);
+        //messageQueue.publish(newEvent);
     }
 
     public void generateTokens(TokenRequested event) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
-        ArrayList<Token> tokens = tokenRepository.generateTokens(event.getUserId(),event.getAmount());
-        GeneratedToken newEvent = new GeneratedToken(event.getCorrelationID(), tokens);
-        messageQueue.publish(newEvent);
+        //ArrayList<Token> tokens = tokenRepository.generateTokens(event.getUserId(),event.getAmount());
+        //GeneratedToken newEvent = new GeneratedToken(event.getCorrelationID(), tokens);
+        //messageQueue.publish(newEvent);
 
         /*for (int i = 0; i < tokens.size(); i++) {
             GeneratedToken newEvent = new GeneratedToken(tokens.get(i));
@@ -76,7 +76,8 @@ public class TokenService {
 
     public UserId consumeToken(Token token) throws TokenDoesNotExistException, TokenHasAlreadyBeenUsedException, NoMoreValidTokensException {
 
-        return tokenRepository.consumeToken(token);
+        //return tokenRepository.consumeToken(token);
+        return null;
     }
 
     public void generateTokens(UserId userId, int amount) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {

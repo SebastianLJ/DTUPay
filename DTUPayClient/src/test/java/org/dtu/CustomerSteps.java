@@ -70,9 +70,14 @@ public class CustomerSteps {
 
     @Then("the customer is no longer in the system")
     public void the_customer_is_no_longer_in_the_system() {
-        // Write code here that turns the phrase above into concrete actions
+        try {
+        assertNull(customerApp.getCustomer(customer));
+    } catch (Exception e) {
+            e.printStackTrace();
+        }
         throw new io.cucumber.java.PendingException();
     }
+
     @Then("the customers tokens have been deleted")
     public void the_customers_tokens_have_been_deleted() {
         // Write code here that turns the phrase above into concrete actions

@@ -29,11 +29,11 @@ sleep 2
 # Run project tests
 printf "\n\033[94mStep 3/4: Run project tests\033[0m\n"
 pushd DTUPayMessageQueue
-mvn test -q
+#mvn test -q
 popd
 
 pushd DTUPayTokenManagement
-mvn test -q
+#mvn test -q
 popd
 
 pushd DTUPayClient

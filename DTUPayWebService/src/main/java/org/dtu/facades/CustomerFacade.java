@@ -41,10 +41,10 @@ public class CustomerFacade {
         }
     }
 
-   @Path("/{id}/report")
-   @GET
-   @Produces(MediaType.APPLICATION_JSON)
-   public Response getReport(@PathParam("id") String id) {
+    @Path("/{id}/report")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getReport(@PathParam("id") String id) {
         try {
             UUID uuid = UUID.fromString(id);
             return Response
@@ -55,7 +55,7 @@ public class CustomerFacade {
                     .entity(e.getMessage())
                     .build();
         }
-   }
+    }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -99,7 +99,7 @@ public class CustomerFacade {
 
     @GET
     @Path("{id}")
-    public Response getCustomer(@PathParam ("id") String id) {
+    public Response getCustomer(@PathParam("id") String id) {
         try {
             UUID uuid = UUID.fromString(id);
             User user = customerService.getCustomer(uuid);

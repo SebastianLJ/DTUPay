@@ -1,13 +1,9 @@
 package org.dtu.repository;
 
-import messageUtilities.events.IEventRepository;
+import messageUtilities.eventSource.IEventRepository;
 import messageUtilities.queues.IDTUPayMessageQueue;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.TokenId;
-import org.dtu.aggregate.UserId;
-import org.dtu.exceptions.*;
-
-import java.util.*;
 
 public class TokenRepository implements IEventRepository<Token, TokenId> {
 

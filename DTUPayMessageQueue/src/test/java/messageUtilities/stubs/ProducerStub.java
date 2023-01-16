@@ -19,7 +19,7 @@ public class ProducerStub {
     }
 
     public EventCreatedStub produceEvent(EventRequestedStub event) {
-        System.out.println(event.getCorrelationID().toString() + " " + event.getMessage());
+        //System.out.println(event.getCorrelationID().toString() + " " + event.getMessage());
         correlations.put(event.getCorrelationID(), new CompletableFuture<>());
         messageQueue.publish(event);
         return correlations.get(event.getCorrelationID()).join();
