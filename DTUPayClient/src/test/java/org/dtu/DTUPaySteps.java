@@ -8,6 +8,9 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import io.cucumber.java.After;
+import org.dtu.exceptions.CustomerDoesNotExist;
+import org.dtu.exceptions.MerchantDoesNotExist;
+import org.dtu.exceptions.PaymentAlreadyExists;
 
 
 import java.math.BigDecimal;

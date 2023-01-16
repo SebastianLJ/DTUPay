@@ -2,10 +2,7 @@ package org.dtu;
 
 import org.dtu.aggregate.Name;
 import org.dtu.aggregate.User;
-import org.dtu.exceptions.CustomerAlreadyExistsException;
-import org.dtu.exceptions.InvalidCustomerIdException;
-import org.dtu.exceptions.InvalidMerchantIdException;
-import org.dtu.exceptions.MerchantAlreadyExistsException;
+import org.dtu.exceptions.*;
 import org.dtu.factories.CustomerFactory;
 import org.dtu.factories.MerchantFactory;
 import org.dtu.factories.PaymentFactory;
@@ -65,7 +62,7 @@ public class RegistrationResource {
             customerRegistration.getCustomer(id);
             return Response.status(Response.Status.OK)
                     .build();
-        } catch (InvalidCustomerIdException e) {
+        } catch (InvalidCustomerIdException | CustomerNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("customer with id " + id + " not found")
                     .build();

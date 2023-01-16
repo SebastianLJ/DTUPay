@@ -1,5 +1,6 @@
 package org.dtu;
 
+import aggregate.User;
 import aggregate.UserId;
 import aggregate.Token;
 import io.cucumber.java.en.And;
@@ -16,13 +17,14 @@ public class CustomerSteps {
     SimpleDTUPay dtuPay = new SimpleDTUPay();
     CustomerApp customerApp = new CustomerApp();
 
-    UserId customer;
+    User customer;
     List<Token> tokens;
 
     @And("a customer is in the system")
     public void aCustomerIsInTheSystem() {
         try {
             customer = customerApp.register("Fred", "Again...", "MoneyInTheBank");
+            //customer = dtuPay.createDTUPayCustomerAccount("fred", "again");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -31,7 +33,7 @@ public class CustomerSteps {
     @When("the customer requests {int} tokens")
     public void theCustomerRequestsTokens(int amount) {
         try {
-            tokens = customerApp.getTokens(customer, amount);
+            tokens = customerApp.getTokens(customer.getUserId(), amount);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,16 +45,29 @@ public class CustomerSteps {
     }
 
 
+    //Test of customer deleted along with its tokens
     @Given("a customer is already in the system")
     public void a_customer_is_already_in_the_system() {
-        // Write code here that turns the phrase above into concrete actions
+        try {
+            customer = customerApp.register("Jake", "Sully", "BankAccount112233");
+        } catch (Exception e){
+            e.printStackTrace();
+
+        }
         throw new io.cucumber.java.PendingException();
     }
     @When("a customer is deleted")
     public void a_customer_is_deleted() {
-        // Write code here that turns the phrase above into concrete actions
+        try {
+            customerApp.deRegisterCustomer(customer);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
         throw new io.cucumber.java.PendingException();
     }
+
+
     @Then("the customer is no longer in the system")
     public void the_customer_is_no_longer_in_the_system() {
         // Write code here that turns the phrase above into concrete actions

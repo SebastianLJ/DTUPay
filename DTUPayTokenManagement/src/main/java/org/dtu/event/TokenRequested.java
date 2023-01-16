@@ -1,9 +1,10 @@
-package org.dtu.events;
+package org.dtu.event;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import messageUtilities.events.Event;
+import messageUtilities.CorrelationID;
+import messageUtilities.cqrs.events.Event;
 import org.dtu.aggregate.UserId;
 
 @Value
@@ -14,4 +15,9 @@ public class TokenRequested extends Event {
     int amount;
     UserId userId;
 
+    public TokenRequested(CorrelationID correlationID, int amount, UserId userId) {
+        super(correlationID);
+        this.amount = amount;
+        this.userId = userId;
+    }
 }

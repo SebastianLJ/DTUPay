@@ -3,7 +3,8 @@ package org.dtu.events;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import messageUtilities.events.Event;
+import messageUtilities.CorrelationID;
+import messageUtilities.cqrs.events.Event;
 
 import java.util.UUID;
 
@@ -12,8 +13,16 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = false)
 public class PaymentRequested extends Event {
 
-    private UUID paymentId;
-    private UUID token;
-    private UUID merchantId;
-    private int amount;
+    UUID paymentId;
+    UUID token;
+    UUID merchantId;
+    int amount;
+
+    public PaymentRequested(CorrelationID correlationID, UUID paymentId, UUID token, UUID merchantId, int amount) {
+        super(correlationID);
+        this.paymentId = paymentId;
+        this.token = token;
+        this.merchantId = merchantId;
+        this.amount = amount;
+    }
 }

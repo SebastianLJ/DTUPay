@@ -7,6 +7,7 @@ import org.dtu.event.ConsumeToken;
 import org.dtu.event.ConsumedToken;
 import org.dtu.event.GenerateToken;
 import org.dtu.event.GeneratedToken;
+import org.dtu.event.TokenRequested;
 import org.dtu.exceptions.*;
 import org.dtu.repository.TokenRepository;
 
@@ -39,27 +40,39 @@ public class TokenService {
                 throw new RuntimeException(ex);
             }
         });
+        this.messageQueue.addHandler(TokenRequested.class, e -> {
+            try {
+                generateTokens((TokenRequested) e);
+            } catch (InvalidTokenAmountException | InvalidTokenAmountRequestException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
 
     public void consumeToken(ConsumeToken event) throws TokenDoesNotExistException, TokenHasAlreadyBeenUsedException, NoMoreValidTokensException {
-
-
         UserId user = tokenRepository.consumeToken(event.getToken());
-
-        ConsumedToken newEvent = new ConsumedToken(user.getUuid());
+        ConsumedToken newEvent = new ConsumedToken(event.getCorrelationID(), user.getUuid());
         messageQueue.publish(newEvent);
     }
 
     public void generateTokens(GenerateToken event) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
-
         ArrayList<Token> tokens = tokenRepository.generateTokens(event.getUserId(),event.getAmount());
+        GeneratedToken newEvent = new GeneratedToken(event.getCorrelationID(), tokens);
+        messageQueue.publish(newEvent);
+    }
 
-        for (int i = 0; i < tokens.size(); i++) {
+    public void generateTokens(TokenRequested event) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
+        ArrayList<Token> tokens = tokenRepository.generateTokens(event.getUserId(),event.getAmount());
+        GeneratedToken newEvent = new GeneratedToken(event.getCorrelationID(), tokens);
+        messageQueue.publish(newEvent);
+
+        /*for (int i = 0; i < tokens.size(); i++) {
             GeneratedToken newEvent = new GeneratedToken(tokens.get(i));
             messageQueue.publish(newEvent);
-        }
-
+        }*/
     }
+
+
 
     public UserId consumeToken(Token token) throws TokenDoesNotExistException, TokenHasAlreadyBeenUsedException, NoMoreValidTokensException {
 
