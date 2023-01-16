@@ -25,14 +25,14 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
     }
 
     @Override
-    public void publish(IDTUPayMessage event) {
+    public void publish(IDTUPayMessage message) {
         try {
             byte[] data;
 
             try (ByteArrayOutputStream file = new ByteArrayOutputStream();
                  ObjectOutputStream out = new ObjectOutputStream(file);) {
 
-                out.writeObject(event);
+                out.writeObject(message);
                 data = file.toByteArray();
             }
             channel.basicPublish(EXCHANGE_NAME, queueType.name(), null, data);
@@ -42,7 +42,7 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
     }
 
     @Override
-    public void addHandler(Class<? extends IDTUPayMessage> event, Consumer<IDTUPayMessage> handler) {
+    public void addHandler(Class<? extends IDTUPayMessage> message, Consumer<IDTUPayMessage> handler) {
         Channel channel = setUpChannel();
         try {
             String queueName = channel.queueDeclare().getQueue();
@@ -50,24 +50,23 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
 
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
 
-                IDTUPayMessage message = null;
+                IDTUPayMessage currentMessageInQueue;
                 try (ByteArrayInputStream file = new ByteArrayInputStream(delivery.getBody());
                      ObjectInputStream in = new ObjectInputStream(file);) {
 
                     try {
-                        message = (IDTUPayMessage) in.readObject();
+                        currentMessageInQueue = (IDTUPayMessage) in.readObject();
                     } catch (ClassNotFoundException e) {
                         throw new Error(e);
                     }
                 }
-                if (event.equals(message.getClass())) {
-                    handler.accept(message);
+                if (message.equals(currentMessageInQueue.getClass())) {
+                    handler.accept(currentMessageInQueue);
                 }
             };
-            channel.basicConsume(queueName, true, deliverCallback, consumerTag -> {
-            });
-        } catch (IOException e1) {
-            throw new Error(e1);
+            channel.basicConsume(queueName, true, deliverCallback, consumerTag -> { });
+        } catch (Exception e) {
+            throw new Error(e);
         }
     }
 

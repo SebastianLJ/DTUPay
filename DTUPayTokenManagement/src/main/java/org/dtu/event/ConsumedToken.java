@@ -3,9 +3,8 @@ package org.dtu.event;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import messageUtilities.events.Event;
-import org.dtu.aggregate.Token;
-import org.dtu.aggregate.UserId;
+import messageUtilities.CorrelationID;
+import messageUtilities.cqrs.events.Event;
 
 import java.util.UUID;
 
@@ -15,5 +14,10 @@ import java.util.UUID;
 public class ConsumedToken extends Event {
 
     UUID userId;
+
+    public ConsumedToken(CorrelationID correlationID, UUID userId) {
+        super(correlationID);
+        this.userId = userId;
+    }
 }
 

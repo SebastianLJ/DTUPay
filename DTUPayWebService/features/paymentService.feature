@@ -1,8 +1,10 @@
 Feature: Payment Service
   Scenario: A payment is successfully created
-    Given there is a registered customer
-    And there is a registered merchant
-    When the merchant creates a payment
+    Given a customer with a bank account with balance 1000
+    And that the customer is registered with DTU Pay
+    Given a merchant with a bank account with balance 2000
+    And that the merchant is registered with DTU Pay
+    When the merchant initiates a payment for 100 kr by the customer
     Then a payment is registered
 
   Scenario: Payment does not exists
