@@ -69,7 +69,6 @@ public class CustomerSteps {
     } catch (Exception e) {
             e.printStackTrace();
         }
-        throw new io.cucumber.java.PendingException();
     }
 
     @Then("the customers tokens have been deleted")

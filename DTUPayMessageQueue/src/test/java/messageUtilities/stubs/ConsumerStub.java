@@ -13,7 +13,7 @@ public class ConsumerStub {
     private void consumeQueueEvent(EventRequestedStub event) {
         EventCreatedStub newEvent = new EventCreatedStub(event.getCorrelationID());
         newEvent.setMessage("World!");
-        //System.out.println(newEvent.getCorrelationID().toString() + " " + newEvent.getMessage());
+        System.out.println(newEvent.getCorrelationID().toString() + " " + newEvent.getMessage());
         messageQueue.publish(newEvent);
     }
 }
