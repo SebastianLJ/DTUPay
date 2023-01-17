@@ -137,12 +137,6 @@ public class CustomerServiceSteps {
         }
     }
 
-
-    @io.cucumber.java.After
-    public void deleteBankAccounts() {
-
-    }
-
     @When("the customer is being deleted")
     public void theCustomerIsBeingDeleted() {
         new Thread(() -> {
@@ -183,6 +177,28 @@ public class CustomerServiceSteps {
     @When("the customer requests {int} tokens")
     public void theCustomerRequestsTokens(int tokenCount) {
 
+    }
+
+    @io.cucumber.java.After
+    public void afterTest() throws InvalidCustomerIdException {
+        service.deleteCustomer(customer.getUserId().getUuid());
+        //loop through bankservice.get accounts and delete the ones that are in the list of bank users, using the cpr number to match
+        for (dtu.ws.fastmoney.User bankUser :
+                bankUsers) {
+            //for each accountinfo in getaccounts
+            for (AccountInfo accountInfo :
+                    bankService.getAccounts()) {
+                //if the cpr number of the bank user is equal to the cpr number of the accountinfo
+                if (bankUser.getCprNumber().equals(accountInfo.getUser().getCprNumber())) {
+                    //delete the account
+                    try {
+                        bankService.retireAccount(accountInfo.getAccountId());
+                    } catch (BankServiceException_Exception e) {
+                        fail();
+                    }
+                }
+            }
+        }
     }
 
     @Then("a tokens requested event is published")
