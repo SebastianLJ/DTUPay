@@ -9,6 +9,8 @@ import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
 import messageUtilities.queues.rabbitmq.HostnameType;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.UserId;
+import org.dtu.event.GenerateToken;
+import org.dtu.event.TokensGenerated;
 import org.dtu.exceptions.*;
 import org.dtu.factories.TokenFactory;
 import org.dtu.repository.ReadModelRepository;
@@ -17,52 +19,56 @@ import org.dtu.services.TokenService;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TokenServiceSteps {
 
-    private TokenService tokenService;
 
-    TokenRepository tokenRepository;
+    DTUPayRabbitMQ eventQueue = new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost);
+    TokenService tokenService;
 
 
 
     UserId userId1 = new UserId(UUID.randomUUID());
+
+    Integer amount1;
     UserId userId2 = new UserId(UUID.randomUUID());
+
+    Integer amount2;
     ArrayList<Token> tokens1 = new ArrayList<>();
     ArrayList<Token> tokens2 = new ArrayList<>();
 
     @When("a message queue is started")
     public void aMessageQueueIsStarted() {
-        DTUPayRabbitMQ eventQueue = new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.rabbitMq);
-        tokenRepository = new TokenRepository(eventQueue);
-        ReadModelRepository readModelRepository = new ReadModelRepository(eventQueue);
         tokenService = new TokenService(eventQueue);
     }
 
-    @When("a user is created")
-    public void aUserRequestsAnAccount() throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
-        //tokens1 = tokenService.generateTokens(userId1, new Random().nextInt(4) + 1);
+    @And("a new user is created")
+    public void aUserRequestsAnAccount() throws InterruptedException {
+        GenerateToken generateToken = new GenerateToken(3,userId1);
+        eventQueue.publish(generateToken);
+        /*eventQueue.publish(generateToken);*/
+        Thread.sleep(1000);
+        amount1 = tokenService.getAmountTokensForUser(userId1);
+        assertNotNull(amount1);
     }
 
-    @Then("the token list length is valid")
-    public void theTokenListLengthIsValid() {
-        assertTrue(tokens1.size() > 0);
-        assertTrue(tokens1.size() < 7);
+    @Then("the user has a valid amount of tokens")
+    public void theUserHasAValidAmountOfTokens() {
+        assertTrue(amount1 > 0);
+        assertTrue(amount1 < 7);
     }
 
-    @And("the user is registered")
-    public void theUserIsRegistered() throws TokenHasAlreadyBeenUsedException, TokenDoesNotExistException, NoMoreValidTokensException {
-/*        for (Token token : tokens1) {
-            UserId user = tokenService.consumeToken(token);
-            assertNotNull(user);
-        }*/
-    }
-
-    @And("a second is created")
-    public void aSecondIsCreated() throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
-        //tokens2 = tokenService.generateTokens(userId2, new Random().nextInt(4) + 1);
+    @And("a second user is created")
+    public void aSecondUserIsCreated() throws InterruptedException {
+        GenerateToken generateToken = new GenerateToken(4,userId2);
+        eventQueue.publish(generateToken);
+        /*eventQueue.publish(generateToken);*/
+        Thread.sleep(1000);
+        amount2 = tokenService.getAmountTokensForUser(userId2);
+        assertNotNull(amount2);
     }
 
     @Then("they must have different ids")
@@ -73,9 +79,7 @@ public class TokenServiceSteps {
 
     @And("they must have different tokens")
     public void theyMustHaveDifferentTokens() {
-        ArrayList<Token> common = new ArrayList<>(tokens1);
-        common.retainAll(tokens2);
-        assertEquals(0, common.size());
+        assertEquals(7, (int) tokenService.hashmapSize());
     }
 
     @Then("all tokens are unique")

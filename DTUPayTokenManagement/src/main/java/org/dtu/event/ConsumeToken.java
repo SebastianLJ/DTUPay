@@ -5,7 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
-import org.dtu.aggregate.Token;
+/*import org.dtu.aggregate.Token;*/
+import org.dtu.domain.Token;
 
 @Value
 @AllArgsConstructor
