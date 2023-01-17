@@ -67,7 +67,7 @@ public class CustomerApp {
 
     //TODO Implement exception
     public User getCustomer(User user) throws CustomerDoesNotExist {
-        Response response = r.path("customer/" + user.getUserId().getUuid())
+        Response response = r.path("customers/" + user.getUserId().getUuid())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
                 .get();
