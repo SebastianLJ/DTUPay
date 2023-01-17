@@ -13,6 +13,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.cucumber</groupId>
@@ -70,5 +71,22 @@
             <version>1.0</version>
         </dependency>
     </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.dtu.group04</groupId>
+                <artifactId>DTUPayTokenManagement</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <archieve>
+                        <manifest>
+                            <mainClass>org.dtu.StartUp</mainClass>
+                        </manifest>
+                    </archieve>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 
 </project>

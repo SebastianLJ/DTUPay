@@ -37,7 +37,7 @@ public class ReadModelRepository {
     private void apply(TokensRequested event) {
         ArrayList<Token> tokens = new ArrayList<>();
         if (event.getAmount() > 5 || event.getAmount() < 1) {
-            TokensGenerated tokensGenerated = new TokensGenerated(event.getUserId(),tokens);
+            TokensGenerated tokensGenerated = new TokensGenerated(event.getCorrelationID(),event.getUserId(),tokens);
             tokensGenerated.setMessage("Token amount requested is invalid");
             messageQueue.publish(tokensGenerated);
             return;
