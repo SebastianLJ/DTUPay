@@ -5,19 +5,19 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
-
-import java.util.UUID;
+import org.dtu.aggregate.UserId;
 
 @Value
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class ConsumedToken extends Event {
+public class TokensRequested extends Event {
 
-    UUID userId;
+    int amount;
+    UserId userId;
 
-    public ConsumedToken(CorrelationID correlationID, UUID userId) {
+    public TokensRequested(CorrelationID correlationID, int amount, UserId userId) {
         super(correlationID);
+        this.amount = amount;
         this.userId = userId;
     }
 }
-

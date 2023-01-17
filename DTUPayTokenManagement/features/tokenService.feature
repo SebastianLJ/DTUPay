@@ -1,6 +1,7 @@
 Feature: Token Service
   Scenario: A new user is given a list of tokens
-    When a user is created
+    When a message queue is started
+    When a new user is created
     Then the token list length is valid
     And the user is registered
 
