@@ -3,10 +3,9 @@ package org.dtu.aggregate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
 import messageUtilities.queues.IDTUPayMessage;
-import org.dtu.event.GeneratedToken;
+import org.dtu.event.TokensGenerated;
 import org.dtu.exceptions.*;
 
 import java.util.*;
@@ -22,13 +21,6 @@ public class Token {
     private List<Event> appliedEvents = new ArrayList<Event>();
 
     private Map<Class<? extends IDTUPayMessage>, Consumer<IDTUPayMessage>> handlers = new HashMap<>();
-
-    public static Token create(){
-        Token token = new Token();
-        GeneratedToken generatedToken = new GeneratedToken(CorrelationID.randomID(), new ArrayList<>());
-        token.appliedEvents.add(generatedToken);
-        return token;
-    }
 
     public ArrayList<Token> generateTokens(UserId userid, int amount) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
 
@@ -65,7 +57,7 @@ public class Token {
     }
 
     private void registerEventHandlers() {
-        handlers.put(GeneratedToken.class, e -> apply((GeneratedToken) e));
+        handlers.put(TokensGenerated.class, e -> apply((TokensGenerated) e));
     }
 
     private void applyEvents(Stream<Event> events) throws Error {
@@ -85,7 +77,7 @@ public class Token {
         throw new Error("handler for event "+e+" missing");
     }
 
-    private void apply(GeneratedToken event) {
+    private void apply(TokensGenerated event) {
         //id = event.getToken().id;
     }
 

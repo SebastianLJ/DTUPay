@@ -7,17 +7,18 @@ import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
 import org.dtu.aggregate.UserId;
 
+import java.util.UUID;
+
 @Value
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class TokenRequested extends Event {
+public class TokenConsumed extends Event {
 
-    int amount;
     UserId userId;
 
-    public TokenRequested(CorrelationID correlationID, int amount, UserId userId) {
+    public TokenConsumed(CorrelationID correlationID, UserId userId) {
         super(correlationID);
-        this.amount = amount;
         this.userId = userId;
     }
 }
+

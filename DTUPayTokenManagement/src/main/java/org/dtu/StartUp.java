@@ -1,7 +1,5 @@
 package org.dtu;
 
-import messageUtilities.queues.QueueType;
-import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
 import org.dtu.factories.TokenFactory;
 
 public class StartUp {
@@ -10,6 +8,6 @@ public class StartUp {
     }
 
     private void startTokenManagement() {
-        new TokenFactory(new DTUPayRabbitMQ(QueueType.DTUPay));
+        new TokenFactory().getService();
     }
 }

@@ -1,20 +1,16 @@
 package org.dtu.factories;
 
-import messageUtilities.queues.IDTUPayMessageQueue;
+import messageUtilities.queues.QueueType;
+import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
 import org.dtu.services.TokenService;
 
 public class TokenFactory {
 
-    private static TokenService service = null;
-    private final IDTUPayMessageQueue messageQueue;
-
-    public TokenFactory(IDTUPayMessageQueue messageQueue) {
-        this.messageQueue = messageQueue;
-    }
+    static TokenService service = null;
 
     public synchronized TokenService getService() {
         if (service == null) {
-            service = new TokenService(messageQueue);
+            service = new TokenService(new DTUPayRabbitMQ(QueueType.DTUPay));
         }
         return service;
     }
