@@ -8,7 +8,6 @@ import org.dtu.factories.PaymentFactory;
 import org.dtu.services.MerchantService;
 import org.dtu.services.PaymentService;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -18,15 +17,14 @@ import java.util.UUID;
 
 @Path("/merchants")
 public class MerchantFacade {
-    MerchantService merchantRegistration = new MerchantFactory().getService();
-    PaymentService paymentRegistration = new PaymentFactory().getService();
+    MerchantService service = new MerchantFactory().getService();
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response registerMerchant(String firstName, String lastName, String bankAccount) {
         try {
-            User newUser = merchantRegistration.registerMerchant(firstName, lastName, bankAccount);
+            User newUser = service.registerMerchant(firstName, lastName, bankAccount);
             return Response.status(Response.Status.CREATED)
                     .entity("merchant with id " + newUser.getUserId().getUuid() + " created")
                     .build();
@@ -42,7 +40,7 @@ public class MerchantFacade {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postPayment(Payment payment) throws URISyntaxException {
         try {
-            UUID paymentID = paymentRegistration.createPayment(payment);
+            UUID paymentID = service.createPayment(payment).getId();
             return Response.created(new URI("/payments/"+paymentID))
                     .link(new URI("/payments/"+paymentID), "self")
                     .link(new URI("/payments/"+paymentID+"/amount"), "amount")
@@ -71,7 +69,7 @@ public class MerchantFacade {
     public Response deregister(@PathParam("id") String id) {
         try {
             UUID uuid = UUID.fromString(id);
-            User deletedUser = merchantRegistration.deleteMerchant(uuid);
+            User deletedUser = service.deleteMerchant(uuid);
             return Response
                     .status(Response.Status.OK)
                     .entity(deletedUser)

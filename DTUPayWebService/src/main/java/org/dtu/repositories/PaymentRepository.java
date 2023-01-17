@@ -1,6 +1,6 @@
 package org.dtu.repositories;
 
-import org.dtu.aggregate.Token;
+import org.dtu.domain.Token;
 import org.dtu.exceptions.PaymentNotFoundException;
 import org.dtu.aggregate.Payment;
 

@@ -1,8 +1,7 @@
 package org.dtu.facades;
 
-import org.dtu.aggregate.Token;
+import org.dtu.domain.Token;
 import org.dtu.aggregate.User;
-import org.dtu.aggregate.UserId;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.CustomerNotFoundException;
 import org.dtu.exceptions.InvalidCustomerIdException;
@@ -13,7 +12,6 @@ import org.dtu.services.CustomerService;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.UUID;

@@ -48,7 +48,8 @@ public class PaymentService {
 
 
         // if cid is not in the customers list in customerservice throw InvalidCustomerIdException
-        CustomerRepository.getCustomer(payment.getCid());
+        CustomerRepository customerRepository = new CustomerRepository();
+        customerRepository.getCustomer(payment.getCid());
         // if mid is not in the merchants list in merchantservice throw InvalidMerchantIdException
         MerchantRepository.getMerchant(payment.getMid());
 

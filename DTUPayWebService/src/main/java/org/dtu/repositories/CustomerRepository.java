@@ -32,7 +32,7 @@ public class CustomerRepository {
 
     }
 
-    public static User getCustomer (UUID id) throws InvalidCustomerIdException{
+    public User getCustomer (UUID id) throws InvalidCustomerIdException{
         User targetCustomer = null;
         for (User customer:
                 customers)  {

@@ -5,22 +5,18 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
-import org.dtu.domain.Token;
 import org.dtu.aggregate.UserId;
-
-import java.util.ArrayList;
 
 @Value
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class TokensGenerated extends Event {
+public class TokenConsumed extends Event {
 
-    UserId userid;
-    ArrayList<Token> tokens;
+    UserId userId;
 
-    public TokensGenerated(CorrelationID correlationID, UserId userid, ArrayList<Token> tokens) {
+    public TokenConsumed(CorrelationID correlationID, UserId userId) {
         super(correlationID);
-        this.userid = userid;
-        this.tokens = tokens;
+        this.userId = userId;
     }
 }
+

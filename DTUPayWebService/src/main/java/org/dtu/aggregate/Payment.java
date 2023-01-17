@@ -3,6 +3,7 @@ package org.dtu.aggregate;
 
 import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
+import org.dtu.domain.Token;
 import org.dtu.events.PaymentRequested;
 import lombok.Getter;
 import lombok.Setter;

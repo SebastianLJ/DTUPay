@@ -2,6 +2,7 @@
 package org.dtu;
 
 import aggregate.Name;
+import aggregate.Payment;
 import dtu.ws.fastmoney.*;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.client.Client;
@@ -21,6 +22,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class SimpleDTUPay {
+    /*
     BankService bank = new BankServiceService().getBankServicePort();
     Client c = ClientBuilder.newClient();
     WebTarget r = c.target("http://localhost:8080/");
@@ -107,4 +109,5 @@ public class SimpleDTUPay {
     public void retireBankAccount(String accountId) throws BankServiceException_Exception {
         bank.retireAccount(accountId);
     }
+     */
 }
