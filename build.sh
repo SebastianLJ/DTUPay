@@ -5,15 +5,15 @@ set -e
 # Clean and build projects
 printf "\033[94mStep 1/4: Clean and build projects\033[0m\n"
 pushd DTUPayMessageQueue
-mvn clean package -q -DskipTests
+mvn clean install -q -DskipTests
 popd
 
 pushd DTUPayTokenManagement
-mvn clean package -q -DskipTests
+mvn clean install -q -DskipTests
 popd
 
 pushd DTUPayWebService
-./mvnw clean package -q -DskipTests
+./mvnw clean install -q -DskipTests
 popd
 
 # Clean docker images

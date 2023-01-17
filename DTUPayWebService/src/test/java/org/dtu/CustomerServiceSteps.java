@@ -22,6 +22,7 @@ import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.exceptions.InvalidCustomerNameException;
 import org.dtu.services.CustomerService;
 import org.junit.After;
+import org.junit.Before;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -91,6 +92,23 @@ public class CustomerServiceSteps {
     @After
     public void afterScenario() throws InvalidCustomerIdException {
         service.deleteCustomer(customer.getUserId().getUuid());
+        //loop through bankservice.get accounts and delete the ones that are in the list of bank users, using the cpr number to match
+        for (dtu.ws.fastmoney.User bankUser :
+                bankUsers) {
+            //for each accountinfo in getaccounts
+            for (AccountInfo accountInfo :
+                    bankService.getAccounts()) {
+                //if the cpr number of the bank user is equal to the cpr number of the accountinfo
+                if (bankUser.getCprNumber().equals(accountInfo.getUser().getCprNumber())) {
+                    //delete the account
+                    try {
+                        bankService.retireAccount(accountInfo.getAccountId());
+                    } catch (BankServiceException_Exception e) {
+                        fail();
+                    }
+                }
+            }
+        }
     }
 
     //Delete customer scenario
@@ -110,16 +128,6 @@ public class CustomerServiceSteps {
         customer = service.addCustomer(new User(customerBankUser.getFirstName(), customerBankUser.getLastName(), bankNumber));
     }
 
-    @When("the customer requests {int} tokens")
-    public void theCustomerRequestsTokens(int tokenCount) {
-        tokens = service.getTokens(customer.getUserId(), tokenCount);
-    }
-
-    @Then("the customer receives {int} tokens")
-    public void theCustomerReceivesTokens(int tokenCount) {
-        assertEquals(tokenCount, tokens.size());
-    }
-
     @Then("the customer has a bank account")
     public void theCustomerHasABankAccount() {
         try {
@@ -132,23 +140,7 @@ public class CustomerServiceSteps {
 
     @io.cucumber.java.After
     public void deleteBankAccounts() {
-        //loop through bankservice.get accounts and delete the ones that are in the list of bank users, using the cpr number to match
-        for (dtu.ws.fastmoney.User bankUser :
-                bankUsers) {
-            //for each accountinfo in getaccounts
-            for (AccountInfo accountInfo :
-                    bankService.getAccounts()) {
-                //if the cpr number of the bank user is equal to the cpr number of the accountinfo
-                if (bankUser.getCprNumber().equals(accountInfo.getUser().getCprNumber())) {
-                    //delete the account
-                    try {
-                        bankService.retireAccount(accountInfo.getAccountId());
-                    } catch (BankServiceException_Exception e) {
-                        fail();
-                    }
-                }
-            }
-        }
+
     }
 
     @When("the customer is being deleted")
@@ -185,6 +177,16 @@ public class CustomerServiceSteps {
         } catch (InvalidCustomerIdException | CustomerNotFoundException e) {
             throw new RuntimeException(e);
         }
+
+    }
+
+    @When("the customer requests {int} tokens")
+    public void theCustomerRequestsTokens(int tokenCount) {
+
+    }
+
+    @Then("a tokens requested event is published")
+    public void aTokensRequestedEventIsPublished() {
 
     }
 }
