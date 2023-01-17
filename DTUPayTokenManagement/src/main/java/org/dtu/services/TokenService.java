@@ -1,7 +1,8 @@
 package org.dtu.services;
 
 import messageUtilities.queues.IDTUPayMessageQueue;
-import org.dtu.aggregate.Token;
+/*import org.dtu.aggregate.Token;*/
+import org.dtu.domain.Token;
 import org.dtu.aggregate.UserId;
 import org.dtu.exceptions.*;
 import org.dtu.repository.ReadModelRepository;
@@ -17,9 +18,7 @@ public class TokenService {
 
     private ReadModelRepository readModelRepository;
 
-    private HashMap<Token, UserId> tokenMap = new HashMap<>();
     private HashMap<UserId, Integer> tokenAmountMap = new HashMap<>();
-    private HashMap<Token, UserId> usedTokenMap = new HashMap<>();
 
     public TokenService(IDTUPayMessageQueue messageQueue){
         this.tokenRepository = new TokenRepository(messageQueue);
@@ -27,7 +26,7 @@ public class TokenService {
         readModelRepository = new ReadModelRepository(messageQueue);
     }
 
-    public void generateTokens(UserId userId, int amount) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
+    /*public void generateTokens(UserId userId, int amount) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
         if (amount > 5 || amount < 1) throw new InvalidTokenAmountRequestException();
 
         Integer tokensAmount = tokenAmountMap.get(userId);
@@ -42,8 +41,18 @@ public class TokenService {
                 tokens) {
             tokenRepository.save(generatedToken);
         }
+    }*/
+
+    public UserId getUserIdByToken(Token token){
+        return readModelRepository.getUserIdByToken(token);
     }
 
+    public Integer getAmountTokensForUser(UserId userId){
+        return readModelRepository.getAmountTokensForUser(userId);
+    }
 
+    public Integer hashmapSize(){
+        return readModelRepository.hashmapSize();
+    }
 
 }

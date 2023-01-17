@@ -8,12 +8,13 @@ import messageUtilities.queues.IDTUPayMessage;
 import org.dtu.event.TokensGenerated;
 import org.dtu.exceptions.*;
 
+import java.io.Serializable;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 @Getter
-public class Token {
+public class Token implements Serializable {
 
     private UUID id;
 
