@@ -30,12 +30,22 @@ public class CustomerFacade {
         try {
             UUID uuid = UUID.fromString(id);
             //todo use token generator
-            ArrayList<Token> tokens = customerService.getTokens(new UserId(uuid), tokenCount);
+            //ArrayList<Token> tokens = customerService.getTokens(new UserId(uuid), tokenCount);
+            ArrayList<Token> tokens = new ArrayList<>();
             return Response.status(Response.Status.OK)
                     .entity(tokens)
                     .build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        } catch (Exception e) {
+            for (StackTraceElement el:
+                 e.getStackTrace()) {
+                System.out.println(el.toString());
+            }
+            System.out.println(e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(e.getMessage())
                     .build();
         }

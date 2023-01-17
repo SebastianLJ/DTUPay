@@ -60,17 +60,17 @@ public class CustomerApp {
             return response.readEntity(new GenericType<List<Token>>() {
             });
         } else {
-            throw new Exception("code: " + response.getStatus());
+            throw new Exception("code: " + response.getStatus() + "\n" + response.readEntity(String.class));
         }
     }
 
     //TODO Implement exception
     public User getCustomer(User user) {
-        return r.path("customer/" + user.getUserId().getUuid())
+         return r.path("customer/" + user.getUserId().getUuid())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
                 .get(User.class);
-//        if(response.getStatus() == Response.Status.OK.getStatusCode()) {
+//        (response.getStatus() == Response.Status.OK.getStatusCode()) {
 //            return response;
 //        }
     }

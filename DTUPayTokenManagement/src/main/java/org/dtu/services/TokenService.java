@@ -62,11 +62,11 @@ public class TokenService {
     }
 
     public void generateTokens(TokenRequested event) throws InvalidTokenAmountException, InvalidTokenAmountRequestException {
-        //ArrayList<Token> tokens = tokenRepository.generateTokens(event.getUserId(),event.getAmount());
-        //GeneratedToken newEvent = new GeneratedToken(event.getCorrelationID(), tokens);
-        //messageQueue.publish(newEvent);
+        /*ArrayList<Token> tokens = tokenRepository.generateTokens(event.getUserId(),event.getAmount());
+        GeneratedToken newEvent = new GeneratedToken(event.getCorrelationID(), tokens);
+        messageQueue.publish(newEvent);
 
-        /*for (int i = 0; i < tokens.size(); i++) {
+        for (int i = 0; i < tokens.size(); i++) {
             GeneratedToken newEvent = new GeneratedToken(tokens.get(i));
             messageQueue.publish(newEvent);
         }*/
