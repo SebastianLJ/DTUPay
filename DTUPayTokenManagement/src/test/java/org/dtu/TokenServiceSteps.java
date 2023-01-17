@@ -35,7 +35,7 @@ public class TokenServiceSteps {
 
     @When("a message queue is started")
     public void aMessageQueueIsStarted() {
-        DTUPayRabbitMQ eventQueue = new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.rabbitMq);
+        DTUPayRabbitMQ eventQueue = new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost);
         tokenRepository = new TokenRepository(eventQueue);
         ReadModelRepository readModelRepository = new ReadModelRepository(eventQueue);
         tokenService = new TokenService(eventQueue);

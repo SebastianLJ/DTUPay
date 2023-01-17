@@ -180,7 +180,7 @@ public class CustomerServiceSteps {
 
     }
 
-    @io.cucumber.java.After
+    /*@io.cucumber.java.After
     public void afterTest() throws InvalidCustomerIdException {
         service.deleteCustomer(customer.getUserId().getUuid());
         //loop through bankservice.get accounts and delete the ones that are in the list of bank users, using the cpr number to match
@@ -200,7 +200,7 @@ public class CustomerServiceSteps {
                 }
             }
         }
-    }
+    }*/
 
     @Then("a tokens requested event is published")
     public void aTokensRequestedEventIsPublished() {
