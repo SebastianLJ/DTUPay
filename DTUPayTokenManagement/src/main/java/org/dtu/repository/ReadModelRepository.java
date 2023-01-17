@@ -4,10 +4,7 @@ import messageUtilities.queues.IDTUPayMessageQueue;
 /*import org.dtu.aggregate.Token;*/
 import org.dtu.domain.Token;
 import org.dtu.aggregate.UserId;
-import org.dtu.event.ConsumeToken;
-import org.dtu.event.GenerateToken;
-import org.dtu.event.TokenConsumed;
-import org.dtu.event.TokensGenerated;
+import org.dtu.event.*;
 
 import java.io.NotSerializableException;
 import java.util.ArrayList;
@@ -23,7 +20,7 @@ public class ReadModelRepository {
 
     public ReadModelRepository(IDTUPayMessageQueue messageQueue) {
         this.messageQueue = messageQueue;
-        messageQueue.addHandler(GenerateToken.class, e -> apply((GenerateToken) e));
+        messageQueue.addHandler(TokensRequested.class, e -> apply((TokensRequested) e));
         messageQueue.addHandler(ConsumeToken.class, e -> apply((ConsumeToken) e));
     }
 
@@ -37,10 +34,10 @@ public class ReadModelRepository {
         messageQueue.publish(tokenConsumed);
     }
 
-    private void apply(GenerateToken event) {
+    private void apply(TokensRequested event) {
         ArrayList<Token> tokens = new ArrayList<>();
         if (event.getAmount() > 5 || event.getAmount() < 1) {
-            TokensGenerated tokensGenerated = new TokensGenerated(event.getUserId(),tokens);
+            TokensGenerated tokensGenerated = new TokensGenerated(event.getCorrelationID(),event.getUserId(),tokens);
             tokensGenerated.setMessage("Token amount requested is invalid");
             messageQueue.publish(tokensGenerated);
             return;
