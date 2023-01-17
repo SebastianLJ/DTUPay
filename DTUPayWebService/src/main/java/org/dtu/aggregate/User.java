@@ -16,7 +16,7 @@ public class User implements Serializable {
 
     Name name;
     UserId userId;
-    String bankNumber;
+    String bankNumber = "";
 
     public User(String firstName, String lastName) {
         this.userId = new UserId(UUID.randomUUID());
@@ -33,5 +33,9 @@ public class User implements Serializable {
         this.userId = new UserId(UUID.randomUUID());
         this.name = new Name(firstName, lastName);
         this.bankNumber = bankNumber;
+    }
+
+    public String toString() {
+        return name.getFirstName() + " " + name.getLastName() + "; " +  bankNumber + "; " + userId.getUuid();
     }
 }

@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class TokenService {
 
-    private IDTUPayMessageQueue messageQueue ;
+    private IDTUPayMessageQueue messageQueue;
     private TokenRepository tokenRepository;
 
     private ReadModelRepository readModelRepository;

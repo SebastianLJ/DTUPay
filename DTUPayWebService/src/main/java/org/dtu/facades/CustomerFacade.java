@@ -30,12 +30,22 @@ public class CustomerFacade {
         try {
             UUID uuid = UUID.fromString(id);
             //todo use token generator
-            ArrayList<Token> tokens = customerService.getTokens(new UserId(uuid), tokenCount);
+            //ArrayList<Token> tokens = customerService.getTokens(new UserId(uuid), tokenCount);
+            ArrayList<Token> tokens = new ArrayList<>();
             return Response.status(Response.Status.OK)
                     .entity(tokens)
                     .build();
         } catch (IllegalArgumentException e) {
             return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        } catch (Exception e) {
+            for (StackTraceElement el:
+                 e.getStackTrace()) {
+                System.out.println(el.toString());
+            }
+            System.out.println(e);
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                     .entity(e.getMessage())
                     .build();
         }
@@ -64,7 +74,7 @@ public class CustomerFacade {
         try {
             System.out.println("Adding customer");
             User createdUser = customerService.addCustomer(user);
-            System.out.println("User: " + createdUser.getUserId());
+            System.out.println("User: " + createdUser);
             return Response.ok(Response.Status.CREATED)
                     .entity(createdUser)
                     .build();
@@ -76,6 +86,10 @@ public class CustomerFacade {
             System.out.println("Invalid customer");
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("invalid customer object")
+                    .build();
+        } catch (Exception e) {
+            return Response.status(500)
+                    .entity(e.getMessage())
                     .build();
         }
     }
@@ -104,10 +118,14 @@ public class CustomerFacade {
 
     @GET
     @Path("{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getCustomer(@PathParam("id") String id) {
         try {
+            System.out.println("Getting customer");
             UUID uuid = UUID.fromString(id);
             User user = customerService.getCustomer(uuid);
+            System.out.println("Found customer with uuid: " + uuid);
             return Response
                     .status(Response.Status.OK)
                     .entity(user)
@@ -118,5 +136,13 @@ public class CustomerFacade {
                     .entity(e.getMessage())
                     .build();
         }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getALlCustomers() {
+        return Response.status(Response.Status.OK)
+                .entity(customerService.getCustomerList())
+                .build();
     }
 }
