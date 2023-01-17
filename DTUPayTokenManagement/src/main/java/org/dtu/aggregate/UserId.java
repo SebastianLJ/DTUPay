@@ -1,12 +1,14 @@
 package org.dtu.aggregate;
 
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Value;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-@Value
+@Data
 @AllArgsConstructor
-public class UserId {
+public class UserId implements Serializable {
     UUID uuid;
 }

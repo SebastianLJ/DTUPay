@@ -5,10 +5,8 @@ import org.dtu.aggregate.User;
 import org.dtu.exceptions.*;
 import org.dtu.factories.CustomerFactory;
 import org.dtu.factories.MerchantFactory;
-import org.dtu.factories.PaymentFactory;
 import org.dtu.services.CustomerService;
 import org.dtu.services.MerchantService;
-import org.dtu.services.PaymentService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -44,7 +42,7 @@ public class RegistrationResource {
     @Path("/merchants")
     public Response addMerchant(Name fullName) {
         try {
-            User newUser = merchantRegistration.addMerchant(fullName.getFirstName(), fullName.getLastName());
+            User newUser = merchantRegistration.registerMerchant(fullName.getFirstName(), fullName.getLastName());
             return Response.status(Response.Status.CREATED)
                     .entity(newUser)
                     .build();

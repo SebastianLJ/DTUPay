@@ -13,7 +13,6 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CustomerSteps {
-    SimpleDTUPay dtuPay = new SimpleDTUPay();
     CustomerApp customerApp = new CustomerApp();
 
     User customer;

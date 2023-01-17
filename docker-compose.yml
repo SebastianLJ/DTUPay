@@ -8,13 +8,22 @@ services:
       - "15672:15672"
     volumes:
       - "./custom_rabbitmq_config.conf:/etc/rabbitmq/rabbitmq.conf"
-  #DTUTokenManagement:
-  #  build: DTUPayTokenManagement
-  #  image: dtu_pay_token_management
-  #  container_name: DTUPayTokenManagement
+    networks:
+      - DTUPayNetwork
+  DTUTokenManagement:
+    build: DTUPayTokenManagement
+    image: dtu_pay_token_management
+    container_name: DTUPayTokenManagement
+    networks:
+      - DTUPayNetwork
   DTUPayWebService:
     build: DTUPayWebService
     image: dtu_pay_web_service
     container_name: DTUPayWebService
     ports:
       - "8080:8080"
+    networks:
+      - DTUPayNetwork
+networks:
+  DTUPayNetwork:
+    driver: bridge

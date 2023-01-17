@@ -9,6 +9,9 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import messageUtilities.queues.QueueType;
+import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
+import messageUtilities.queues.rabbitmq.HostnameType;
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.*;
 import org.dtu.factories.MerchantFactory;
@@ -22,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MerchantServiceSteps {
-    MerchantService merchantService = new MerchantFactory().getService();
+    MerchantService merchantService = new MerchantService(new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost));
 
     BankService bankService = new BankServiceService().getBankServicePort();
 
@@ -33,7 +36,7 @@ public class MerchantServiceSteps {
     //Create merchant scenario
     @When("a merchant is created")
     public void aMerchantIsCreated() throws MerchantAlreadyExistsException {
-        merchant = merchantService.addMerchant("John", "Doe");
+        merchant = merchantService.registerMerchant("John", "Doe");
     }
 
     @Then("a merchant is registered in the system")
@@ -65,7 +68,7 @@ public class MerchantServiceSteps {
         } catch (BankServiceException_Exception e) {
             throw new RuntimeException(e);
         }
-        merchant = merchantService.addMerchant(merchantBankUser.getFirstName(), merchantBankUser.getLastName(), bankNumber);
+        merchant = merchantService.registerMerchant(merchantBankUser.getFirstName(), merchantBankUser.getLastName(), bankNumber);
     }
 
     @When("a merchant is deleted")
