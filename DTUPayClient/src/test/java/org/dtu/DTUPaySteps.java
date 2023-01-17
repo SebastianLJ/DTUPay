@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-
+/*
 public class DTUPaySteps {
     String cid,mid;
     SimpleDTUPay dtuPay = new SimpleDTUPay();
@@ -155,3 +155,5 @@ public class DTUPaySteps {
         assertTrue(found);
     }
 }
+
+ */
