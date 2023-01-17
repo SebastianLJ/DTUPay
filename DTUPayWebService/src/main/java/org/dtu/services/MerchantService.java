@@ -1,7 +1,8 @@
 package org.dtu.services;
 
 
-import org.dtu.aggregate.Payment;
+import messageUtilities.queues.IDTUPayMessageQueue;
+import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.*;
 import org.dtu.repositories.MerchantRepository;
@@ -13,7 +14,7 @@ import java.util.UUID;
 public class MerchantService {
     MerchantRepository repository;
 
-    public MerchantService() {repository = new MerchantRepository();}
+    public MerchantService(IDTUPayMessageQueue dtuPayRabbitMQ) {repository = new MerchantRepository();}
 
     public List<User> getMerchants() {
         return repository.getMerchantList();

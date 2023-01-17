@@ -22,14 +22,16 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class CustomerService {
-   CustomerRepository repository;
-   IDTUPayMessageQueue messageQueue;
+    CustomerRepository repository;
+    IDTUPayMessageQueue messageQueue;
 
     CompletableFuture<GeneratedToken> tokenEvent;
 
     CompletableFuture<UUID> deletedStudent;
 
-    public CustomerService() {repository = new CustomerRepository();}
+    public CustomerService() {
+        repository = new CustomerRepository();
+    }
 
     public CustomerService(IDTUPayMessageQueue messageQueue) {
         this.repository = new CustomerRepository();
@@ -39,7 +41,7 @@ public class CustomerService {
 
     }
 
-    public User getCustomer (UUID id) throws InvalidCustomerIdException, CustomerNotFoundException {
+    public User getCustomer(UUID id) throws InvalidCustomerIdException, CustomerNotFoundException {
         try {
             return repository.getCustomer(id);
         } catch (InvalidCustomerIdException e) {
@@ -89,5 +91,7 @@ public class CustomerService {
         this.tokenEvent.complete(event);
     }
 
-    public void handleCustomerAccountDeleted(TokensDeleted event){this.deletedStudent.complete(event.getCustomerID());}
+    public void handleCustomerAccountDeleted(TokensDeleted event) {
+        this.deletedStudent.complete(event.getCustomerID());
+    }
 }

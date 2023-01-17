@@ -8,6 +8,7 @@ import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.IDTUPayMessageQueue;
 import messageUtilities.queues.QueueType;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
+import messageUtilities.queues.rabbitmq.HostnameType;
 import messageUtilities.stubs.ConsumerStub;
 import messageUtilities.stubs.EventCreatedStub;
 import messageUtilities.stubs.EventRequestedStub;
@@ -32,7 +33,7 @@ public class SimpleMessageQueueSteps {
 
     @Given("DTUPayMessageQueue has been established")
     public void dtupaymessagequeueHasBeenEstablished() {
-        this.messageQueue = new DTUPayRabbitMQ(QueueType.DTUPay) {
+        this.messageQueue = new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost) {
             @Override
             public void publish(IDTUPayMessage message) {
                 if (message instanceof EventRequestedStub) {

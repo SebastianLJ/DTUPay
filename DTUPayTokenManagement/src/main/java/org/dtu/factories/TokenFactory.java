@@ -2,6 +2,7 @@ package org.dtu.factories;
 
 import messageUtilities.queues.QueueType;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
+import messageUtilities.queues.rabbitmq.HostnameType;
 import org.dtu.services.TokenService;
 
 public class TokenFactory {
@@ -10,7 +11,7 @@ public class TokenFactory {
 
     public synchronized TokenService getService() {
         if (service == null) {
-            service = new TokenService(new DTUPayRabbitMQ(QueueType.DTUPay));
+            service = new TokenService(new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.rabbitMq));
         }
         return service;
     }

@@ -6,6 +6,7 @@ import io.cucumber.java.en.When;
 import messageUtilities.cqrs.events.Event;
 import messageUtilities.queues.QueueType;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
+import messageUtilities.queues.rabbitmq.HostnameType;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.UserId;
 import org.dtu.exceptions.*;
@@ -34,7 +35,7 @@ public class TokenServiceSteps {
 
     @When("a message queue is started")
     public void aMessageQueueIsStarted() {
-        DTUPayRabbitMQ eventQueue = new DTUPayRabbitMQ(QueueType.DTUPay);
+        DTUPayRabbitMQ eventQueue = new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.rabbitMq);
         tokenRepository = new TokenRepository(eventQueue);
         ReadModelRepository readModelRepository = new ReadModelRepository(eventQueue);
         tokenService = new TokenService(eventQueue);

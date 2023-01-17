@@ -9,6 +9,9 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import messageUtilities.queues.QueueType;
+import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
+import messageUtilities.queues.rabbitmq.HostnameType;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
@@ -29,8 +32,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PaymentServiceSteps {
     PaymentService paymentRegistration = new PaymentFactory().getService();
-    CustomerService customerRegistration = new CustomerFactory().getService();
-    MerchantService merchantRegistration = new MerchantFactory().getService();
+    CustomerService customerRegistration = new CustomerService(new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost));
+    MerchantService merchantRegistration = new MerchantService(new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost));
 
     BankService bankService = new BankServiceService().getBankServicePort();
 

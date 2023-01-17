@@ -11,6 +11,7 @@ import messageUtilities.CorrelationID;
 import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.QueueType;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
+import messageUtilities.queues.rabbitmq.HostnameType;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
 import org.dtu.events.AccountDeletionRequested;
@@ -49,7 +50,7 @@ public class CustomerServiceSteps {
 
     CompletableFuture<IDTUPayMessage> publishedEvents = new CompletableFuture<>();
 
-    private DTUPayRabbitMQ q = new DTUPayRabbitMQ(QueueType.DTUPay) {
+    private DTUPayRabbitMQ q = new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost) {
         @Override
         public void publish(IDTUPayMessage message) {
             publishedEvents.complete(message);

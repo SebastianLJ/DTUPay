@@ -4,6 +4,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
+import lombok.NonNull;
 import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.IDTUPayMessageQueue;
 import messageUtilities.queues.QueueType;
@@ -13,14 +14,22 @@ import java.util.function.Consumer;
 
 public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
 
-    private static final String DEFAULT_HOSTNAME = "localhost";
-    private static final String EXCHANGE_NAME = "eventsExchange";
-    private final QueueType queueType;
+    /**
+     * WHEN DEPLOYING TO DOCKER, RABBITMQ SERVICE NAME IS REQUIRED FOR HOSTNAME
+     * WHEN TESTING OUTSIDE, USE LOCALHOST AS HOSTNAME
+     */
+    private final String hostname;
+    private final String exchangeName;
+    private final String exchangeType;
+    private final String queueType;
     private final Channel channel;
 
-    public DTUPayRabbitMQ(QueueType queueType) {
-        this.queueType = queueType;
-        this.channel = setUpChannel();
+    public DTUPayRabbitMQ(QueueType queueType, HostnameType hostnameType) {
+        this.queueType = queueType.name();
+        this.hostname = hostnameType.name();
+        this.exchangeName = "eventsExchange";
+        this.exchangeType = "topic";
+        this.channel = setUpChannel(this.hostname, this.exchangeName, this.exchangeType);
     }
 
     @Override
@@ -34,7 +43,7 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
                 out.writeObject(message);
                 data = file.toByteArray();
             }
-            channel.basicPublish(EXCHANGE_NAME, queueType.name(), null, data);
+            channel.basicPublish(exchangeName, queueType, null, data);
         } catch (Exception e) {
             throw new Error(e);
         }
@@ -42,10 +51,10 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
 
     @Override
     public void addHandler(Class<? extends IDTUPayMessage> message, Consumer<IDTUPayMessage> handler) {
-        Channel channel = setUpChannel();
+        Channel channel = setUpChannel(hostname, exchangeName, exchangeType);
         try {
             String queueName = channel.queueDeclare().getQueue();
-            channel.queueBind(queueName, EXCHANGE_NAME, queueType.toString());
+            channel.queueBind(queueName, exchangeName, queueType);
 
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
 
@@ -69,14 +78,14 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
         }
     }
 
-    private Channel setUpChannel() {
+    private Channel setUpChannel(@NonNull String hostname, @NonNull String exchangeName, @NonNull String exchangeType) {
         Channel chan;
         try {
             ConnectionFactory factory = new ConnectionFactory();
-            factory.setHost(DEFAULT_HOSTNAME);
+            factory.setHost(hostname);
             Connection connection = factory.newConnection();
             chan = connection.createChannel();
-            chan.exchangeDeclare(EXCHANGE_NAME, "topic");
+            chan.exchangeDeclare(exchangeName, exchangeType);
         } catch (Exception e) {
             throw new Error(e);
         }

@@ -5,15 +5,16 @@ set -e
 # Clean and build projects
 printf "\033[94mStep 1/4: Clean and build projects\033[0m\n"
 pushd DTUPayMessageQueue
-mvn clean package -q -DskipTests
+mvn clean install -q -DskipTests
 popd
 
 pushd DTUPayTokenManagement
-mvn clean package -q -DskipTests
+mvn clean install -q -DskipTests
 popd
 
 pushd DTUPayWebService
-./mvnw clean package -q -DskipTests
+./mvnw clean install -q -DskipTests
+./mvnw package -q -DskipTests
 popd
 
 # Clean docker images
@@ -33,17 +34,17 @@ sleep 5
 # Run project tests
 printf "\n\033[94mStep 4/4: Run project tests\033[0m\n"
 pushd DTUPayMessageQueue
-#mvn test -q
+mvn test -q
 popd
 
 pushd DTUPayTokenManagement
 #mvn test -q
 popd
 
-pushd DTUPayClient
-mvn test -q
+pushd DTUPayWebService
+#mvn test -q
 popd
 
-pushd DTUPayWebService
-mvn test -q
+pushd DTUPayClient
+#mvn test -q
 popd
