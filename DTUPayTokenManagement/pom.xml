@@ -13,6 +13,7 @@
         <maven.compiler.target>11</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>io.cucumber</groupId>
@@ -80,7 +81,7 @@
                 <configuration>
                     <archieve>
                         <manifest>
-                            <mainClass>src/main/java/org/dtu</mainClass>
+                            <mainClass>org.dtu.StartUp</mainClass>
                         </manifest>
                     </archieve>
                 </configuration>
