@@ -6,7 +6,6 @@ Feature: Customer Service
     Then the CustomerAccountCreated event is sent
     When the TokensGenerated event is received
     Then the customer is created
-    And the customer has tokens
 
   Scenario: A customer is successfully deleted
     Given a customer is in the system

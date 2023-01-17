@@ -7,10 +7,7 @@ import messageUtilities.queues.IDTUPayMessageQueue;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
-import org.dtu.events.AccountDeletionRequested;
-import org.dtu.events.TokensDeleted;
-import org.dtu.events.TokensGenerated;
-import org.dtu.events.TokensRequested;
+import org.dtu.events.*;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.CustomerNotFoundException;
 import org.dtu.exceptions.InvalidCustomerIdException;
@@ -19,6 +16,7 @@ import org.dtu.repositories.CustomerRepository;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -59,14 +57,11 @@ public class CustomerService {
     }
 
     public User addCustomer(User user) throws CustomerAlreadyExistsException, InvalidCustomerNameException {
-
-        try {
-            return repository.addCustomer(user);
-        } catch (CustomerAlreadyExistsException e) {
-            throw new CustomerAlreadyExistsException();
-        } catch (InvalidCustomerNameException e) {
-            throw new InvalidCustomerNameException();
-        }
+        Event event = new CustomerAccountCreated(user);
+        messageQueue.publish(event);
+        token_events.put(event.getCorrelationID(), new CompletableFuture<>());
+        token_events.get(event.getCorrelationID()).join();
+        return repository.addCustomer(user);
     }
 
     public ArrayList<User> getCustomerList() {
@@ -100,4 +95,5 @@ public class CustomerService {
     public void handleCustomerAccountDeleted(TokensDeleted event) {
         this.deletedStudent.complete(event.getCustomerID());
     }
+
 }
