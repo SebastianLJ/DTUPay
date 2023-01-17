@@ -26,8 +26,7 @@ public class CustomerService {
     CustomerRepository repository;
     IDTUPayMessageQueue messageQueue;
 
-    CompletableFuture<TokensGenerated> tokenEvent;
-    HashMap<CorrelationID, CompletableFuture> events = new HashMap<>();
+    HashMap<CorrelationID, CompletableFuture<TokensGenerated>> token_events = new HashMap<>();
 
     CompletableFuture<UUID> deletedStudent;
 
@@ -83,17 +82,18 @@ public class CustomerService {
     }
 
     public ArrayList<Token> getTokens(UserId userId, int amount) {
-        this.tokenEvent = new CompletableFuture<>();
-        messageQueue.publish(new TokensRequested(CorrelationID.randomID(), amount, userId));
-        TokensGenerated result = this.tokenEvent.join();
+        CorrelationID correlationID = CorrelationID.randomID();
+        TokensRequested event = new TokensRequested(correlationID, amount, userId);
+        messageQueue.publish(event);
+        token_events.put(correlationID, new CompletableFuture<TokensGenerated>());
+        TokensGenerated result = token_events.get(correlationID).join();
         return result.getTokens();
     }
 
     public void apply(TokensGenerated event) {
-        /*if (this.events.containsKey(event.getCorrelationID())) {
-            this.events.get(event.getCorrelationID()).complete(event);
-        }*/
-        this.tokenEvent.complete(event);
+        if (this.token_events.containsKey(event.getCorrelationID())) {
+            this.token_events.get(event.getCorrelationID()).complete(event);
+        }
     }
 
     public void handleCustomerAccountDeleted(TokensDeleted event) {
