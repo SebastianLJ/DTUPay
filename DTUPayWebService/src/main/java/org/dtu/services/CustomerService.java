@@ -8,9 +8,9 @@ import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
 import org.dtu.events.AccountDeletionRequested;
-import org.dtu.events.GeneratedToken;
-import org.dtu.events.TokenRequested;
 import org.dtu.events.TokensDeleted;
+import org.dtu.events.TokensGenerated;
+import org.dtu.events.TokensRequested;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.CustomerNotFoundException;
 import org.dtu.exceptions.InvalidCustomerIdException;
@@ -25,7 +25,7 @@ public class CustomerService {
    CustomerRepository repository;
    IDTUPayMessageQueue messageQueue;
 
-    CompletableFuture<GeneratedToken> tokenEvent;
+    CompletableFuture<TokensGenerated> tokenEvent;
 
     CompletableFuture<UUID> deletedStudent;
 
@@ -34,7 +34,7 @@ public class CustomerService {
     public CustomerService(IDTUPayMessageQueue messageQueue) {
         this.repository = new CustomerRepository();
         this.messageQueue = messageQueue;
-        this.messageQueue.addHandler(GeneratedToken.class, e -> apply((GeneratedToken) e));
+        this.messageQueue.addHandler(TokensGenerated.class, e -> apply((TokensGenerated) e));
         this.messageQueue.addHandler(TokensDeleted.class, e -> handleCustomerAccountDeleted((TokensDeleted) e));
 
     }
@@ -80,12 +80,12 @@ public class CustomerService {
 
     public ArrayList<Token> getTokens(UserId userId, int amount) {
         this.tokenEvent = new CompletableFuture<>();
-        messageQueue.publish(new TokenRequested(CorrelationID.randomID(), amount, userId));
-        GeneratedToken result = this.tokenEvent.join();
+        messageQueue.publish(new TokensRequested(CorrelationID.randomID(), amount, userId));
+        TokensGenerated result = this.tokenEvent.join();
         return result.getTokens();
     }
 
-    public void apply(GeneratedToken event) {
+    public void apply(TokensGenerated event) {
         this.tokenEvent.complete(event);
     }
 
