@@ -71,4 +71,21 @@
         </dependency>
     </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.dtu.group04</groupId>
+                <artifactId>DTUPayTokenManagement</artifactId>
+                <version>1.0</version>
+                <configuration>
+                    <archieve>
+                        <manifest>
+                            <mainClass>src/main/java/org/dtu</mainClass>
+                        </manifest>
+                    </archieve>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
 </project>
