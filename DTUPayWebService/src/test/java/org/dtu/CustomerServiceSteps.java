@@ -8,6 +8,7 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import messageUtilities.CorrelationID;
+import messageUtilities.cqrs.events.Event;
 import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.QueueType;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
@@ -17,6 +18,7 @@ import org.dtu.aggregate.User;
 import org.dtu.events.AccountDeletionRequested;
 import org.dtu.events.CustomerAccountDeleted;
 import org.dtu.events.TokensDeleted;
+import org.dtu.events.TokensRequested;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.CustomerNotFoundException;
 import org.dtu.exceptions.InvalidCustomerIdException;
@@ -129,6 +131,11 @@ public class CustomerServiceSteps {
         customer = service.addCustomer(new User(customerBankUser.getFirstName(), customerBankUser.getLastName(), bankNumber));
     }
 
+    @Given("a customer has been created")
+    public void a_customer_has_been_created() throws InvalidCustomerNameException, CustomerAlreadyExistsException {
+        customer = service.addCustomer(new User("Fred", "Again", "ThiccAccount"));
+    }
+
     @Then("the customer has a bank account")
     public void theCustomerHasABankAccount() {
         try {
@@ -177,7 +184,15 @@ public class CustomerServiceSteps {
 
     @When("the customer requests {int} tokens")
     public void theCustomerRequestsTokens(int tokenCount) {
+        new Thread(() -> {
+            service.getTokens(customer.getUserId(), tokenCount);
+        }).start();
 
+    }
+
+    @Then("a tokens requested event is published")
+    public void aTokensRequestedEventIsPublished() {
+        //Event event = publishedEvents.get("TokensRequested").join();
     }
 
     /*@io.cucumber.java.After
@@ -201,10 +216,5 @@ public class CustomerServiceSteps {
             }
         }
     }*/
-
-    @Then("a tokens requested event is published")
-    public void aTokensRequestedEventIsPublished() {
-
-    }
 }
 
