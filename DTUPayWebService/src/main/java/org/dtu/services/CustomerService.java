@@ -18,6 +18,7 @@ import org.dtu.exceptions.InvalidCustomerNameException;
 import org.dtu.repositories.CustomerRepository;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -26,6 +27,7 @@ public class CustomerService {
    IDTUPayMessageQueue messageQueue;
 
     CompletableFuture<TokensGenerated> tokenEvent;
+    HashMap<CorrelationID, CompletableFuture> events = new HashMap<>();
 
     CompletableFuture<UUID> deletedStudent;
 
@@ -86,6 +88,9 @@ public class CustomerService {
     }
 
     public void apply(TokensGenerated event) {
+        /*if (this.events.containsKey(event.getCorrelationID())) {
+            this.events.get(event.getCorrelationID()).complete(event);
+        }*/
         this.tokenEvent.complete(event);
     }
 
