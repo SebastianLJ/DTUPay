@@ -9,8 +9,8 @@ import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
 import messageUtilities.queues.rabbitmq.HostnameType;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.UserId;
-import org.dtu.event.GenerateToken;
 import org.dtu.event.TokensGenerated;
+import org.dtu.event.TokensRequested;
 import org.dtu.exceptions.*;
 import org.dtu.factories.TokenFactory;
 import org.dtu.repository.ReadModelRepository;
@@ -47,8 +47,8 @@ public class TokenServiceSteps {
 
     @And("a new user is created")
     public void aUserRequestsAnAccount() throws InterruptedException {
-        GenerateToken generateToken = new GenerateToken(3,userId1);
-        eventQueue.publish(generateToken);
+        TokensRequested tokensRequested = new TokensRequested(3,userId1);
+        eventQueue.publish(tokensRequested);
         /*eventQueue.publish(generateToken);*/
         Thread.sleep(1000);
         amount1 = tokenService.getAmountTokensForUser(userId1);
@@ -63,8 +63,8 @@ public class TokenServiceSteps {
 
     @And("a second user is created")
     public void aSecondUserIsCreated() throws InterruptedException {
-        GenerateToken generateToken = new GenerateToken(4,userId2);
-        eventQueue.publish(generateToken);
+        TokensRequested tokensRequested = new TokensRequested(4,userId2);
+        eventQueue.publish(tokensRequested);
         /*eventQueue.publish(generateToken);*/
         Thread.sleep(1000);
         amount2 = tokenService.getAmountTokensForUser(userId2);
