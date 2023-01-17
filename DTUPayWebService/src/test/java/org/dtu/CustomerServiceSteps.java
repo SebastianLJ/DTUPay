@@ -71,8 +71,8 @@ public class CustomerServiceSteps {
     @When("a customer is created")
     public void a_customer_is_created() {
         try {
-            customer = service.addCustomer("Frank", "Ocean");
-        } catch (CustomerAlreadyExistsException e) {
+            customer = service.addCustomer(new User("frank", "ocean", "mybank"));
+        } catch (CustomerAlreadyExistsException | InvalidCustomerNameException e) {
             e.printStackTrace();
         }
     }
@@ -182,7 +182,7 @@ public class CustomerServiceSteps {
         try {
             deletedStudent.join();
             assertNull(service.getCustomer(customer.getUserId().getUuid()));
-        } catch (InvalidCustomerIdException e) {
+        } catch (InvalidCustomerIdException | CustomerNotFoundException e) {
             throw new RuntimeException(e);
         }
 

@@ -64,7 +64,7 @@ public class CustomerFacade {
         try {
             System.out.println("Adding customer");
             User createdUser = customerService.addCustomer(user);
-            System.out.println("User: " + createdUser.getUserId());
+            System.out.println("User: " + createdUser);
             return Response.ok(Response.Status.CREATED)
                     .entity(createdUser)
                     .build();
@@ -76,6 +76,10 @@ public class CustomerFacade {
             System.out.println("Invalid customer");
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("invalid customer object")
+                    .build();
+        } catch (Exception e) {
+            return Response.status(500)
+                    .entity(e.getMessage())
                     .build();
         }
     }
@@ -103,7 +107,8 @@ public class CustomerFacade {
     }
 
     @GET
-    @Path("{id}")
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getCustomer(@PathParam("id") String id) {
         try {
             UUID uuid = UUID.fromString(id);
@@ -118,5 +123,13 @@ public class CustomerFacade {
                     .entity(e.getMessage())
                     .build();
         }
+    }
+
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getALlCustomers() {
+        return Response.status(Response.Status.OK)
+                .entity(customerService.getCustomerList())
+                .build();
     }
 }

@@ -48,7 +48,7 @@ public class CustomerApp {
     }
 
 
-    public List<Token> getTokens(UserId userId, int tokenCount) throws Exception {
+    public List<Token> generateTokens(UserId userId, int tokenCount) throws Exception {
         Response response = r.path(
                         "customers/"+
                         userId.getUuid()+

@@ -15,9 +15,9 @@ public class TokenProjector {
     }
 
     public void project(User user){
-        UserId userId = Optional.ofNullable(tokenReadRepository.getUserId())
+        //UserId userId = Optional.ofNullable(tokenReadRepository.getUserId())
 
 
-        tokenReadRepository.addUserId();
+        //tokenReadRepository.addUserId();
     }
 }
