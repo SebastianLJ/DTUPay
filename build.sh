@@ -46,5 +46,5 @@ pushd DTUPayWebService
 popd
 
 pushd DTUPayClient
-#mvn test -q
+mvn test -q
 popd
