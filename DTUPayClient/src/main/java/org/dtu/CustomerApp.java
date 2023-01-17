@@ -66,13 +66,19 @@ public class CustomerApp {
 
     //TODO Implement exception
     public User getCustomer(User user) {
-         return r.path("customer/" + user.getUserId().getUuid())
+        Response response = r.path("customer/" + user.getUserId().getUuid())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
-                .get(User.class);
-//        (response.getStatus() == Response.Status.OK.getStatusCode()) {
-//            return response;
-//        }
+                .get();
+
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(User.class);
+        } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
+            return null;
+        } else {
+            System.out.println("Something unexpected happened, status code: " + response.getStatus());
+            return null;
+        }
     }
 
 }
