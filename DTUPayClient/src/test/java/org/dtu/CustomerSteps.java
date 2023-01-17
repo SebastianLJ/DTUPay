@@ -6,6 +6,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.dtu.exceptions.CustomerDoesNotExist;
 
 import java.util.List;
 
@@ -65,9 +66,11 @@ public class CustomerSteps {
     @Then("the customer is no longer in the system")
     public void the_customer_is_no_longer_in_the_system() {
         try {
-        assertNull(customerApp.getCustomer(customer));
-    } catch (Exception e) {
-            e.printStackTrace();
+            customerApp.getCustomer(customer);
+            fail();
+        } catch (CustomerDoesNotExist e) {
+            assertTrue(true);
+
         }
     }
 

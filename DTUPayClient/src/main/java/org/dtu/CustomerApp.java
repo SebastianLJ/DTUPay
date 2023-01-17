@@ -11,6 +11,7 @@ import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.dtu.exceptions.CustomerDoesNotExist;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,7 +29,7 @@ public class CustomerApp {
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(User.class);
         } else {
-            System.out.println("!!!! " + response.readEntity(User.class) + " !!!!");
+            System.out.println("!!!! " + response.readEntity(String.class) + " !!!!");
             throw new Exception("code: " + response.getStatus());
         }
     }
@@ -65,7 +66,7 @@ public class CustomerApp {
     }
 
     //TODO Implement exception
-    public User getCustomer(User user) {
+    public User getCustomer(User user) throws CustomerDoesNotExist {
         Response response = r.path("customer/" + user.getUserId().getUuid())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
@@ -73,11 +74,8 @@ public class CustomerApp {
 
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(User.class);
-        } else if (response.getStatus() == Response.Status.BAD_REQUEST.getStatusCode()) {
-            return null;
         } else {
-            System.out.println("Something unexpected happened, status code: " + response.getStatus());
-            return null;
+            throw new CustomerDoesNotExist();
         }
     }
 
