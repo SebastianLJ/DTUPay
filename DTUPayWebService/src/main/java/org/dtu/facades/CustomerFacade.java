@@ -104,10 +104,14 @@ public class CustomerFacade {
 
     @GET
     @Path("{id}")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
     public Response getCustomer(@PathParam("id") String id) {
         try {
+            System.out.println("Getting customer");
             UUID uuid = UUID.fromString(id);
             User user = customerService.getCustomer(uuid);
+            System.out.println("Found customer with uuid: " + uuid);
             return Response
                     .status(Response.Status.OK)
                     .entity(user)
