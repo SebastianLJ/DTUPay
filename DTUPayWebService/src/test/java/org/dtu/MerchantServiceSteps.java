@@ -33,7 +33,7 @@ public class MerchantServiceSteps {
     //Create merchant scenario
     @When("a merchant is created")
     public void aMerchantIsCreated() throws MerchantAlreadyExistsException {
-        merchant = merchantService.addMerchant("John", "Doe");
+        merchant = merchantService.registerMerchant("John", "Doe");
     }
 
     @Then("a merchant is registered in the system")
@@ -65,7 +65,7 @@ public class MerchantServiceSteps {
         } catch (BankServiceException_Exception e) {
             throw new RuntimeException(e);
         }
-        merchant = merchantService.addMerchant(merchantBankUser.getFirstName(), merchantBankUser.getLastName(), bankNumber);
+        merchant = merchantService.registerMerchant(merchantBankUser.getFirstName(), merchantBankUser.getLastName(), bankNumber);
     }
 
     @When("a merchant is deleted")

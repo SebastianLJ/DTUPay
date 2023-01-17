@@ -27,7 +27,7 @@ public class MerchantService {
         }
     }
 
-    public User addMerchant(String firstName, String lastName) throws MerchantAlreadyExistsException {
+    public User registerMerchant(String firstName, String lastName) throws MerchantAlreadyExistsException {
         try {
             User newUser = repository.addMerchant(firstName, lastName);
             return newUser;
@@ -37,7 +37,7 @@ public class MerchantService {
 
     }
 
-    public User addMerchant(String firstName, String lastName, String bankAccount) throws MerchantAlreadyExistsException {
+    public User registerMerchant(String firstName, String lastName, String bankAccount) throws MerchantAlreadyExistsException {
         try {
             User newUser = repository.addMerchant(firstName, lastName, bankAccount);
             return newUser;

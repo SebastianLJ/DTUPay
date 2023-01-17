@@ -7,6 +7,8 @@ import org.dtu.factories.MerchantFactory;
 import org.dtu.factories.PaymentFactory;
 import org.dtu.services.MerchantService;
 import org.dtu.services.PaymentService;
+
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -21,10 +23,10 @@ public class MerchantFacade {
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
-    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response registerMerchant(String firstName, String lastName, String bankAccount) {
         try {
-            User newUser = merchantRegistration.addMerchant(firstName, lastName, bankAccount);
+            User newUser = merchantRegistration.registerMerchant(firstName, lastName, bankAccount);
             return Response.status(Response.Status.CREATED)
                     .entity("merchant with id " + newUser.getUserId().getUuid() + " created")
                     .build();
@@ -36,6 +38,7 @@ public class MerchantFacade {
     }
 
     @POST
+    @Path("/payments")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response postPayment(Payment payment) throws URISyntaxException {
         try {
@@ -45,6 +48,7 @@ public class MerchantFacade {
                     .link(new URI("/payments/"+paymentID+"/amount"), "amount")
                     .link(new URI("/payments/"+paymentID+"/cid"), "cid")
                     .link(new URI("/payments/"+paymentID+"/mid"), "mid")
+                    .entity(payment)
                     .build();
         } catch (PaymentAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)
@@ -63,6 +67,7 @@ public class MerchantFacade {
 
     @DELETE
     @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
     public Response deregister(@PathParam("id") String id) {
         try {
             UUID uuid = UUID.fromString(id);
