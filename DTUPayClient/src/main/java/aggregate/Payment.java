@@ -1,28 +1,50 @@
 package aggregate;
 
+
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
+@Getter
+@Setter
 public class Payment {
-    public int id;
-    public UUID cid, mid;
-    public int amount;
+    UUID id;
+    UUID cid, mid;
+    int amount;
+    Token token;
+
+
 
     public Payment() {
-
+        this.id = UUID.randomUUID();
     }
 
-    public Payment(int id, UUID cid, UUID mid, int amount) {
-        this.id = id;
-        this.cid = cid;
+//    public Payment(UUID cid, UUID mid, int amount) {
+//        this.id = UUID.randomUUID();
+//        this.cid = cid;
+//        this.mid = mid;
+//        this.amount = amount;
+//    }
+
+    public Payment(Token token, UUID mid, int amount) {
+        this.id = UUID.randomUUID();
+        this.token = token;
         this.mid = mid;
         this.amount = amount;
     }
 
-    public int getId() {
+    public Token getToken() {
+        return token;
+    }
+
+    public UUID getId() {
         return this.id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

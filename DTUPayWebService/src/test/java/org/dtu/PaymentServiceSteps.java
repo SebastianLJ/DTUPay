@@ -58,7 +58,7 @@ public class PaymentServiceSteps {
     @And("^there is a registered merchant$")
     public void thereIsARegisteredMerchant() {
         try {
-            merchant = merchantRegistration.addMerchant("Some", "Merchant");
+            merchant = merchantRegistration.registerMerchant("Some", "Merchant");
         } catch (MerchantAlreadyExistsException e) {
             e.printStackTrace();
         }
@@ -174,7 +174,7 @@ public class PaymentServiceSteps {
     @And("that the merchant is registered with DTU Pay")
     public void thatTheMerchantIsRegisteredWithDTUPay() {
         try {
-            merchant = merchantRegistration.addMerchant(merchantBankUser.getFirstName(), merchantBankUser.getLastName());
+            merchant = merchantRegistration.registerMerchant(merchantBankUser.getFirstName(), merchantBankUser.getLastName());
         } catch (MerchantAlreadyExistsException e) {
             fail();
         }

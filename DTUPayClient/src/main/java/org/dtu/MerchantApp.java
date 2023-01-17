@@ -1,5 +1,6 @@
 package org.dtu;
 
+import aggregate.Payment;
 import aggregate.Token;
 import aggregate.User;
 import aggregate.UserId;
@@ -16,13 +17,13 @@ import org.dtu.exceptions.CustomerDoesNotExist;
 import java.util.List;
 import java.util.UUID;
 
-public class CustomerApp {
+public class MerchantApp {
     Client c = ClientBuilder.newClient();
     WebTarget r = c.target("http://localhost:8080/");
 
     public User register(String firstName, String lastName, String bankNumber) throws Exception {
         User user = new User(firstName, lastName, bankNumber);
-        Response response = r.path("customers")
+        Response response = r.path("merchants")
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(user, MediaType.APPLICATION_JSON));
@@ -34,13 +35,11 @@ public class CustomerApp {
         }
     }
 
-
-    public UUID deRegisterCustomer(User user) throws Exception {
-        Response response = r.path("customers/" + user.getUserId().getUuid())
+    public UUID deregister(UserId userId) throws Exception {
+        Response response = r.path("merchants/" + userId.getUuid())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
                 .delete();
-
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(UUID.class);
         } else {
@@ -48,35 +47,16 @@ public class CustomerApp {
         }
     }
 
-
-    public List<Token> generateTokens(UserId userId, int tokenCount) throws Exception {
-        Response response = r.path(
-                        "customers/"+
-                        userId.getUuid()+
-                        "/tokens"
-                ).request()
-                .accept(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(tokenCount, MediaType.APPLICATION_JSON));
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(new GenericType<List<Token>>() {
-            });
-        } else {
-            throw new Exception("code: " + response.getStatus() + "\n" + response.readEntity(String.class));
-        }
-    }
-
-    //TODO Implement exception
-    public User getCustomer(User user) throws CustomerDoesNotExist {
-        Response response = r.path("customers/" + user.getUserId().getUuid())
+    public Payment pay(UserId merchantId, Token customerToken, int amount) throws Exception {
+        Payment payment = new Payment(customerToken, merchantId.getUuid(), amount);
+        Response response = r.path("merchants/payments")
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
-                .get();
-
+                .post(Entity.entity(payment, MediaType.APPLICATION_JSON));
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(User.class);
+            return response.readEntity(Payment.class);
         } else {
-            throw new CustomerDoesNotExist();
+            throw new Exception("code: " + response.getStatus());
         }
     }
-
 }
