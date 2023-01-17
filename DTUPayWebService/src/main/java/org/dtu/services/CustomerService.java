@@ -58,6 +58,7 @@ public class CustomerService {
     }
 
     public User addCustomer(User user) throws CustomerAlreadyExistsException, InvalidCustomerNameException {
+
         try {
             return repository.addCustomer(user);
         } catch (CustomerAlreadyExistsException e) {

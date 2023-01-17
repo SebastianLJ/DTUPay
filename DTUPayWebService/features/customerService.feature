@@ -1,14 +1,12 @@
 Feature: Customer Service
 
   Scenario: A customer is successfully created
-    When a customer is created
-    Then he is registered in the system
-    And can be found by his ID
-
-
-  Scenario: A customer has a bank account
-    Given a customer is in the system
-    Then the customer has a bank account
+    Given there is a customer with an empty id
+    When a customer is being created
+    Then the CustomerAccountCreated event is sent
+    When the TokensGenerated event is received
+    Then the customer is created
+    And the customer has tokens
 
   Scenario: A customer is successfully deleted
     Given a customer is in the system
