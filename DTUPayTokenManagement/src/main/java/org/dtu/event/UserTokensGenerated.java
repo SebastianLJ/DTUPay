@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import messageUtilities.cqrs.events.Event;
-import org.dtu.aggregate.Token;
+import org.dtu.domain.Token;
 import org.dtu.aggregate.UserId;
 
 import java.util.List;

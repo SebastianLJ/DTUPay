@@ -23,6 +23,7 @@ public class ReadModelRepository {
         this.messageQueue = messageQueue;
         messageQueue.addHandler(TokensRequested.class, e -> apply((TokensRequested) e));
         messageQueue.addHandler(ConsumeToken.class, e -> apply((ConsumeToken) e));
+        messageQueue.addHandler(UserTokensRequested.class, e -> apply((UserTokensRequested) e));
     }
 
     private void apply(ConsumeToken event) {
@@ -42,9 +43,11 @@ public class ReadModelRepository {
         messageQueue.publish(tokenConsumed);
     }
 
-    private void apply(UsedTokensRequested event){
-        ArrayList<Token> usedTokens = usedTokenRepository.get()
-        messageQueue.publish();
+    private void apply(UserTokensRequested event){
+        List<Token> usedTokens = usedTokenRepository.get(event.getUserId());
+        //TODO handle no list
+        UserTokensGenerated userTokensGenerated = new UserTokensGenerated(event.getUserId(), usedTokens);
+        messageQueue.publish(userTokensGenerated);
     }
 
     private void apply(TokensRequested event) {
