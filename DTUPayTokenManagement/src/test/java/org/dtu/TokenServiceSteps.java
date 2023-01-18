@@ -7,10 +7,9 @@ import messageUtilities.cqrs.events.Event;
 import messageUtilities.queues.QueueType;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
 import messageUtilities.queues.rabbitmq.HostnameType;
-import org.dtu.aggregate.Token;
+import org.dtu.domain.Token;
 import org.dtu.aggregate.UserId;
-import org.dtu.event.TokensGenerated;
-import org.dtu.event.TokensRequested;
+import org.dtu.event.*;
 import org.dtu.exceptions.*;
 import org.dtu.factories.TokenFactory;
 import org.dtu.repository.ReadModelRepository;
@@ -40,9 +39,24 @@ public class TokenServiceSteps {
     ArrayList<Token> tokens1 = new ArrayList<>();
     ArrayList<Token> tokens2 = new ArrayList<>();
 
+    ArrayList<Token> generatedTokens = new ArrayList<>();
+    ArrayList<Token> usedTokens = new ArrayList<>();
+    UUID consumedTokenId;
+
+
+    private void populateGeneratedTokens(TokensGenerated event){
+        generatedTokens.addAll(event.getTokens());
+    }
+
+    private void populateUsedTokens(UserTokensGenerated event){
+        usedTokens.addAll(event.getTokens());
+    }
+
     @When("a message queue is started")
     public void aMessageQueueIsStarted() {
         tokenService = new TokenService(eventQueue);
+        eventQueue.addHandler(TokensGenerated.class, e -> populateGeneratedTokens((TokensGenerated) e));
+        eventQueue.addHandler(UserTokensGenerated.class, e -> populateUsedTokens((UserTokensGenerated) e));
     }
 
     @And("a new user is created")
@@ -88,5 +102,24 @@ public class TokenServiceSteps {
         for(Token token : tokens1){
             assertTrue(set.add(token.getId()));
         }
+    }
+
+    @And("the new user consumes tokens")
+    public void theNewUserConsumesTokens() throws InterruptedException {
+        ConsumeToken consumeToken = new ConsumeToken(generatedTokens.get(0));
+        consumedTokenId = generatedTokens.get(0).getId();
+        eventQueue.publish(consumeToken);
+        Thread.sleep(1000);
+    }
+
+
+    @Then("he can get a list of the consumed tokens")
+    public void heCanGetAListOfTheConsumedTokens() throws InterruptedException {
+        UserTokensRequested userTokensRequested = new UserTokensRequested(userId1);
+        eventQueue.publish(userTokensRequested);
+        Thread.sleep(1000);
+
+        assertEquals(1, usedTokens.size());
+        assertEquals(consumedTokenId, usedTokens.get(0).getId());
     }
 }
