@@ -9,12 +9,13 @@ import org.dtu.event.*;
 import java.io.NotSerializableException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ReadModelRepository {
 
     private HashMap<Token, UserId> tokenRepository = new HashMap<>();
     private HashMap<UserId, Integer> tokenAmountRepository = new HashMap<>();
-    private HashMap<Token, UserId> usedTokenRepository = new HashMap<>();
+    private HashMap<UserId, List<Token>> usedTokenRepository = new HashMap<>();
 
     private final IDTUPayMessageQueue messageQueue;
 
@@ -28,10 +29,22 @@ public class ReadModelRepository {
         UserId userid = tokenRepository.get(event.getToken());
         tokenRepository.remove(event.getToken());
         tokenAmountRepository.put(userid, tokenAmountRepository.get(userid) - 1);
-        usedTokenRepository.put(event.getToken(), userid);
+
+        if (usedTokenRepository.get(userid) == null){
+            ArrayList<Token> newList = new ArrayList<>();
+            newList.add(event.getToken());
+            usedTokenRepository.put(userid, newList);
+        }else{
+            usedTokenRepository.get(userid).add(event.getToken());
+        }
 
         TokenConsumed tokenConsumed = new TokenConsumed(userid);
         messageQueue.publish(tokenConsumed);
+    }
+
+    private void apply(UsedTokensRequested event){
+        ArrayList<Token> usedTokens = usedTokenRepository.get()
+        messageQueue.publish();
     }
 
     private void apply(TokensRequested event) {
