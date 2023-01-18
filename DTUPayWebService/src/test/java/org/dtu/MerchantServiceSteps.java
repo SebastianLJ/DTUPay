@@ -1,39 +1,72 @@
 package org.dtu;
 
-import dtu.ws.fastmoney.AccountInfo;
-import dtu.ws.fastmoney.BankService;
-import dtu.ws.fastmoney.BankServiceException_Exception;
-import dtu.ws.fastmoney.BankServiceService;
+import dtu.ws.fastmoney.*;
 import io.cucumber.java.After;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import messageUtilities.queues.QueueType;
-import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
+import messageUtilities.CorrelationID;
+import messageUtilities.cqrs.events.Event;
+import messageUtilities.cqrs.events.Event2;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ2;
-import messageUtilities.queues.rabbitmq.HostnameType;
+import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
+import org.dtu.domain.Token;
+import org.dtu.events.ConsumeToken;
+import org.dtu.events.TokenConsumed;
+import org.dtu.events.TokensRequested;
 import org.dtu.exceptions.*;
+import org.dtu.repositories.CustomerRepository;
 import org.dtu.repositories.MerchantRepository;
 import org.dtu.repositories.PaymentRepository;
+import org.dtu.services.CustomerService;
 import org.dtu.services.MerchantService;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MerchantServiceSteps {
-    MerchantService merchantService = new MerchantService(new DTUPayRabbitMQ2("localhost"), new MerchantRepository(), new PaymentRepository());
+
+    MerchantRepository repository = new MerchantRepository();
+    CustomerRepository customerRepository = new CustomerRepository();
+    ConcurrentHashMap<CorrelationID, CompletableFuture<Event2>> eventMap = new ConcurrentHashMap<>();
+    DTUPayRabbitMQ2 queue = new DTUPayRabbitMQ2("localhost") {
+        @Override
+        public void publish(Event2 event) {
+            Event newEvent = event.getArgument(0, Event.class);
+            eventMap.get(newEvent.getCorrelationID()).complete(event);
+        }
+
+        @Override
+        public void addHandler(String eventType, Consumer<Event2> handler) {
+
+        }
+    };
+    MerchantService merchantService = new MerchantService(new DTUPayRabbitMQ2("localhost"), repository, new PaymentRepository());
+    CustomerService customerService = new CustomerService(new DTUPayRabbitMQ2("localhost"), customerRepository);
 
     BankService bankService = new BankServiceService().getBankServicePort();
+    String merchantBankNumber;
+    String customerBankNumber;
+    ArrayList<Token> tokens = new ArrayList<>();
 
     List<dtu.ws.fastmoney.User> bankUsers = new ArrayList<>();
     dtu.ws.fastmoney.User merchantBankUser;
     User merchant;
+    User customer;
+
+    Payment payment;
+
+    CompletableFuture<Payment> paymentTransactionFuture = new CompletableFuture<>();
 
     //Create merchant scenario
     @When("a merchant is created")
@@ -111,5 +144,74 @@ public class MerchantServiceSteps {
                 }
             }
         }
+    }
+
+    @Given("a merchant has a bank account with a balance of {int}")
+    public void aMerchantHasABankAccountWithABalanceOf(int balance) throws BankServiceException_Exception {
+        dtu.ws.fastmoney.User merchant = new dtu.ws.fastmoney.User();
+        merchant.setFirstName("John");
+        merchant.setLastName("Doe");
+        merchant.setCprNumber(UUID.randomUUID().toString());
+        merchantBankNumber =  bankService.createAccountWithBalance(merchant, BigDecimal.valueOf(balance));
+    }
+
+    @And("the merchant is a member of DTUPay")
+    public void theMerchantIsAMemberOfDTUPay() throws MerchantAlreadyExistsException {
+        merchant = merchantService.registerMerchant("John", "Doe", merchantBankNumber);
+    }
+
+    @Given("a customer has a bank account with a balance of {int}")
+    public void aCustomerHasABankAccountWithABalanceOf(int balance) throws BankServiceException_Exception {
+        dtu.ws.fastmoney.User customer = new dtu.ws.fastmoney.User();
+        customer.setFirstName("Jane");
+        customer.setLastName("Doe");
+        customer.setCprNumber(UUID.randomUUID().toString());
+        customerBankNumber =  bankService.createAccountWithBalance(customer, BigDecimal.valueOf(balance));
+    }
+
+    @And("the customer is a member of DTUPay")
+    public void theCustomerIsAMemberOfDTUPay() throws InvalidCustomerNameException, CustomerAlreadyExistsException {
+        customer = customerService.addCustomer(new User("Jane", "Doe", customerBankNumber));
+    }
+
+    @And("the customer has at least one token")
+    public void theCustomerHasAtLeastOneToken() {
+        tokens.add(new Token());
+    }
+
+
+    @When("the merchant initializes a payment of {int}")
+    public void theMerchantInitializesAPaymentOf(int amount) {
+        payment = new Payment();
+        payment.setMid(merchant.getUserId().getUuid());
+        payment.setAmount(amount);
+    }
+
+    @And("the customer shares a token with the merchant")
+    public void theCustomerSharesATokenWithTheMerchant() {
+        payment.setToken(tokens.get(0));
+    }
+
+    @Then("a payment can be done")
+    public void aPaymentCanBeDone() {
+        new Thread(() -> {
+            try {
+                Payment completedTransaction = merchantService.createPayment(payment);
+                paymentTransactionFuture.complete(completedTransaction);
+            } catch (InvalidMerchantIdException | BankServiceException_Exception | InvalidCustomerIdException | CustomerNotFoundException | PaymentAlreadyExistsException | CustomerTokenAlreadyConsumedException e) {
+                fail(e.getMessage());
+            }
+        });
+    }
+
+    @And("The token is verified")
+    public void theTokenIsVerified() {
+        queue.addHandler("TokenVerificationRequested", this::handleTokenVerificationRequestedEvent);
+    }
+
+    private void handleTokenVerificationRequestedEvent(Event2 event) {
+        ConsumeToken requestedEvent = event.getArgument(0, ConsumeToken.class);
+        TokenConsumed newEvent = new TokenConsumed(requestedEvent.getCorrelationID(), customer.getUserId());
+        queue.publish(new Event2("TokenConsumed", new Object[]{newEvent}));
     }
 }

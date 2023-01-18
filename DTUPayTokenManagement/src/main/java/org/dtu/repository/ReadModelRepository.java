@@ -28,7 +28,7 @@ public class ReadModelRepository {
             TokensRequested newEvent = e.getArgument(0, TokensRequested.class);
             apply(newEvent);
         });
-        messageQueue.addHandler("ConsumeToken", e -> {
+        messageQueue.addHandler("TokenVerificationRequested", e -> {
             ConsumeToken newEvent = e.getArgument(0, ConsumeToken.class);
             apply(newEvent);
         });
