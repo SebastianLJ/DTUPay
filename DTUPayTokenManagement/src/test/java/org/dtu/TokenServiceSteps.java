@@ -1,8 +1,11 @@
 package org.dtu;
 
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
 import messageUtilities.cqrs.events.Event2;
 import messageUtilities.queues.QueueType;
@@ -29,8 +32,6 @@ public class TokenServiceSteps {
 
     DTUPayRabbitMQ2 eventQueue = new DTUPayRabbitMQ2("localhost");
     TokenService tokenService;
-
-
 
     UserId userId1 = new UserId(UUID.randomUUID());
 
@@ -69,7 +70,7 @@ public class TokenServiceSteps {
 
     @And("a new user is created")
     public void aUserRequestsAnAccount() throws InterruptedException {
-        TokensRequested tokensRequested = new TokensRequested(3,userId1);
+        TokensRequested tokensRequested = new TokensRequested(CorrelationID.randomID(),3,userId1);
         Event2 newEvent = new Event2("TokensRequested", new Object[]{tokensRequested});
         eventQueue.publish(newEvent);
         /*eventQueue.publish(generateToken);*/
@@ -133,5 +134,15 @@ public class TokenServiceSteps {
 
         assertEquals(1, usedTokens.size());
         assertEquals(consumedTokenId, usedTokens.get(0).getId());
+    }
+
+    @After
+    public void afterScenario(){
+        generatedTokens.clear();
+    }
+
+    @Before
+    public void beforeScenario(){
+        generatedTokens.clear();
     }
 }
