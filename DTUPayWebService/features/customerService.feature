@@ -13,7 +13,12 @@ Feature: Customer Service
     Then the AccountDeletionRequested event is sent
     When the TokensDeleted event is received
     Then the customer is deleted
-    
+
+  Scenario: A customer is unsuccessfully deleted
+    Given a customer is not in the system
+    When the customer is being deleted
+    Then the error message "Customer not found!" is returned
+
   Scenario: A customer requests tokens
     Given a customer is in the system
     When the customer requests 3 tokens

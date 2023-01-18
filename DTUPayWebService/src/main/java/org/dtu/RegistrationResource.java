@@ -60,7 +60,7 @@ public class RegistrationResource {
             customerRegistration.getCustomer(id);
             return Response.status(Response.Status.OK)
                     .build();
-        } catch (InvalidCustomerIdException | CustomerNotFoundException e) {
+        } catch (CustomerNotFoundException e) {
             return Response.status(Response.Status.NOT_FOUND)
                     .entity("customer with id " + id + " not found")
                     .build();

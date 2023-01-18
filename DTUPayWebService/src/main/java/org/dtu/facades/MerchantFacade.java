@@ -54,7 +54,7 @@ public class MerchantFacade {
             return Response.status(Response.Status.CONFLICT)
                     .entity("a payment with the id " + payment.getId() + " already exists")
                     .build();
-        } catch (InvalidCustomerIdException e) {
+        } catch (CustomerNotFoundException e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("customer is unknown")
                     .build();
@@ -63,6 +63,7 @@ public class MerchantFacade {
                     .entity("merchant is unknown")
                     .build();
         }
+
     }
 
     @DELETE

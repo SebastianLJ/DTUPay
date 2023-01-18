@@ -210,7 +210,8 @@ public class PaymentServiceSteps {
         payment = new Payment(token, merchant.getUserId().getUuid(), amount);
         try {
             paymentRegistration.createPayment(payment);
-        }  catch (InvalidCustomerIdException | PaymentAlreadyExistsException | InvalidMerchantIdException e) {
+        }  catch (PaymentAlreadyExistsException | InvalidMerchantIdException |
+                  CustomerNotFoundException e) {
             throw new RuntimeException(e);
         }
     }

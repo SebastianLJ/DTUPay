@@ -39,12 +39,8 @@ public class CustomerService {
 
     }
 
-    public User getCustomer(UUID id) throws InvalidCustomerIdException, CustomerNotFoundException {
-        try {
-            return repository.getCustomer(id);
-        } catch (InvalidCustomerIdException e) {
-            throw new InvalidCustomerIdException();
-        }
+    public User getCustomer(UUID id) throws CustomerNotFoundException {
+        return repository.getCustomer(id);
     }
 
     public User addCustomer(String firstName, String lastName) throws CustomerAlreadyExistsException {
@@ -67,12 +63,13 @@ public class CustomerService {
         return repository.getCustomerList();
     }
 
-    public User deleteCustomer(User user) throws InvalidCustomerIdException {
+    public User deleteCustomer(User user) throws CustomerNotFoundException {
+        getCustomer(user.getUserId().getUuid());
         deletedCustomer = new CompletableFuture<>();
         Event event = new AccountDeletionRequested(CorrelationID.randomID(), user);
         messageQueue.publish(event);
         User customer = deletedCustomer.join();
-        repository.deleteCustomer(customer.getUserId().getUuid());
+        repository.deleteCustomer(customer);
         return customer;
     }
 
@@ -94,6 +91,5 @@ public class CustomerService {
     public void handleTokensDeleted(TokensDeleted event) {
         this.deletedCustomer.complete(event.getUser());
     }
-
 
 }

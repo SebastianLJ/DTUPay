@@ -32,26 +32,23 @@ public class CustomerRepository {
 
     }
 
-    public static User getCustomer (UUID id) throws InvalidCustomerIdException{
-        User targetCustomer = null;
-        for (User customer:
-                customers)  {
+    public static User getCustomer(UUID id) throws CustomerNotFoundException {
+        for (User customer :
+                customers) {
             if (customer.getUserId().getUuid().equals(id)) {
-                targetCustomer = customer;
-                break;
+                return customer;
             }
         }
-        return targetCustomer;
+        throw new CustomerNotFoundException("Customer not found!");
     }
 
     public ArrayList<User> getCustomerList() {
         return new ArrayList<>(customers);
     }
 
-    public User deleteCustomer(UUID id) throws InvalidCustomerIdException {
-        User customerToRemove = getCustomer(id);
-        this.customers.remove(customerToRemove);
-        return customerToRemove;
+    public User deleteCustomer(User customer) {
+        this.customers.remove(customer);
+        return customer;
     }
 
 }

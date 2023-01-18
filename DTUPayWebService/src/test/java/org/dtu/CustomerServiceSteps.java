@@ -39,6 +39,8 @@ public class CustomerServiceSteps {
 
     CompletableFuture<User> deletedCustomer = new CompletableFuture<>();
 
+    CompletableFuture<Boolean> customerNotFound = new CompletableFuture<>();
+
     Map<User, CorrelationID> correlationIDs = new HashMap<>();
 
     private DTUPayRabbitMQ q = new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost) {
@@ -63,6 +65,8 @@ public class CustomerServiceSteps {
 
     CustomerRepository repository = new CustomerRepository();
     CustomerService service = new CustomerService(q, repository);
+
+    String errorMessage;
 
 
     public CustomerServiceSteps() {
@@ -118,10 +122,9 @@ public class CustomerServiceSteps {
     public void aCustomerIsInTheSystem() {
         customer = new User();
         customer.setName(new Name("John", "Doe"));
-        customer.setUserId(new UserId(UUID.randomUUID()));
         publishedEvents.put(customer.getName(), new CompletableFuture<>());
         try {
-            repository.addCustomer(customer);
+            customer = repository.addCustomer(customer);
         } catch (CustomerAlreadyExistsException | InvalidCustomerNameException e) {
             throw new RuntimeException(e);
         }
@@ -133,8 +136,9 @@ public class CustomerServiceSteps {
             try {
                 User user = service.deleteCustomer(customer);
                 deletedCustomer.complete(user);
-            } catch (InvalidCustomerIdException e) {
-                throw new RuntimeException(e);
+            } catch (CustomerNotFoundException e) {
+                errorMessage = e.getMessage();
+                customerNotFound.complete(true);
             }
         }).start();
 
@@ -142,7 +146,6 @@ public class CustomerServiceSteps {
 
     @Then("the AccountDeletionRequested event is sent")
     public void theAccountDeletionRequestedEventIsSent() {
-        System.out.println(publishedEvents.get(customer.getName()));
         IDTUPayMessage event = publishedEvents.get(customer.getName()).join();
         assertTrue(event instanceof AccountDeletionRequested);
         correlationIDs.put(customer, ((AccountDeletionRequested) event).getCorrelationID());
@@ -159,13 +162,23 @@ public class CustomerServiceSteps {
 
     @Then("the customer is deleted")
     public void theCustomerIsDeleted() {
-        try {
-            assertNull(service.getCustomer(customer.getUserId().getUuid()));
-        } catch (InvalidCustomerIdException | CustomerNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        deletedCustomer.join();
+        assertEquals(0, repository.getCustomerList().size());
     }
 
+    @Given("a customer is not in the system")
+    public void aCustomerIsNotInTheSystem() {
+        customer = new User();
+        customer.setName(new Name("James", "Bond"));
+        customer.setUserId(new UserId(UUID.randomUUID()));
+        assertTrue(repository.getCustomerList().isEmpty());
+    }
+
+    @Then("the error message {string} is returned")
+    public void theErrorMessageIsReturned(String error) {
+        customerNotFound.join();
+        assertEquals(error, errorMessage);
+    }
 
     // Create customer scenario
 

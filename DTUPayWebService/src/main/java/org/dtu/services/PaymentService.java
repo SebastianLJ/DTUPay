@@ -3,10 +3,7 @@ package org.dtu.services;
 import dtu.ws.fastmoney.BankService;
 import dtu.ws.fastmoney.BankServiceService;
 import org.dtu.aggregate.Payment;
-import org.dtu.exceptions.InvalidCustomerIdException;
-import org.dtu.exceptions.InvalidMerchantIdException;
-import org.dtu.exceptions.PaymentAlreadyExistsException;
-import org.dtu.exceptions.PaymentNotFoundException;
+import org.dtu.exceptions.*;
 import org.dtu.repositories.CustomerRepository;
 import org.dtu.repositories.MerchantRepository;
 import org.dtu.repositories.PaymentRepository;
@@ -39,7 +36,7 @@ public class PaymentService {
     }
 
 
-    public UUID createPayment(Payment payment) throws PaymentAlreadyExistsException, InvalidMerchantIdException, InvalidCustomerIdException {
+    public UUID createPayment(Payment payment) throws PaymentAlreadyExistsException, InvalidMerchantIdException, CustomerNotFoundException {
         //publish event paymentRequested
         //wait for answer (token needs to be valid, and users need to be registered)
         //fetch bank account from merchant
