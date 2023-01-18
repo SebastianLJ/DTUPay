@@ -16,10 +16,10 @@ services:
 #    container_name: DTUPayTokenManagement
 #    networks:
 #      - DTUPayNetwork
-  DTUTokenManagementTest:
-    build: DTUPayTokenManagementTest
-    image: dtu_pay_token_management_test
-    container_name: DTUPayTokenManagementTest
+  DTUTokenManagementTest2:
+    build: DTUPayTokenManagementTest2
+    image: dtu_pay_token_management_test2
+    container_name: DTUPayTokenManagementTest2
     networks:
       - DTUPayNetwork
   DTUPayWebService:
