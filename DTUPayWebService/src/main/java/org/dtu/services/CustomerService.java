@@ -4,7 +4,7 @@ package org.dtu.services;
 import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
 import messageUtilities.queues.IDTUPayMessageQueue;
-import org.dtu.aggregate.Token;
+import org.dtu.domain.Token;
 import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
 import org.dtu.events.*;

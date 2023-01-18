@@ -41,12 +41,11 @@ pushd DTUPayTokenManagement
 #mvn test -q
 popd
 
-pushd DTUPayWebService
-#mvn test -q
-popd
-
 pushd DTUPayClient
 mvn test -q
 popd
 
-read
+pushd DTUPayWebService
+mvn test -q
+popd
+

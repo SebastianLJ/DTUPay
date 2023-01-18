@@ -1,4 +1,4 @@
-package org.dtu.aggregate;
+package org.dtu.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

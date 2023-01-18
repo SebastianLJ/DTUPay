@@ -10,9 +10,9 @@ import messageUtilities.queues.QueueType;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
 import messageUtilities.queues.rabbitmq.HostnameType;
 import org.dtu.aggregate.Name;
-import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
+import org.dtu.domain.Token;
 import org.dtu.events.*;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.CustomerNotFoundException;
@@ -151,7 +151,6 @@ public class CustomerServiceSteps {
                 customerNotFound.complete(true);
             }
         }).start();
-
     }
 
     @Then("the AccountDeletionRequested event is sent")

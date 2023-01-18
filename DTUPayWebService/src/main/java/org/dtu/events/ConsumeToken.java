@@ -1,22 +1,21 @@
-package org.dtu.event;
+package org.dtu.events;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
 import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
-import org.dtu.aggregate.UserId;
+import org.dtu.domain.Token;
 
 @Value
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class TokenConsumed extends Event {
+public class ConsumeToken extends Event {
 
-    UserId userId;
+    Token token;
 
-    public TokenConsumed(CorrelationID correlationID, UserId userId) {
+    public ConsumeToken(CorrelationID correlationID, Token token) {
         super(correlationID);
-        this.userId = userId;
+        this.token = token;
     }
 }
-

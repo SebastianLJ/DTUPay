@@ -21,7 +21,8 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
-/*public class SimpleDTUPay {
+public class SimpleDTUPay {
+    /*
     BankService bank = new BankServiceService().getBankServicePort();
     Client c = ClientBuilder.newClient();
     WebTarget r = c.target("http://localhost:8080/");
@@ -108,5 +109,5 @@ import java.util.UUID;
     public void retireBankAccount(String accountId) throws BankServiceException_Exception {
         bank.retireAccount(accountId);
     }
+     */
 }
- */
