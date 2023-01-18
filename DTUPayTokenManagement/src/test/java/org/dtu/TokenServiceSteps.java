@@ -1,5 +1,7 @@
 package org.dtu;
 
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -30,8 +32,6 @@ public class TokenServiceSteps {
 
     DTUPayRabbitMQ2 eventQueue = new DTUPayRabbitMQ2("localhost");
     TokenService tokenService;
-
-
 
     UserId userId1 = new UserId(UUID.randomUUID());
 
@@ -134,5 +134,15 @@ public class TokenServiceSteps {
 
         assertEquals(1, usedTokens.size());
         assertEquals(consumedTokenId, usedTokens.get(0).getId());
+    }
+
+    @After
+    public void afterScenario(){
+        generatedTokens.clear();
+    }
+
+    @Before
+    public void beforeScenario(){
+        generatedTokens.clear();
     }
 }
