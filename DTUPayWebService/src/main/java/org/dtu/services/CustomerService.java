@@ -69,12 +69,12 @@ public class CustomerService {
 
     public User deleteCustomer(User user) throws CustomerNotFoundException {
         getCustomer(user.getUserId().getUuid());
+        repository.deleteCustomer(user);
         deletedCustomer = new CompletableFuture<>();
         Event2 event = new Event2("AccountDeletionRequested", new Object[]{new AccountDeletionRequested(CorrelationID.randomID(), user)});
         messageQueue.publish(event);
-        User customer = deletedCustomer.join();
-        repository.deleteCustomer(customer);
-        return customer;
+        deletedCustomer.join();
+        return user;
     }
 
     public ArrayList<Token> getTokens(UserId userId, int amount) {

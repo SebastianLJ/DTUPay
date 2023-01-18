@@ -172,7 +172,15 @@ public class CustomerServiceSteps {
     @Then("the customer is deleted")
     public void theCustomerIsDeleted() {
         deletedCustomer.join();
-        assertEquals(0, repository.getCustomerList().size());
+        try {
+            service.getCustomer(customer.getUserId().getUuid());
+            fail("Customer still exists");
+        } catch (CustomerNotFoundException e) {
+            assertTrue(true);
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
+
     }
 
     @Given("a customer is not in the system")
