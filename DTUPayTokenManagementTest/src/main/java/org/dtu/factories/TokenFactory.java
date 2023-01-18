@@ -11,7 +11,7 @@ public class TokenFactory {
 
     public synchronized TokenService getService() {
         if (service == null) {
-            service = new TokenService(new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost));
+            service = new TokenService(new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.rabbitMq));
         }
         return service;
     }
