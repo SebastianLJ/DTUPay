@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
+import org.dtu.aggregate.User;
 
 import java.util.UUID;
 
@@ -12,10 +13,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
 public class AccountDeletionRequested extends Event {
-    UUID customerID;
+    User user;
 
-    public AccountDeletionRequested(CorrelationID correlationID, UUID customerID) {
+    public AccountDeletionRequested(CorrelationID correlationID, User user) {
         super(correlationID);
-        this.customerID = customerID;
+        this.user = user;
     }
 }

@@ -15,6 +15,6 @@ Feature: Customer Service
     Then the customer is deleted
     
   Scenario: A customer requests tokens
-    Given a customer has been created
+    Given a customer is in the system
     When the customer requests 3 tokens
-    Then a tokens requested event is published
+    Then the TokensRequested event is published

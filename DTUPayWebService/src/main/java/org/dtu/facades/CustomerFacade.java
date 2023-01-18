@@ -101,13 +101,13 @@ public class CustomerFacade {
         try {
             System.out.println("Deleting customer");
             UUID uuid = UUID.fromString(id);
-            UUID deletedUserID = customerService.deleteCustomer(uuid);
+            User deletedUser = customerService.deleteCustomer(customerService.getCustomer(uuid));
             System.out.println("customer: " + uuid);
             return Response
                     .status(Response.Status.OK)
-                    .entity(deletedUserID)
+                    .entity(deletedUser)
                     .build();
-        } catch (IllegalArgumentException | InvalidCustomerIdException e) {
+        } catch (IllegalArgumentException | InvalidCustomerIdException | CustomerNotFoundException e) {
             return Response
                     .status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())

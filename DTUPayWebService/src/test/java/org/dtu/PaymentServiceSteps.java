@@ -18,6 +18,7 @@ import org.dtu.aggregate.User;
 import org.dtu.factories.CustomerFactory;
 import org.dtu.factories.MerchantFactory;
 import org.dtu.factories.PaymentFactory;
+import org.dtu.repositories.CustomerRepository;
 import org.dtu.services.CustomerService;
 import org.dtu.services.MerchantService;
 import org.dtu.services.PaymentService;
@@ -32,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class PaymentServiceSteps {
     PaymentService paymentRegistration = new PaymentFactory().getService();
-    CustomerService customerRegistration = new CustomerService(new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost));
+    CustomerService customerRegistration = new CustomerService(new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost), new CustomerRepository());
     MerchantService merchantRegistration = new MerchantService(new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost));
 
     BankService bankService = new BankServiceService().getBankServicePort();
