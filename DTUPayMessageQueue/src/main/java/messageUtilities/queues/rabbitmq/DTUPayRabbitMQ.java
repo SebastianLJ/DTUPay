@@ -57,7 +57,6 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
             channel.queueBind(queueName, exchangeName, queueType);
 
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
-
                 IDTUPayMessage currentMessageInQueue;
                 try (ByteArrayInputStream file = new ByteArrayInputStream(delivery.getBody());
                      ObjectInputStream in = new ObjectInputStream(file);) {
