@@ -36,8 +36,8 @@ public class MerchantApp {
         }
     }
 
-    public UUID deregister(UserId userId) throws Exception {
-        Response response = r.path("merchants/" + userId.getUuid())
+    public UUID deregister(User user) throws Exception {
+        Response response = r.path("merchants/" + user.getUserId().getUuid())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
                 .delete();
