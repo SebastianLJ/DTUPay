@@ -1,5 +1,6 @@
 package org.dtu;
 
+import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -19,6 +20,7 @@ import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.exceptions.InvalidCustomerNameException;
 import org.dtu.repositories.CustomerRepository;
 import org.dtu.services.CustomerService;
+
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -72,6 +74,8 @@ public class CustomerServiceSteps {
 
     String errorMessage;
 
+    List<User> customers = new ArrayList<>();
+
 
     public CustomerServiceSteps() {
     }
@@ -90,6 +94,7 @@ public class CustomerServiceSteps {
         new Thread(() -> {
             try {
                 User user = service.addCustomer(customer);
+                customers.add(user);
                 registeredCustomer.complete(user);
             } catch (CustomerAlreadyExistsException | InvalidCustomerNameException e) {
                 throw new RuntimeException(e);
@@ -129,6 +134,7 @@ public class CustomerServiceSteps {
         publishedEvents.put(customer.getName(), new CompletableFuture<>());
         try {
             customer = repository.addCustomer(customer);
+            customers.add(customer);
         } catch (CustomerAlreadyExistsException | InvalidCustomerNameException e) {
             throw new RuntimeException(e);
         }
@@ -196,6 +202,14 @@ public class CustomerServiceSteps {
     public void theErrorMessageIsReturned(String error) {
         customerNotFound.join();
         assertEquals(error, errorMessage);
+    }
+
+    @After
+    public void tearDown() {
+        //for each user in customer call delete customer in repository
+        for (User user : customers) {
+            repository.deleteCustomer(user);
+        }
     }
 
     // Create customer scenario
