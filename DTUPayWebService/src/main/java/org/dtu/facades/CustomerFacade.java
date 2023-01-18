@@ -30,8 +30,7 @@ public class CustomerFacade {
         try {
             UUID uuid = UUID.fromString(id);
             //todo use token generator
-            //ArrayList<Token> tokens = customerService.getTokens(new UserId(uuid), tokenCount);
-            ArrayList<Token> tokens = new ArrayList<>();
+            ArrayList<Token> tokens = customerService.getTokens(new UserId(uuid), tokenCount);
             return Response.status(Response.Status.OK)
                     .entity(tokens)
                     .build();

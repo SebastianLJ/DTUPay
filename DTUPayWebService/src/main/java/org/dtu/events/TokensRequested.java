@@ -14,6 +14,7 @@ import org.dtu.aggregate.UserId;
 @EqualsAndHashCode(callSuper = false)
 public class TokensRequested extends Event {
 
+    private static final long serialVersionUID = -8094840615477468312L;
     int amount;
     UserId userId;
 
