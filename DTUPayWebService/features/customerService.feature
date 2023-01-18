@@ -4,7 +4,6 @@ Feature: Customer Service
     Given there is a customer with an empty id
     When a customer is being created
     Then the CustomerAccountCreated event is sent
-    When the TokensGenerated event is received
     Then the customer is created
 
   Scenario: A customer is successfully deleted

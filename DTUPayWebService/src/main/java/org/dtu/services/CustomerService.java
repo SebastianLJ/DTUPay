@@ -58,8 +58,6 @@ public class CustomerService {
         Event2 event = new Event2("CustomerAccountCreated", new Object[]{new CustomerAccountCreated(user)});
         messageQueue.publish(event);
         System.out.println("Customer added");
-        /*token_events.put(event.getCorrelationID(), new CompletableFuture<>());
-        token_events.get(event.getCorrelationID()).join();*/
         return repository.addCustomer(user);
     }
 

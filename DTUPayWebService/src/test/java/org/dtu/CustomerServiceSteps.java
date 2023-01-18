@@ -111,16 +111,6 @@ public class CustomerServiceSteps {
         correlationIDs.put(customer, ((CustomerAccountCreated) event).getCorrelationID());
     }
 
-    @When("the TokensGenerated event is received")
-    public void the_tokens_generated_event_is_received() {
-        // create list of 5 tokens
-        ArrayList<Token> tokens = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            tokens.add(new Token());
-        }
-
-        service.handleTokensGenerated(new Event2("TokensGenerated", new Object[]{new TokensGenerated(customer.getUserId(), tokens)}));
-    }
 
     @Then("the customer is created")
     public void the_customer_is_created() {
