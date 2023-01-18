@@ -68,4 +68,24 @@ public class ReportingFacade {
                     .build();
         }
     }
+
+//    @Path("/customer/{id}")
+//    @GET
+//    @Produces(MediaType.APPLICATION_JSON)
+//    public Response getPaymentsByCustomerId(@PathParam("id") String id) {
+//        try {
+//            UUID uuid = UUID.fromString(id);
+//            UserId userid = new UserId(uuid);
+//            List<Payment> merchantPayments = reportService.getPaymentByCustomerId(userid);
+//            return  Response
+//                    .status(Response.Status.OK)
+//                    .entity(merchantPayments)
+//                    .build();
+//        } catch(PaymentNotFoundException e) {
+//            return Response
+//                    .status(Response.Status.BAD_REQUEST)
+//                    .entity(e.getMessage())
+//                    .build();
+//        }
+//    }
 }

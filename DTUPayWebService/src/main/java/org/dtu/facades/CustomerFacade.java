@@ -124,7 +124,7 @@ public class CustomerFacade {
             UUID uuid = UUID.fromString(id);
             User user = customerService.getCustomer(uuid);
             System.out.println("Found customer with uuid: " + uuid);
-            return Response
+            return  Response
                     .status(Response.Status.OK)
                     .entity(user)
                     .build();

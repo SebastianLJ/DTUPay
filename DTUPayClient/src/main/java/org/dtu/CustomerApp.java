@@ -1,5 +1,6 @@
 package org.dtu;
 
+import aggregate.Payment;
 import aggregate.Token;
 import aggregate.User;
 import aggregate.UserId;
@@ -12,6 +13,7 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.dtu.exceptions.CustomerDoesNotExist;
+import org.dtu.exceptions.PaymentDoesNotExist;
 
 import java.util.List;
 import java.util.UUID;
@@ -65,7 +67,6 @@ public class CustomerApp {
         }
     }
 
-    //TODO Implement exception
     public User getCustomer(User user) throws CustomerDoesNotExist {
         Response response = r.path("customers/" + user.getUserId().getUuid())
                 .request()
@@ -76,6 +77,19 @@ public class CustomerApp {
             return response.readEntity(User.class);
         } else {
             throw new CustomerDoesNotExist();
+        }
+    }
+
+    public List<Payment> getCustomerReport(User user) throws PaymentDoesNotExist {
+        Response response = r.path("reports/customer/"+user.getUserId())
+                .request()
+                .accept(MediaType.APPLICATION_JSON)
+                .get();
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(new GenericType<List<Payment>>() {
+            });
+        } else {
+            throw new PaymentDoesNotExist();
         }
     }
 
