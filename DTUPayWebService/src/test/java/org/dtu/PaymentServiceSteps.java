@@ -46,6 +46,7 @@ public class PaymentServiceSteps {
     Payment result = null;
     List<Payment> payments = new ArrayList<>();
 
+
     @Given("^there is a registered customer$")
     public void thereIsARegisteredCustomer() {
         try {

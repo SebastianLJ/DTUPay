@@ -8,7 +8,7 @@ pushd DTUPayMessageQueue
 mvn clean install -q -DskipTests
 popd
 
-pushd DTUPayTokenManagement
+pushd DTUPayTokenManagementTest
 mvn clean install -q -DskipTests
 popd
 
@@ -48,3 +48,5 @@ popd
 pushd DTUPayClient
 mvn test -q
 popd
+
+read
