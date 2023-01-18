@@ -72,21 +72,4 @@
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.dtu.group04</groupId>
-                <artifactId>DTUPayTokenManagement</artifactId>
-                <version>1.0</version>
-                <configuration>
-                    <archieve>
-                        <manifest>
-                            <mainClass>org.dtu.StartUp</mainClass>
-                        </manifest>
-                    </archieve>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
 </project>
