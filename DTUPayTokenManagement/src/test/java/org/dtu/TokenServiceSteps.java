@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TokenServiceSteps {
 
 
-    DTUPayRabbitMQ2 eventQueue = new DTUPayRabbitMQ2("localhost");
+    DTUPayRabbitMQ2 eventQueue;
     TokenService tokenService;
 
     UserId userId1 = new UserId(UUID.randomUUID());
@@ -57,6 +57,7 @@ public class TokenServiceSteps {
 
     @When("a message queue is started")
     public void aMessageQueueIsStarted() {
+        eventQueue = new DTUPayRabbitMQ2("localhost");
         tokenService = new TokenService(eventQueue);
         eventQueue.addHandler("TokensGenerated", e -> {
             TokensGenerated newEvent = e.getArgument(0, TokensGenerated.class);
