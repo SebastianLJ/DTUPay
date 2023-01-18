@@ -12,10 +12,7 @@ import org.dtu.aggregate.Name;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
-import org.dtu.events.AccountDeletionRequested;
-import org.dtu.events.CustomerAccountCreated;
-import org.dtu.events.TokensDeleted;
-import org.dtu.events.TokensGenerated;
+import org.dtu.events.*;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.CustomerNotFoundException;
 import org.dtu.exceptions.InvalidCustomerIdException;
@@ -34,6 +31,7 @@ public class CustomerServiceSteps {
 
     User customer;
     Map<Name, CompletableFuture<IDTUPayMessage>> publishedEvents = new HashMap<>();
+    Map<UserId, CompletableFuture<TokensRequested>> publishedTokenEvents = new HashMap<>();
 
     CompletableFuture<User> registeredCustomer = new CompletableFuture();
 
@@ -41,17 +39,23 @@ public class CustomerServiceSteps {
 
     Map<User, CorrelationID> correlationIDs = new HashMap<>();
 
+
+    List<Token> tokens;
+
     private DTUPayRabbitMQ q = new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost) {
         @Override
         public void publish(IDTUPayMessage message) {
             if (message instanceof CustomerAccountCreated) {
                 CustomerAccountCreated event = (CustomerAccountCreated) message;
                 publishedEvents.get(event.getUser().getName()).complete(event);
-            }
-            if (message instanceof AccountDeletionRequested) {
+            } else if (message instanceof AccountDeletionRequested) {
                 AccountDeletionRequested event = (AccountDeletionRequested) message;
                 publishedEvents.get(event.getUser().getName()).complete(event);
+            } else if (message instanceof TokensRequested) {
+                TokensRequested event = (TokensRequested) message;
+                publishedTokenEvents.get(event.getUserId()).complete(event);
             }
+
         }
 
         @Override
@@ -164,6 +168,20 @@ public class CustomerServiceSteps {
         } catch (InvalidCustomerIdException | CustomerNotFoundException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @When("the customer requests {int} tokens")
+    public void theCustomerRequestsTokens(int tokenAmount) {
+        this.publishedTokenEvents.put(customer.getUserId(), new CompletableFuture<>());
+        new Thread(() -> {
+            tokens = service.getTokens(customer.getUserId(), tokenAmount);
+        }).start();
+    }
+
+    @Then("the TokensRequested event is published")
+    public void theTokensRequestedEventIsPublished() {
+        TokensRequested event = publishedTokenEvents.get(customer.getUserId()).join();
+        assertNotNull(event);
     }
 
 
