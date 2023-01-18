@@ -14,6 +14,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.dtu.exceptions.CustomerDoesNotExist;
 import org.dtu.exceptions.MerchantDoesNotExist;
+import org.dtu.exceptions.PaymentDoesNotExist;
 
 import java.util.List;
 import java.util.UUID;
@@ -70,6 +71,20 @@ public class MerchantApp {
             return response.readEntity(User.class);
         } else {
             throw new MerchantDoesNotExist();
+        }
+    }
+
+    public List<Payment> getMerchantReport(User user) throws PaymentDoesNotExist {
+        Response response = r.path("reports/merchants/" + user.getUserId())
+                .request()
+                .accept(MediaType.APPLICATION_JSON)
+                .get();
+
+        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+            return response.readEntity(new GenericType<List<Payment>>() {
+            });
+        } else {
+            throw new PaymentDoesNotExist();
         }
     }
 }
