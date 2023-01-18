@@ -1,5 +1,9 @@
 package org.dtu;
 
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
+
 public class ReportingSteps {
 
     @Given("the merchant has been involved in a payment")
