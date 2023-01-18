@@ -1,5 +1,6 @@
 package org.dtu;
 
+import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -20,6 +21,7 @@ import org.dtu.exceptions.InvalidCustomerNameException;
 import org.dtu.repositories.CustomerRepository;
 import org.dtu.services.CustomerService;
 
+
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -36,6 +38,8 @@ public class CustomerServiceSteps {
     CompletableFuture<User> registeredCustomer = new CompletableFuture();
 
     CompletableFuture<User> deletedCustomer = new CompletableFuture<>();
+
+    CompletableFuture<Boolean> customerNotFound = new CompletableFuture<>();
 
     Map<User, CorrelationID> correlationIDs = new HashMap<>();
 
@@ -68,6 +72,10 @@ public class CustomerServiceSteps {
     CustomerRepository repository = new CustomerRepository();
     CustomerService service = new CustomerService(q, repository);
 
+    String errorMessage;
+
+    List<User> customers = new ArrayList<>();
+
 
     public CustomerServiceSteps() {
     }
@@ -86,6 +94,7 @@ public class CustomerServiceSteps {
         new Thread(() -> {
             try {
                 User user = service.addCustomer(customer);
+                customers.add(user);
                 registeredCustomer.complete(user);
             } catch (CustomerAlreadyExistsException | InvalidCustomerNameException e) {
                 throw new RuntimeException(e);
@@ -122,10 +131,10 @@ public class CustomerServiceSteps {
     public void aCustomerIsInTheSystem() {
         customer = new User();
         customer.setName(new Name("John", "Doe"));
-        customer.setUserId(new UserId(UUID.randomUUID()));
         publishedEvents.put(customer.getName(), new CompletableFuture<>());
         try {
-            repository.addCustomer(customer);
+            customer = repository.addCustomer(customer);
+            customers.add(customer);
         } catch (CustomerAlreadyExistsException | InvalidCustomerNameException e) {
             throw new RuntimeException(e);
         }
@@ -137,15 +146,15 @@ public class CustomerServiceSteps {
             try {
                 User user = service.deleteCustomer(customer);
                 deletedCustomer.complete(user);
-            } catch (InvalidCustomerIdException e) {
-                throw new RuntimeException(e);
+            } catch (CustomerNotFoundException e) {
+                errorMessage = e.getMessage();
+                customerNotFound.complete(true);
             }
         }).start();
     }
 
     @Then("the AccountDeletionRequested event is sent")
     public void theAccountDeletionRequestedEventIsSent() {
-        System.out.println(publishedEvents.get(customer.getName()));
         IDTUPayMessage event = publishedEvents.get(customer.getName()).join();
         assertTrue(event instanceof AccountDeletionRequested);
         correlationIDs.put(customer, ((AccountDeletionRequested) event).getCorrelationID());
@@ -162,11 +171,16 @@ public class CustomerServiceSteps {
 
     @Then("the customer is deleted")
     public void theCustomerIsDeleted() {
-        try {
-            assertNull(service.getCustomer(customer.getUserId().getUuid()));
-        } catch (InvalidCustomerIdException | CustomerNotFoundException e) {
-            throw new RuntimeException(e);
-        }
+        deletedCustomer.join();
+        assertEquals(0, repository.getCustomerList().size());
+    }
+
+    @Given("a customer is not in the system")
+    public void aCustomerIsNotInTheSystem() {
+        customer = new User();
+        customer.setName(new Name("James", "Bond"));
+        customer.setUserId(new UserId(UUID.randomUUID()));
+        assertTrue(repository.getCustomerList().isEmpty());
     }
 
     @When("the customer requests {int} tokens")
@@ -183,6 +197,19 @@ public class CustomerServiceSteps {
         assertNotNull(event);
     }
 
+    @Then("the error message {string} is returned")
+    public void theErrorMessageIsReturned(String error) {
+        customerNotFound.join();
+        assertEquals(error, errorMessage);
+    }
+
+    @After
+    public void tearDown() {
+        //for each user in customer call delete customer in repository
+        for (User user : customers) {
+            repository.deleteCustomer(user);
+        }
+    }
 
     // Create customer scenario
 

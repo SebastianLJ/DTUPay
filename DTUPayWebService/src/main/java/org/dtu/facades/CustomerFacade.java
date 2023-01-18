@@ -106,7 +106,7 @@ public class CustomerFacade {
                     .status(Response.Status.OK)
                     .entity(deletedUser)
                     .build();
-        } catch (IllegalArgumentException | InvalidCustomerIdException | CustomerNotFoundException e) {
+        } catch (IllegalArgumentException | CustomerNotFoundException e) {
             return Response
                     .status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
@@ -124,11 +124,11 @@ public class CustomerFacade {
             UUID uuid = UUID.fromString(id);
             User user = customerService.getCustomer(uuid);
             System.out.println("Found customer with uuid: " + uuid);
-            return Response
+            return  Response
                     .status(Response.Status.OK)
                     .entity(user)
                     .build();
-        } catch (CustomerNotFoundException | InvalidCustomerIdException | IllegalArgumentException e) {
+        } catch (CustomerNotFoundException | IllegalArgumentException e) {
             return Response
                     .status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
