@@ -20,6 +20,7 @@ public class ReadModelRepository {
     private final IDTUPayMessageQueue messageQueue;
 
     public ReadModelRepository(IDTUPayMessageQueue messageQueue) {
+        System.out.println("Read model init");
         this.messageQueue = messageQueue;
         messageQueue.addHandler(TokensRequested.class, e -> apply((TokensRequested) e));
         messageQueue.addHandler(ConsumeToken.class, e -> apply((ConsumeToken) e));
@@ -51,6 +52,7 @@ public class ReadModelRepository {
     }
 
     private void apply(TokensRequested event) {
+        System.out.println("Handle tokens requested");
         ArrayList<Token> tokens = new ArrayList<>();
         if (event.getAmount() > 5 || event.getAmount() < 1) {
             TokensGenerated tokensGenerated = new TokensGenerated(event.getCorrelationID(),event.getUserId(),tokens);
@@ -75,6 +77,7 @@ public class ReadModelRepository {
         }
         TokensGenerated tokensGenerated = new TokensGenerated(event.getCorrelationID(), event.getUserId(),tokens);
         messageQueue.publish(tokensGenerated);
+        System.out.println("Published tokens generated");
     }
 
     public UserId getUserIdByToken(Token token){

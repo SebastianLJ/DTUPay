@@ -58,8 +58,8 @@ public class CustomerService {
     public User addCustomer(User user) throws CustomerAlreadyExistsException, InvalidCustomerNameException {
         Event event = new CustomerAccountCreated(user);
         messageQueue.publish(event);
-        token_events.put(event.getCorrelationID(), new CompletableFuture<>());
-        token_events.get(event.getCorrelationID()).join();
+        /*token_events.put(event.getCorrelationID(), new CompletableFuture<>());
+        token_events.get(event.getCorrelationID()).join();*/
         return repository.addCustomer(user);
     }
 
