@@ -5,6 +5,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import lombok.NonNull;
+import messageUtilities.cqrs.events.Event;
 import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.IDTUPayMessageQueue;
 import messageUtilities.queues.QueueType;
@@ -34,6 +35,7 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
 
     @Override
     public void publish(IDTUPayMessage message) {
+        System.out.println(((Event) message).getCorrelationID());
         try {
             byte[] data;
 
@@ -68,6 +70,7 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
                     }
                 }
                 if (message.equals(currentMessageInQueue.getClass())) {
+                    System.out.println(((Event) currentMessageInQueue).getCorrelationID());
                     handler.accept(currentMessageInQueue);
                 }
             };
