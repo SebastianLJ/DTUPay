@@ -1,5 +1,6 @@
 package org.dtu.facades;
 
+import org.dtu.aggregate.UserId;
 import org.dtu.domain.Token;
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
