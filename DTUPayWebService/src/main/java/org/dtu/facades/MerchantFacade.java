@@ -1,12 +1,11 @@
 package org.dtu.facades;
 
+import dtu.ws.fastmoney.BankServiceException_Exception;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.*;
 import org.dtu.factories.MerchantFactory;
-import org.dtu.factories.PaymentFactory;
 import org.dtu.services.MerchantService;
-import org.dtu.services.PaymentService;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -52,13 +51,21 @@ public class MerchantFacade {
             return Response.status(Response.Status.CONFLICT)
                     .entity("a payment with the id " + payment.getId() + " already exists")
                     .build();
-        } catch (InvalidCustomerIdException e) {
+        } catch (InvalidCustomerIdException | CustomerNotFoundException e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("customer is unknown")
                     .build();
         } catch (InvalidMerchantIdException e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("merchant is unknown")
+                    .build();
+        } catch (CustomerTokenAlreadyConsumedException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("customer token already consumed")
+                    .build();
+        } catch (BankServiceException_Exception e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity("bank rejected the payment")
                     .build();
         }
     }

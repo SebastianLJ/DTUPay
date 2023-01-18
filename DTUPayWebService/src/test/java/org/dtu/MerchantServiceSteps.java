@@ -14,7 +14,8 @@ import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
 import messageUtilities.queues.rabbitmq.HostnameType;
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.*;
-import org.dtu.factories.MerchantFactory;
+import org.dtu.repositories.MerchantRepository;
+import org.dtu.repositories.PaymentRepository;
 import org.dtu.services.MerchantService;
 
 import java.math.BigDecimal;
@@ -25,7 +26,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MerchantServiceSteps {
-    MerchantService merchantService = new MerchantService(new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost));
+    MerchantService merchantService = new MerchantService(new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost), new MerchantRepository(), new PaymentRepository());
 
     BankService bankService = new BankServiceService().getBankServicePort();
 

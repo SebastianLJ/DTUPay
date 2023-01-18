@@ -7,8 +7,6 @@ import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
 import org.dtu.aggregate.UserId;
 
-import java.util.UUID;
-
 @Value
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)

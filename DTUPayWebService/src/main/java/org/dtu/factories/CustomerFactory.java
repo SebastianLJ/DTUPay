@@ -8,11 +8,13 @@ import org.dtu.services.CustomerService;
 public class CustomerFactory {
     static CustomerService service = null;
 
-
-
     public synchronized CustomerService getService() {
         if (service == null) {
-            service = new CustomerService(new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.rabbitMq));
+            service = new CustomerService(
+                    new DTUPayRabbitMQ(
+                            QueueType.DTUPay,
+                            HostnameType.rabbitMq)
+            );
         }
         return service;
     }

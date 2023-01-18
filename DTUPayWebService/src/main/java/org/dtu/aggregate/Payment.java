@@ -16,7 +16,7 @@ import java.util.UUID;
 @Setter
 public class Payment {
     UUID id;
-    UUID cid, mid;
+    UUID mid;
     int amount;
     Token token;
 
@@ -26,13 +26,6 @@ public class Payment {
     public Payment() {
         this.id = UUID.randomUUID();
     }
-
-//    public Payment(UUID cid, UUID mid, int amount) {
-//        this.id = UUID.randomUUID();
-//        this.cid = cid;
-//        this.mid = mid;
-//        this.amount = amount;
-//    }
 
     public Payment(Token token, UUID mid, int amount) {
         this.id = UUID.randomUUID();

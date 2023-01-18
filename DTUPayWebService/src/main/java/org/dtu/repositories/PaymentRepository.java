@@ -8,11 +8,10 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class PaymentRepository {
-    private ArrayList<Payment> payments = new ArrayList<>();
 
-    public PaymentRepository() {
+    private final ArrayList<Payment> payments = new ArrayList<>();
 
-    }
+    public PaymentRepository() { }
 
     public void save(Payment payment) {
         payments.add(payment);
@@ -36,12 +35,6 @@ public class PaymentRepository {
     public List<Payment> getPaymentsByMerchantId(UUID merchantId) {
         return payments.stream()
                 .filter(payment -> payment.getMid().equals(merchantId))
-                .collect(Collectors.toList());
-    }
-
-    public List<Payment> getPaymentsByCustomerId(UUID customerId) {
-        return payments.stream()
-                .filter(payment -> payment.getCid().equals(customerId))
                 .collect(Collectors.toList());
     }
 

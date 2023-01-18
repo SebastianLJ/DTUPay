@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 public class MerchantRepository {
-    static ArrayList<User> merchants = new ArrayList<>();
+
+    private final ArrayList<User> merchants = new ArrayList<>();
 
     public MerchantRepository() {
 
@@ -26,7 +27,7 @@ public class MerchantRepository {
         return merchant;
     }
 
-    public static User getMerchant (UUID id) throws InvalidMerchantIdException {
+    public User getMerchant (UUID id) throws InvalidMerchantIdException {
         User targetMerchant = null;
         for (User merchant:
                 merchants)  {
@@ -41,17 +42,6 @@ public class MerchantRepository {
     public ArrayList<User> getMerchantList() {
         return merchants;
     }
-
-   /* public User getMerchantById(UUID id) throws MerchantNotFoundException {
-        Optional<User> result = merchants.stream()
-                .filter(merchant -> merchant.id == id)
-                .findAny();
-        if (result.isPresent()) {
-            return result.get();
-        } else {
-            throw new MerchantNotFoundException("Merchant with id " + id + " not found");
-        }
-    }*/
 
     public User deleteMerchant(UUID id) throws InvalidMerchantIdException {
         User merchantToRemove = getMerchant(id);
