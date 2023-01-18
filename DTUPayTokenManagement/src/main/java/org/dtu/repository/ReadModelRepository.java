@@ -9,15 +9,15 @@ import org.dtu.aggregate.UserId;
 import org.dtu.event.*;
 
 import java.io.NotSerializableException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class ReadModelRepository {
 
     private HashMap<Token, UserId> tokenRepository = new HashMap<>();
     private HashMap<UserId, Integer> tokenAmountRepository = new HashMap<>();
     private HashMap<UserId, List<Token>> usedTokenRepository = new HashMap<>();
+
+    private HashSet<UUID> processedEventsByCorrelationId = new HashSet<>();
 
     private final IDTUPayMessageQueue2 messageQueue;
 
@@ -26,15 +26,28 @@ public class ReadModelRepository {
         this.messageQueue = messageQueue;
         messageQueue.addHandler("TokensRequested", e -> {
             TokensRequested newEvent = e.getArgument(0, TokensRequested.class);
-            apply(newEvent);
+            UUID eventID = newEvent.getCorrelationID().getId();
+            if (!processedEventsByCorrelationId.contains(eventID)){
+                processedEventsByCorrelationId.add(eventID);
+                apply(newEvent);
+            }
+
         });
         messageQueue.addHandler("ConsumeToken", e -> {
             ConsumeToken newEvent = e.getArgument(0, ConsumeToken.class);
-            apply(newEvent);
+            UUID eventID = newEvent.getCorrelationID().getId();
+            if (!processedEventsByCorrelationId.contains(eventID)){
+                processedEventsByCorrelationId.add(eventID);
+                apply(newEvent);
+            }
         });
         messageQueue.addHandler("UserTokensRequested", e -> {
             UserTokensRequested newEvent = e.getArgument(0, UserTokensRequested.class);
-            apply(newEvent);
+            UUID eventID = newEvent.getCorrelationID().getId();
+            if (!processedEventsByCorrelationId.contains(eventID)){
+                processedEventsByCorrelationId.add(eventID);
+                apply(newEvent);
+            }
         });
     }
 

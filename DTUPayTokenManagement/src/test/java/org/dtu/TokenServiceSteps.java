@@ -3,6 +3,7 @@ package org.dtu;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
 import messageUtilities.cqrs.events.Event2;
 import messageUtilities.queues.QueueType;
@@ -69,7 +70,7 @@ public class TokenServiceSteps {
 
     @And("a new user is created")
     public void aUserRequestsAnAccount() throws InterruptedException {
-        TokensRequested tokensRequested = new TokensRequested(3,userId1);
+        TokensRequested tokensRequested = new TokensRequested(CorrelationID.randomID(),3,userId1);
         Event2 newEvent = new Event2("TokensRequested", new Object[]{tokensRequested});
         eventQueue.publish(newEvent);
         /*eventQueue.publish(generateToken);*/
@@ -86,7 +87,7 @@ public class TokenServiceSteps {
 
     @And("a second user is created")
     public void aSecondUserIsCreated() throws InterruptedException {
-        TokensRequested tokensRequested = new TokensRequested(4,userId2);
+        TokensRequested tokensRequested = new TokensRequested(CorrelationID.randomID(),4,userId2);
         Event2 newEvent = new Event2("TokensRequested", new Object[]{tokensRequested});
         eventQueue.publish(newEvent);
         /*eventQueue.publish(generateToken);*/
@@ -116,7 +117,7 @@ public class TokenServiceSteps {
 
     @And("the new user consumes tokens")
     public void theNewUserConsumesTokens() throws InterruptedException {
-        ConsumeToken consumeToken = new ConsumeToken(generatedTokens.get(0));
+        ConsumeToken consumeToken = new ConsumeToken(CorrelationID.randomID(),generatedTokens.get(0));
         consumedTokenId = generatedTokens.get(0).getId();
         Event2 newEvent = new Event2("ConsumeToken", new Object[]{consumeToken});
         eventQueue.publish(newEvent);
@@ -126,7 +127,7 @@ public class TokenServiceSteps {
 
     @Then("he can get a list of the consumed tokens")
     public void heCanGetAListOfTheConsumedTokens() throws InterruptedException {
-        UserTokensRequested userTokensRequested = new UserTokensRequested(userId1);
+        UserTokensRequested userTokensRequested = new UserTokensRequested(CorrelationID.randomID(), userId1);
         Event2 newEvent = new Event2("UserTokensRequested", new Object[]{userTokensRequested});
         eventQueue.publish(newEvent);
         Thread.sleep(1000);
