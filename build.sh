@@ -48,3 +48,5 @@ popd
 pushd DTUPayClient
 mvn test -q
 popd
+
+read
