@@ -15,3 +15,9 @@ Feature: Token Service
     When a message queue is started
     And a new user is created
     Then all tokens are unique
+
+  Scenario: The system can return a history of consumed tokens for a user
+    When a message queue is started
+    And a new user is created
+    And the new user consumes tokens
+    Then he can get a list of the consumed tokens
