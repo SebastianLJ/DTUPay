@@ -1,60 +1,61 @@
 package org.dtu;
 
-import dtu.ws.fastmoney.AccountInfo;
-import dtu.ws.fastmoney.BankService;
-import dtu.ws.fastmoney.BankServiceException_Exception;
-import dtu.ws.fastmoney.BankServiceService;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import messageUtilities.CorrelationID;
-import messageUtilities.cqrs.events.Event;
 import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.QueueType;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
 import messageUtilities.queues.rabbitmq.HostnameType;
-import org.dtu.domain.Token;
+import org.dtu.aggregate.Name;
 import org.dtu.aggregate.User;
-import org.dtu.events.AccountDeletionRequested;
-import org.dtu.events.TokensDeleted;
-import org.dtu.events.TokensRequested;
+import org.dtu.aggregate.UserId;
+import org.dtu.domain.Token;
+import org.dtu.events.*;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.CustomerNotFoundException;
 import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.exceptions.InvalidCustomerNameException;
+import org.dtu.repositories.CustomerRepository;
 import org.dtu.services.CustomerService;
-import org.junit.After;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CustomerServiceSteps {
 
 
-    User customer = null;
-    ArrayList<Token> tokens;
+    User customer;
+    Map<Name, CompletableFuture<IDTUPayMessage>> publishedEvents = new HashMap<>();
+    Map<UserId, CompletableFuture<TokensRequested>> publishedTokenEvents = new HashMap<>();
 
-    dtu.ws.fastmoney.User customerBankUser;
+    CompletableFuture<User> registeredCustomer = new CompletableFuture();
 
-    BankService bankService = new BankServiceService().getBankServicePort();
+    CompletableFuture<User> deletedCustomer = new CompletableFuture<>();
 
-    List<dtu.ws.fastmoney.User> bankUsers = new ArrayList<>();
+    Map<User, CorrelationID> correlationIDs = new HashMap<>();
 
-    CompletableFuture<UUID> deletedStudent = new CompletableFuture<>();
 
-    CompletableFuture<IDTUPayMessage> publishedEvents = new CompletableFuture<>();
+    List<Token> tokens;
 
     private DTUPayRabbitMQ q = new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost) {
         @Override
         public void publish(IDTUPayMessage message) {
-            publishedEvents.complete(message);
+            if (message instanceof CustomerAccountCreated) {
+                CustomerAccountCreated event = (CustomerAccountCreated) message;
+                publishedEvents.get(event.getUser().getName()).complete(event);
+            } else if (message instanceof AccountDeletionRequested) {
+                AccountDeletionRequested event = (AccountDeletionRequested) message;
+                publishedEvents.get(event.getUser().getName()).complete(event);
+            } else if (message instanceof TokensRequested) {
+                TokensRequested event = (TokensRequested) message;
+                publishedTokenEvents.get(event.getUserId()).complete(event);
+            }
+
         }
 
         @Override
@@ -63,82 +64,69 @@ public class CustomerServiceSteps {
         }
 
     };
-    CustomerService service = new CustomerService(q);
+
+    CustomerRepository repository = new CustomerRepository();
+    CustomerService service = new CustomerService(q, repository);
 
 
     public CustomerServiceSteps() {
     }
 
-    // Create customer scenario
-    @When("a customer is created")
-    public void a_customer_is_created() {
-        try {
-            customer = service.addCustomer(new User("frank", "ocean", "mybank"));
-        } catch (CustomerAlreadyExistsException | InvalidCustomerNameException e) {
-            e.printStackTrace();
-        }
+
+    @Given("there is a customer with an empty id")
+    public void thereIsACustomerWithAnEmptyId() {
+        customer = new User();
+        customer.setName(new Name("James", "Bond"));
+        publishedEvents.put(customer.getName(), new CompletableFuture<>());
+        assertNull(customer.getUserId());
     }
 
-    @Then("he is registered in the system")
-    public void he_is_registered_in_the_system() {
-        boolean customerIsInSystem = service.getCustomerList().stream().anyMatch(o -> o.getUserId().equals(customer.getUserId()));
-        assertEquals(true, customerIsInSystem);
-    }
-
-    @Then("can be found by his ID")
-    public void can_be_found_by_his_id() throws InvalidCustomerIdException, CustomerNotFoundException {
-        assertEquals(customer, service.getCustomer(customer.getUserId().getUuid()));
-    }
-
-    @After
-    public void afterScenario() throws InvalidCustomerIdException {
-        service.deleteCustomer(customer.getUserId().getUuid());
-        //loop through bankservice.get accounts and delete the ones that are in the list of bank users, using the cpr number to match
-        for (dtu.ws.fastmoney.User bankUser :
-                bankUsers) {
-            //for each accountinfo in getaccounts
-            for (AccountInfo accountInfo :
-                    bankService.getAccounts()) {
-                //if the cpr number of the bank user is equal to the cpr number of the accountinfo
-                if (bankUser.getCprNumber().equals(accountInfo.getUser().getCprNumber())) {
-                    //delete the account
-                    try {
-                        bankService.retireAccount(accountInfo.getAccountId());
-                    } catch (BankServiceException_Exception e) {
-                        fail();
-                    }
-                }
+    @When("a customer is being created")
+    public void a_customer_is_being_created() {
+        new Thread(() -> {
+            try {
+                User user = service.addCustomer(customer);
+                registeredCustomer.complete(user);
+            } catch (CustomerAlreadyExistsException | InvalidCustomerNameException e) {
+                throw new RuntimeException(e);
             }
-        }
+        }).start();
+        // Write code here that turns the phrase above into concrete actions
     }
 
-    //Delete customer scenario
+    @Then("the CustomerAccountCreated event is sent")
+    public void the_customer_account_created_event_is_sent() {
+        // Write code here that turns the phrase above into concrete actions
+        IDTUPayMessage event = publishedEvents.get(customer.getName()).join();
+        assertTrue(event instanceof CustomerAccountCreated);
+        correlationIDs.put(customer, ((CustomerAccountCreated) event).getCorrelationID());
+    }
+
+    @When("the TokensGenerated event is received")
+    public void the_tokens_generated_event_is_received() {
+        // create list of 5 tokens
+        ArrayList<Token> tokens = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            tokens.add(new Token());
+        }
+
+        service.handleTokensGenerated(new TokensGenerated(customer.getUserId(), tokens));
+    }
+
+    @Then("the customer is created")
+    public void the_customer_is_created() {
+        assertNotNull(registeredCustomer.join().getUserId());
+    }
+
     @Given("a customer is in the system")
-    public void a_customer_is_in_the_system() throws CustomerAlreadyExistsException, InvalidCustomerNameException {
-        customerBankUser = new dtu.ws.fastmoney.User();
-        customerBankUser.setFirstName("Martin");
-        customerBankUser.setLastName("Nielsen");
-        customerBankUser.setCprNumber("123864-1224");
-        String bankNumber;
+    public void aCustomerIsInTheSystem() {
+        customer = new User();
+        customer.setName(new Name("John", "Doe"));
+        customer.setUserId(new UserId(UUID.randomUUID()));
+        publishedEvents.put(customer.getName(), new CompletableFuture<>());
         try {
-            bankNumber = bankService.createAccountWithBalance(customerBankUser, new BigDecimal(1000));
-            bankUsers.add(customerBankUser);
-        } catch (BankServiceException_Exception e) {
-            throw new RuntimeException(e);
-        }
-        customer = service.addCustomer(new User(customerBankUser.getFirstName(), customerBankUser.getLastName(), bankNumber));
-    }
-
-    @Given("a customer has been created")
-    public void a_customer_has_been_created() throws InvalidCustomerNameException, CustomerAlreadyExistsException {
-        customer = service.addCustomer(new User("Fred", "Again", "ThiccAccount"));
-    }
-
-    @Then("the customer has a bank account")
-    public void theCustomerHasABankAccount() {
-        try {
-            assertNotNull(bankService.getAccount(customer.getBankNumber()));
-        } catch (BankServiceException_Exception e) {
+            repository.addCustomer(customer);
+        } catch (CustomerAlreadyExistsException | InvalidCustomerNameException e) {
             throw new RuntimeException(e);
         }
     }
@@ -147,72 +135,56 @@ public class CustomerServiceSteps {
     public void theCustomerIsBeingDeleted() {
         new Thread(() -> {
             try {
-                UUID id = service.deleteCustomer(customer.getUserId().getUuid());
-                deletedStudent.complete(id);
-
+                User user = service.deleteCustomer(customer);
+                deletedCustomer.complete(user);
             } catch (InvalidCustomerIdException e) {
                 throw new RuntimeException(e);
             }
         }).start();
     }
 
-
     @Then("the AccountDeletionRequested event is sent")
     public void theAccountDeletionRequestedEventIsSent() {
-        AccountDeletionRequested event = new AccountDeletionRequested(CorrelationID.randomID(), customer.getUserId().getUuid());
-        assertEquals(event, publishedEvents.join());
+        System.out.println(publishedEvents.get(customer.getName()));
+        IDTUPayMessage event = publishedEvents.get(customer.getName()).join();
+        assertTrue(event instanceof AccountDeletionRequested);
+        correlationIDs.put(customer, ((AccountDeletionRequested) event).getCorrelationID());
     }
 
     @When("the TokensDeleted event is received")
     public void theTokensDeletedEventIsReceived() {
-        TokensDeleted event = new TokensDeleted(CorrelationID.randomID(), customer.getUserId().getUuid());
-        service.handleCustomerAccountDeleted(event);
+        ArrayList<Token> tokens = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            tokens.add(new Token());
+        }
+        service.handleTokensDeleted(new TokensDeleted(customer));
     }
 
     @Then("the customer is deleted")
-    public void theCustomerIsDeleted() throws CustomerNotFoundException {
+    public void theCustomerIsDeleted() {
         try {
-            deletedStudent.join();
             assertNull(service.getCustomer(customer.getUserId().getUuid()));
         } catch (InvalidCustomerIdException | CustomerNotFoundException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @When("the customer requests {int} tokens")
-    public void theCustomerRequestsTokens(int tokenCount) {
+    public void theCustomerRequestsTokens(int tokenAmount) {
+        this.publishedTokenEvents.put(customer.getUserId(), new CompletableFuture<>());
         new Thread(() -> {
-            service.getTokens(customer.getUserId(), tokenCount);
+            tokens = service.getTokens(customer.getUserId(), tokenAmount);
         }).start();
-
     }
 
-    @Then("a tokens requested event is published")
-    public void aTokensRequestedEventIsPublished() {
-        //Event event = publishedEvents.get("TokensRequested").join();
+    @Then("the TokensRequested event is published")
+    public void theTokensRequestedEventIsPublished() {
+        TokensRequested event = publishedTokenEvents.get(customer.getUserId()).join();
+        assertNotNull(event);
     }
 
-    /*@io.cucumber.java.After
-    public void afterTest() throws InvalidCustomerIdException {
-        service.deleteCustomer(customer.getUserId().getUuid());
-        //loop through bankservice.get accounts and delete the ones that are in the list of bank users, using the cpr number to match
-        for (dtu.ws.fastmoney.User bankUser :
-                bankUsers) {
-            //for each accountinfo in getaccounts
-            for (AccountInfo accountInfo :
-                    bankService.getAccounts()) {
-                //if the cpr number of the bank user is equal to the cpr number of the accountinfo
-                if (bankUser.getCprNumber().equals(accountInfo.getUser().getCprNumber())) {
-                    //delete the account
-                    try {
-                        bankService.retireAccount(accountInfo.getAccountId());
-                    } catch (BankServiceException_Exception e) {
-                        fail();
-                    }
-                }
-            }
-        }
-    }*/
+
+    // Create customer scenario
+
 }
 

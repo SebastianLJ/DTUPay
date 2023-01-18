@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Value;
 import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
+import org.dtu.aggregate.User;
+import org.dtu.aggregate.UserId;
 
 import java.util.UUID;
 
@@ -13,10 +15,10 @@ import java.util.UUID;
 @EqualsAndHashCode(callSuper = false)
 public class TokensDeleted extends Event {
 
-    UUID customerID;
+    User user;
 
-    public TokensDeleted(CorrelationID correlationID, UUID customerID) {
+    public TokensDeleted(CorrelationID correlationID, User user) {
         super(correlationID);
-        this.customerID = customerID;
+        this.user = user;
     }
 }

@@ -15,6 +15,8 @@ import java.util.ArrayList;
 @EqualsAndHashCode(callSuper = false)
 public class TokensGenerated extends Event {
 
+    private static final long serialVersionUID = -4447410758205285261L;
+
     UserId userid;
     ArrayList<Token> tokens;
 
