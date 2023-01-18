@@ -10,16 +10,10 @@ services:
       - "./custom_rabbitmq_config.conf:/etc/rabbitmq/rabbitmq.conf"
     networks:
       - DTUPayNetwork
-#  DTUTokenManagement:
-#    build: DTUPayTokenManagement
-#    image: dtu_pay_token_management
-#    container_name: DTUPayTokenManagement
-#    networks:
-#      - DTUPayNetwork
-  DTUTokenManagementTest2:
-    build: DTUPayTokenManagementTest2
-    image: dtu_pay_token_management_test2
-    container_name: DTUPayTokenManagementTest2
+  DTUTokenManagement:
+    build: DTUPayTokenManagement
+    image: dtu_pay_token_management
+    container_name: DTUPayTokenManagement
     networks:
       - DTUPayNetwork
   DTUPayWebService:

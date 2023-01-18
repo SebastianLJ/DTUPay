@@ -4,8 +4,10 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import messageUtilities.cqrs.events.Event;
+import messageUtilities.cqrs.events.Event2;
 import messageUtilities.queues.QueueType;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
+import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ2;
 import messageUtilities.queues.rabbitmq.HostnameType;
 import org.dtu.domain.Token;
 import org.dtu.aggregate.UserId;
@@ -25,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TokenServiceSteps {
 
 
-    DTUPayRabbitMQ eventQueue = new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost);
+    DTUPayRabbitMQ2 eventQueue = new DTUPayRabbitMQ2("localhost");
     TokenService tokenService;
 
 
@@ -55,14 +57,21 @@ public class TokenServiceSteps {
     @When("a message queue is started")
     public void aMessageQueueIsStarted() {
         tokenService = new TokenService(eventQueue);
-        eventQueue.addHandler(TokensGenerated.class, e -> populateGeneratedTokens((TokensGenerated) e));
-        eventQueue.addHandler(UserTokensGenerated.class, e -> populateUsedTokens((UserTokensGenerated) e));
+        eventQueue.addHandler("TokensGenerated", e -> {
+            TokensGenerated newEvent = e.getArgument(0, TokensGenerated.class);
+            populateGeneratedTokens(newEvent);
+        });
+        eventQueue.addHandler("UserTokensGenerated", e -> {
+            UserTokensGenerated newEvent = e.getArgument(0, UserTokensGenerated.class);
+            populateUsedTokens(newEvent);
+        });
     }
 
     @And("a new user is created")
     public void aUserRequestsAnAccount() throws InterruptedException {
         TokensRequested tokensRequested = new TokensRequested(3,userId1);
-        eventQueue.publish(tokensRequested);
+        Event2 newEvent = new Event2("TokensRequested", new Object[]{tokensRequested});
+        eventQueue.publish(newEvent);
         /*eventQueue.publish(generateToken);*/
         Thread.sleep(1000);
         amount1 = tokenService.getAmountTokensForUser(userId1);
@@ -78,7 +87,8 @@ public class TokenServiceSteps {
     @And("a second user is created")
     public void aSecondUserIsCreated() throws InterruptedException {
         TokensRequested tokensRequested = new TokensRequested(4,userId2);
-        eventQueue.publish(tokensRequested);
+        Event2 newEvent = new Event2("TokensRequested", new Object[]{tokensRequested});
+        eventQueue.publish(newEvent);
         /*eventQueue.publish(generateToken);*/
         Thread.sleep(1000);
         amount2 = tokenService.getAmountTokensForUser(userId2);
@@ -108,7 +118,8 @@ public class TokenServiceSteps {
     public void theNewUserConsumesTokens() throws InterruptedException {
         ConsumeToken consumeToken = new ConsumeToken(generatedTokens.get(0));
         consumedTokenId = generatedTokens.get(0).getId();
-        eventQueue.publish(consumeToken);
+        Event2 newEvent = new Event2("ConsumeToken", new Object[]{consumeToken});
+        eventQueue.publish(newEvent);
         Thread.sleep(1000);
     }
 
@@ -116,7 +127,8 @@ public class TokenServiceSteps {
     @Then("he can get a list of the consumed tokens")
     public void heCanGetAListOfTheConsumedTokens() throws InterruptedException {
         UserTokensRequested userTokensRequested = new UserTokensRequested(userId1);
-        eventQueue.publish(userTokensRequested);
+        Event2 newEvent = new Event2("UserTokensRequested", new Object[]{userTokensRequested});
+        eventQueue.publish(newEvent);
         Thread.sleep(1000);
 
         assertEquals(1, usedTokens.size());
