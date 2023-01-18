@@ -11,17 +11,19 @@ public class StartUp {
     public static void main(String... args) {
         Quarkus.run(MyApp.class, args);
     }
-    private void startTokenManagement() {
-        new TokenFactory().getService();
-    }
+
 
     public static class MyApp implements QuarkusApplication {
 
         @Override
         public int run(String... args) throws Exception {
-            new StartUp().startTokenManagement();
+            startTokenManagement();
             Quarkus.waitForExit();
             return 0;
+        }
+
+        private void startTokenManagement() {
+            new TokenFactory().getService();
         }
     }
 }

@@ -51,7 +51,6 @@ public class MerchantFacade {
             return Response.status(Response.Status.CONFLICT)
                     .entity("a payment with the id " + payment.getId() + " already exists")
                     .build();
-        } catch (InvalidCustomerIdException | CustomerNotFoundException e) {
         } catch (CustomerNotFoundException e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("customer is unknown")
@@ -67,6 +66,10 @@ public class MerchantFacade {
         } catch (BankServiceException_Exception e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity("bank rejected the payment")
+                    .build();
+        } catch (InvalidCustomerIdException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
                     .build();
         }
 
