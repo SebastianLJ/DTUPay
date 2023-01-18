@@ -67,11 +67,11 @@ public class DTUPayRabbitMQ2 implements IDTUPayMessageQueue2 {
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(), "UTF-8");
 
-                System.out.println("[x] handle event " + message);
 
                 Event2 event = new Gson().fromJson(message, Event2.class);
 
                 if (eventType.equals(event.getType())) {
+                    System.out.println("[x] handle event " + message);
                     handler.accept(event);
                 }
             };

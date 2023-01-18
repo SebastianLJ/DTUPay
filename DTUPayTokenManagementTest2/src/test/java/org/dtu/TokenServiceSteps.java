@@ -3,6 +3,7 @@ package org.dtu;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
 import messageUtilities.cqrs.events.Event2;
 import messageUtilities.queues.QueueType;
@@ -45,6 +46,8 @@ public class TokenServiceSteps {
     ArrayList<Token> usedTokens = new ArrayList<>();
     UUID consumedTokenId;
 
+    CorrelationID correlationID;
+
 
     private void populateGeneratedTokens(TokensGenerated event){
         generatedTokens.addAll(event.getTokens());
@@ -57,19 +60,20 @@ public class TokenServiceSteps {
     @When("a message queue is started")
     public void aMessageQueueIsStarted() {
         tokenService = new TokenService(eventQueue);
-        eventQueue.addHandler("TokensGenerated", e -> {
+        /*eventQueue.addHandler("TokensGenerated", e -> {
             TokensGenerated newEvent = e.getArgument(0, TokensGenerated.class);
             populateGeneratedTokens(newEvent);
         });
         eventQueue.addHandler("UserTokensGenerated", e -> {
             UserTokensGenerated newEvent = e.getArgument(0, UserTokensGenerated.class);
             populateUsedTokens(newEvent);
-        });
+        });*/
     }
 
     @And("a new user is created")
     public void aUserRequestsAnAccount() throws InterruptedException {
-        TokensRequested tokensRequested = new TokensRequested(3,userId1);
+        correlationID = CorrelationID.randomID();
+        TokensRequested tokensRequested = new TokensRequested(correlationID,3,userId1);
         Event2 newEvent = new Event2("TokensRequested", new Object[]{tokensRequested});
         eventQueue.publish(newEvent);
         /*eventQueue.publish(generateToken);*/
@@ -86,7 +90,7 @@ public class TokenServiceSteps {
 
     @And("a second user is created")
     public void aSecondUserIsCreated() throws InterruptedException {
-        TokensRequested tokensRequested = new TokensRequested(4,userId2);
+        TokensRequested tokensRequested = new TokensRequested(CorrelationID.randomID(),4,userId2);
         Event2 newEvent = new Event2("TokensRequested", new Object[]{tokensRequested});
         eventQueue.publish(newEvent);
         /*eventQueue.publish(generateToken);*/
