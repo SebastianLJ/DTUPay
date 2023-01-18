@@ -3,7 +3,9 @@ package org.dtu.services;
 
 import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
+import messageUtilities.cqrs.events.Event2;
 import messageUtilities.queues.IDTUPayMessageQueue;
+import messageUtilities.queues.IDTUPayMessageQueue2;
 import org.dtu.domain.Token;
 import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
@@ -21,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class CustomerService {
     CustomerRepository repository;
-    IDTUPayMessageQueue messageQueue;
+    IDTUPayMessageQueue2 messageQueue;
 
     HashMap<CorrelationID, CompletableFuture<TokensGenerated>> token_events = new HashMap<>();
 
@@ -31,11 +33,11 @@ public class CustomerService {
         repository = new CustomerRepository();
     }
 
-    public CustomerService(IDTUPayMessageQueue messageQueue, CustomerRepository repository) {
+    public CustomerService(IDTUPayMessageQueue2 messageQueue, CustomerRepository repository) {
         this.repository = repository;
         this.messageQueue = messageQueue;
-        this.messageQueue.addHandler(TokensGenerated.class, e -> handleTokensGenerated((TokensGenerated) e));
-        this.messageQueue.addHandler(TokensDeleted.class, e -> handleTokensDeleted((TokensDeleted) e));
+        this.messageQueue.addHandler("TokensGenerated", this::handleTokensGenerated);
+        this.messageQueue.addHandler("TokensDeleted", this::handleTokensDeleted);
 
     }
 
@@ -52,8 +54,10 @@ public class CustomerService {
     }
 
     public User addCustomer(User user) throws CustomerAlreadyExistsException, InvalidCustomerNameException {
-        Event event = new CustomerAccountCreated(user);
+        System.out.println("Adding customer");
+        Event2 event = new Event2("CustomerAccountCreated", new Object[]{new CustomerAccountCreated(user)});
         messageQueue.publish(event);
+        System.out.println("Customer added");
         /*token_events.put(event.getCorrelationID(), new CompletableFuture<>());
         token_events.get(event.getCorrelationID()).join();*/
         return repository.addCustomer(user);
@@ -66,7 +70,7 @@ public class CustomerService {
     public User deleteCustomer(User user) throws CustomerNotFoundException {
         getCustomer(user.getUserId().getUuid());
         deletedCustomer = new CompletableFuture<>();
-        Event event = new AccountDeletionRequested(CorrelationID.randomID(), user);
+        Event2 event = new Event2("AccountDeletionRequested", new Object[]{new AccountDeletionRequested(CorrelationID.randomID(), user)});
         messageQueue.publish(event);
         User customer = deletedCustomer.join();
         repository.deleteCustomer(customer);
@@ -75,8 +79,8 @@ public class CustomerService {
 
     public ArrayList<Token> getTokens(UserId userId, int amount) {
         CorrelationID correlationID = CorrelationID.randomID();
-        TokensRequested event = new TokensRequested(correlationID, amount, userId);
         System.out.println("Created TokensRequested event: " + correlationID);
+        Event2 event = new Event2("TokensRequested", new Object[]{new TokensRequested(correlationID, amount, userId)});
         messageQueue.publish(event);
         System.out.println("Published TokensRequested event: " + correlationID);
         token_events.put(correlationID, new CompletableFuture<TokensGenerated>());
@@ -84,15 +88,17 @@ public class CustomerService {
         return result.getTokens();
     }
 
-    public void handleTokensGenerated(TokensGenerated event) {
-        System.out.println("Received TokensGenerated event: " + event.getCorrelationID());
-        if (this.token_events.containsKey(event.getCorrelationID())) {
-            this.token_events.get(event.getCorrelationID()).complete(event);
+    public void handleTokensGenerated(Event2 event) {
+        TokensGenerated newEvent = event.getArgument(0, TokensGenerated.class);
+        System.out.println("Received TokensGenerated event: " + newEvent.getCorrelationID());
+        if (this.token_events.containsKey(newEvent.getCorrelationID())) {
+            this.token_events.get(newEvent.getCorrelationID()).complete(newEvent);
         }
     }
 
-    public void handleTokensDeleted(TokensDeleted event) {
-        this.deletedCustomer.complete(event.getUser());
+    public void handleTokensDeleted(Event2 event) {
+        TokensDeleted newEvent = event.getArgument(0, TokensDeleted.class);
+        this.deletedCustomer.complete(newEvent.getUser());
     }
 
 }

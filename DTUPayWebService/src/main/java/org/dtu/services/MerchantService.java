@@ -5,8 +5,10 @@ import dtu.ws.fastmoney.BankService;
 import dtu.ws.fastmoney.BankServiceException_Exception;
 import dtu.ws.fastmoney.BankServiceService;
 import messageUtilities.CorrelationID;
+import messageUtilities.cqrs.events.Event2;
 import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.IDTUPayMessageQueue;
+import messageUtilities.queues.IDTUPayMessageQueue2;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
 import org.dtu.events.ConsumeToken;
@@ -31,14 +33,14 @@ public class MerchantService {
     private final Map<CorrelationID, CompletableFuture<IDTUPayMessage>> correlations;
     private final MerchantRepository merchantRepository;
     private final PaymentRepository paymentRepository;
-    private final IDTUPayMessageQueue messageQueue;
+    private final IDTUPayMessageQueue2 messageQueue;
 
-    public MerchantService(IDTUPayMessageQueue messageQueue, MerchantRepository merchantRepository, PaymentRepository paymentRepository) {
+    public MerchantService(IDTUPayMessageQueue2 messageQueue, MerchantRepository merchantRepository, PaymentRepository paymentRepository) {
         this.messageQueue = messageQueue;
         this.merchantRepository = merchantRepository;
         this.paymentRepository = paymentRepository;
         this.bankService = new BankServiceService().getBankServicePort();
-        this.customerService = new CustomerFactory().getService();
+        this.customerService = new CustomerFactory().getService(messageQueue);
         this.correlations = new ConcurrentHashMap<>();
     }
 
@@ -57,7 +59,8 @@ public class MerchantService {
     public Payment createPayment(Payment payment) throws InvalidMerchantIdException, BankServiceException_Exception, InvalidCustomerIdException, CustomerNotFoundException, PaymentAlreadyExistsException, CustomerTokenAlreadyConsumedException {
         ConsumeToken consumeTokenEvent = new ConsumeToken(new CorrelationID(UUID.randomUUID()), payment.getToken());
         correlations.put(consumeTokenEvent.getCorrelationID(), new CompletableFuture<>());
-        messageQueue.publish(consumeTokenEvent);
+        Event2 newEvent = new Event2("ConsumeToken", new Object[]{consumeTokenEvent});
+        messageQueue.publish(newEvent);
 
         TokenConsumed consumeTokenEventResult = (TokenConsumed) correlations.get(consumeTokenEvent.getCorrelationID()).join();
         if (!consumeTokenEventResult.getMessage().isEmpty()) {
@@ -104,7 +107,10 @@ public class MerchantService {
     }
 
     private void registerHandlers() {
-        this.messageQueue.addHandler(TokenConsumed.class, e -> createPaymentConsumedTokenEventResult((TokenConsumed) e));
+        this.messageQueue.addHandler("TokenConsumed", e -> {
+            TokenConsumed newEvent = e.getArgument(0, TokenConsumed.class);
+            createPaymentConsumedTokenEventResult(newEvent);
+        });
     }
 
     private void createPaymentConsumedTokenEventResult(TokenConsumed event) {

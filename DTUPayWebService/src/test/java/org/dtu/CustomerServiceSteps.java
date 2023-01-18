@@ -5,9 +5,11 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import messageUtilities.CorrelationID;
+import messageUtilities.cqrs.events.Event2;
 import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.QueueType;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
+import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ2;
 import messageUtilities.queues.rabbitmq.HostnameType;
 import org.dtu.aggregate.Name;
 import org.dtu.aggregate.User;
@@ -46,26 +48,24 @@ public class CustomerServiceSteps {
 
     List<Token> tokens;
 
-    private DTUPayRabbitMQ q = new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost) {
+    private DTUPayRabbitMQ2 q = new DTUPayRabbitMQ2("localhost") {
         @Override
-        public void publish(IDTUPayMessage message) {
-            if (message instanceof CustomerAccountCreated) {
-                CustomerAccountCreated event = (CustomerAccountCreated) message;
-                publishedEvents.get(event.getUser().getName()).complete(event);
-            } else if (message instanceof AccountDeletionRequested) {
-                AccountDeletionRequested event = (AccountDeletionRequested) message;
-                publishedEvents.get(event.getUser().getName()).complete(event);
-            } else if (message instanceof TokensRequested) {
-                TokensRequested event = (TokensRequested) message;
-                publishedTokenEvents.get(event.getUserId()).complete(event);
+        public void publish(Event2 event) {
+            super.publish(event);
+            if (event.getType().equals("CustomerAccountCreated")) {
+                CustomerAccountCreated newEvent = event.getArgument(0, CustomerAccountCreated.class);
+                publishedEvents.get(newEvent.getUser().getName()).complete(newEvent);
+            } else if (event.getType().equals("AccountDeletionRequested")) {
+                AccountDeletionRequested newEvent = event.getArgument(0, AccountDeletionRequested.class);
+                publishedEvents.get(newEvent.getUser().getName()).complete(newEvent);
+            } else if (event.getType().equals("TokensRequested")) {
+                TokensRequested newEvent = event.getArgument(0, TokensRequested.class);
+                publishedTokenEvents.get(newEvent.getUserId()).complete(newEvent);
             }
-
         }
 
         @Override
-        public void addHandler(Class<? extends IDTUPayMessage> message, Consumer<IDTUPayMessage> handler) {
-
-        }
+        public void addHandler(String eventType, Consumer<Event2> handler) { }
 
     };
 
@@ -119,7 +119,7 @@ public class CustomerServiceSteps {
             tokens.add(new Token());
         }
 
-        service.handleTokensGenerated(new TokensGenerated(customer.getUserId(), tokens));
+        service.handleTokensGenerated(new Event2("TokensGenerated", new Object[]{new TokensGenerated(customer.getUserId(), tokens)}));
     }
 
     @Then("the customer is created")
@@ -166,7 +166,7 @@ public class CustomerServiceSteps {
         for (int i = 0; i < 5; i++) {
             tokens.add(new Token());
         }
-        service.handleTokensDeleted(new TokensDeleted(customer));
+        service.handleTokensDeleted(new Event2("TokensDeleted", new Object[]{new TokensDeleted(customer)}));
     }
 
     @Then("the customer is deleted")

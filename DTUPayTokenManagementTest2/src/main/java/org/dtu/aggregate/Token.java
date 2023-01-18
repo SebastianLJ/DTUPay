@@ -3,8 +3,8 @@ package org.dtu.aggregate;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
-import org.dtu.messageUtilities.cqrs.events.Event;
-import org.dtu.messageUtilities.queues.IDTUPayMessage;
+import messageUtilities.cqrs.events.Event;
+import messageUtilities.queues.IDTUPayMessage;
 import org.dtu.event.TokensGenerated;
 import org.dtu.exceptions.*;
 
