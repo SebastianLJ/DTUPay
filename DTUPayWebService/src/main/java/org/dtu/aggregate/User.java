@@ -14,6 +14,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class User implements Serializable {
 
+    private static final long serialVersionUID = -237993537453280300L;
     Name name;
     UserId userId;
     String bankNumber = "";

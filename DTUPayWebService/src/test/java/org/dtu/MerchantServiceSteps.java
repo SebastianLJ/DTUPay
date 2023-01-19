@@ -14,6 +14,7 @@ import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
 import org.dtu.domain.Token;
 import org.dtu.events.ConsumeToken;
+import org.dtu.events.MoneyTransferred;
 import org.dtu.events.TokenConsumed;
 import org.dtu.events.TokensRequested;
 import org.dtu.exceptions.*;
@@ -39,18 +40,7 @@ public class MerchantServiceSteps {
     MerchantRepository repository = new MerchantRepository();
     CustomerRepository customerRepository = new CustomerRepository();
     ConcurrentHashMap<CorrelationID, CompletableFuture<Event2>> eventMap = new ConcurrentHashMap<>();
-    DTUPayRabbitMQ2 queue = new DTUPayRabbitMQ2("localhost") {
-        @Override
-        public void publish(Event2 event) {
-            Event newEvent = event.getArgument(0, Event.class);
-            eventMap.get(newEvent.getCorrelationID()).complete(event);
-        }
-
-        @Override
-        public void addHandler(String eventType, Consumer<Event2> handler) {
-
-        }
-    };
+    DTUPayRabbitMQ2 queue = new DTUPayRabbitMQ2("localhost");
     MerchantService merchantService = new MerchantService(new DTUPayRabbitMQ2("localhost"), repository, new PaymentRepository());
     CustomerService customerService = new CustomerService(new DTUPayRabbitMQ2("localhost"), customerRepository);
 
@@ -67,6 +57,7 @@ public class MerchantServiceSteps {
     Payment payment;
 
     CompletableFuture<Payment> paymentTransactionFuture = new CompletableFuture<>();
+    CompletableFuture<Payment> moneyTransferredCompletableFuture = new CompletableFuture<>();
 
     //Create merchant scenario
     @When("a merchant is created")
@@ -202,10 +193,13 @@ public class MerchantServiceSteps {
 
     @Then("a payment can be done")
     public void aPaymentCanBeDone() {
+        queue.addHandler("TokenVerificationRequested", this::handleTokenVerificationRequestedEvent);
+        queue.addHandler("MoneyTransferred", this::handleMoneyTransferred);
         new Thread(() -> {
             try {
+                System.out.println("Creating payment");
                 Payment completedTransaction = merchantService.createPayment(payment);
-                paymentTransactionFuture.complete(completedTransaction);
+                System.out.println("Payment created");
             } catch (InvalidMerchantIdException |
                     BankServiceException_Exception |
                     InvalidCustomerIdException |
@@ -214,17 +208,34 @@ public class MerchantServiceSteps {
                     CustomerTokenAlreadyConsumedException e) {
                 fail(e.getMessage());
             }
-        });
+        }).start();
+        moneyTransferredCompletableFuture.join();
     }
 
-    @And("The token is verified")
-    public void theTokenIsVerified() {
-        queue.addHandler("TokenVerificationRequested", this::handleTokenVerificationRequestedEvent);
+    private void handleMoneyTransferred(Event2 event) {
+        moneyTransferredCompletableFuture.complete(event.getArgument(0, Payment.class));
     }
 
     private void handleTokenVerificationRequestedEvent(Event2 event) {
         ConsumeToken requestedEvent = event.getArgument(0, ConsumeToken.class);
         TokenConsumed newEvent = new TokenConsumed(requestedEvent.getCorrelationID(), customer.getUserId());
         queue.publish(new Event2("TokenConsumed", new Object[]{newEvent}));
+
+    }
+
+    @And("The customer's bank account balance is now {int}")
+    public void theCustomerSBankAccountBalanceIsNow(int balance) throws BankServiceException_Exception {
+        assertEquals(BigDecimal.valueOf(balance), bankService.getAccount(customerBankNumber).getBalance());
+    }
+
+    @And("The merchant's bank account balance is now {int}")
+    public void theMerchantSBankAccountBalanceIsNow(int balance) throws BankServiceException_Exception {
+        assertEquals(BigDecimal.valueOf(balance), bankService.getAccount(merchantBankNumber).getBalance());
+    }
+
+    @After
+    public void cleanUp() throws BankServiceException_Exception {
+        bankService.retireAccount(merchantBankNumber);
+        bankService.retireAccount(customerBankNumber);
     }
 }

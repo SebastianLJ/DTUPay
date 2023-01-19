@@ -9,9 +9,8 @@ Feature: Merchant Service
     When the merchant initializes a payment of 500
     And the customer shares a token with the merchant
     Then a payment can be done
-    And The token is verified
-    And The cutomer's bank account balance has been deducted by 500
-    And The merchant's bank account balance has been credited by 500
+    Then The customer's bank account balance is now 1500
+    And The merchant's bank account balance is now 1500
 
   Scenario: A merchant is successfully created
     When a merchant is created

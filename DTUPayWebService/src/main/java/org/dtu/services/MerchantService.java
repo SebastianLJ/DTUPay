@@ -119,7 +119,7 @@ public class MerchantService {
             correlations.get(event.getCorrelationID()).complete(event);
             correlations.remove(event.getCorrelationID());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            throw new Error(e.getMessage());
         }
     }
 
