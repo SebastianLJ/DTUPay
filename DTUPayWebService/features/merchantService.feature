@@ -7,6 +7,7 @@ Feature: Merchant Service
     And the customer is a member of DTUPay
     And the customer has at least one token
     When the merchant initializes a payment of 500
+    And the customer has a valid token
     And the customer shares a token with the merchant
     Then a payment can be done
     Then The customer's bank account balance is now 1500

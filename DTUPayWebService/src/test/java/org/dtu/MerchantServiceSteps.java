@@ -186,6 +186,11 @@ public class MerchantServiceSteps {
         payment.setAmount(amount);
     }
 
+    @And("the customer has a valid token")
+    public void theCustomerHasAValidToken() {
+        queue.addHandler("TokenVerificationRequested", this::handleTokenVerificationRequestedEvent);
+    }
+
     @And("the customer shares a token with the merchant")
     public void theCustomerSharesATokenWithTheMerchant() {
         payment.setToken(tokens.get(0));
@@ -193,7 +198,7 @@ public class MerchantServiceSteps {
 
     @Then("a payment can be done")
     public void aPaymentCanBeDone() {
-        queue.addHandler("TokenVerificationRequested", this::handleTokenVerificationRequestedEvent);
+
         queue.addHandler("MoneyTransferred", this::handleMoneyTransferred);
         new Thread(() -> {
             try {
