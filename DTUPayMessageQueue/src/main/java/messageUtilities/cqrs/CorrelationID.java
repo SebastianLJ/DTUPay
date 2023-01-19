@@ -1,4 +1,4 @@
-package messageUtilities;
+package messageUtilities.cqrs;
 
 import lombok.Value;
 

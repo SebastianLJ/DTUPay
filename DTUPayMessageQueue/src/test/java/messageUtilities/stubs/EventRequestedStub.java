@@ -1,6 +1,6 @@
 package messageUtilities.stubs;
 
-import messageUtilities.CorrelationID;
+import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.cqrs.events.Event;
 
 /**

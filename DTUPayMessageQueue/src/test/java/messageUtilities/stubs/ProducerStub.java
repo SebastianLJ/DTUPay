@@ -1,8 +1,7 @@
 package messageUtilities.stubs;
 
-import messageUtilities.CorrelationID;
-import messageUtilities.cqrs.events.Event2;
-import messageUtilities.queues.IDTUPayMessageQueue;
+import messageUtilities.cqrs.CorrelationID;
+import messageUtilities.MessageEvent;
 import messageUtilities.queues.IDTUPayMessageQueue2;
 
 import java.util.HashMap;
@@ -34,7 +33,7 @@ public class ProducerStub {
     public EventCreatedStub produceEvent(EventRequestedStub event) {
         correlations.put(event.getCorrelationID(), new CompletableFuture<>());
         System.out.println( "RequestedEvent CorrelationID: " + event.getCorrelationID());
-        Event2 newEvent = new Event2("EventRequestedStub", new Object[]{event});
+        MessageEvent newEvent = new MessageEvent("EventRequestedStub", new Object[]{event});
         messageQueue.publish(newEvent);
         return correlations.get(event.getCorrelationID()).join();
     }

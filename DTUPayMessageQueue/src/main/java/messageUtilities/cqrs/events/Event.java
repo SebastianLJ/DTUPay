@@ -1,6 +1,6 @@
 package messageUtilities.cqrs.events;
 
-import messageUtilities.CorrelationID;
+import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.Message;
 
 import java.io.Serializable;

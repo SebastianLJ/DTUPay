@@ -1,10 +1,8 @@
 package org.dtu.services;
 
 
-import messageUtilities.CorrelationID;
-import messageUtilities.cqrs.events.Event;
-import messageUtilities.cqrs.events.Event2;
-import messageUtilities.queues.IDTUPayMessageQueue;
+import messageUtilities.cqrs.CorrelationID;
+import messageUtilities.MessageEvent;
 import messageUtilities.queues.IDTUPayMessageQueue2;
 import org.dtu.domain.Token;
 import org.dtu.aggregate.User;
@@ -12,12 +10,10 @@ import org.dtu.aggregate.UserId;
 import org.dtu.events.*;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.CustomerNotFoundException;
-import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.exceptions.InvalidCustomerNameException;
 import org.dtu.repositories.CustomerRepository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -58,7 +54,7 @@ public class CustomerService {
     }
 
     public User addCustomer(User user) throws CustomerAlreadyExistsException, InvalidCustomerNameException {
-        Event2 event = new Event2("CustomerAccountCreated", new Object[]{new CustomerAccountCreated(user)});
+        MessageEvent event = new MessageEvent("CustomerAccountCreated", new Object[]{new CustomerAccountCreated(user)});
         messageQueue.publish(event);
         return repository.addCustomer(user);
     }
@@ -71,7 +67,7 @@ public class CustomerService {
         getCustomer(user.getUserId().getUuid());
         repository.deleteCustomer(user);
         deletedCustomer = new CompletableFuture<>();
-        Event2 event = new Event2("AccountDeletionRequested", new Object[]{new AccountDeletionRequested(CorrelationID.randomID(), user)});
+        MessageEvent event = new MessageEvent("AccountDeletionRequested", new Object[]{new AccountDeletionRequested(CorrelationID.randomID(), user)});
         messageQueue.publish(event);
         deletedCustomer.join();
         return user;
@@ -82,7 +78,7 @@ public class CustomerService {
      */
     public ArrayList<Token> getTokens(UserId userId, int amount) {
         CorrelationID correlationID = CorrelationID.randomID();
-        Event2 event = new Event2("TokensRequested", new Object[]{new TokensRequested(correlationID, amount, userId)});
+        MessageEvent event = new MessageEvent("TokensRequested", new Object[]{new TokensRequested(correlationID, amount, userId)});
         messageQueue.publish(event);
         token_events.put(correlationID, new CompletableFuture<TokensGenerated>());
         TokensGenerated result = token_events.get(correlationID).join();
@@ -92,7 +88,7 @@ public class CustomerService {
     /**
      * @Autor Jákup Viljam Dam - s185095
      */
-    public void handleTokensGenerated(Event2 event) {
+    public void handleTokensGenerated(MessageEvent event) {
         TokensGenerated newEvent = event.getArgument(0, TokensGenerated.class);
         System.out.println("Received TokensGenerated event: " + newEvent.getCorrelationID());
         if (this.token_events.containsKey(newEvent.getCorrelationID())) {
@@ -103,7 +99,7 @@ public class CustomerService {
     /**
      * @Autor Jákup Viljam Dam - s185095
      */
-    public void handleTokensDeleted(Event2 event) {
+    public void handleTokensDeleted(MessageEvent event) {
         TokensDeleted newEvent = event.getArgument(0, TokensDeleted.class);
         this.deletedCustomer.complete(newEvent.getUser());
     }

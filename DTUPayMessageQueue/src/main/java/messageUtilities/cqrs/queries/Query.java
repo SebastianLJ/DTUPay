@@ -1,6 +1,6 @@
 package messageUtilities.cqrs.queries;
 
-import messageUtilities.CorrelationID;
+import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.Message;
 
 /**

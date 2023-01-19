@@ -1,7 +1,7 @@
 package org.dtu.services;
 
-import messageUtilities.CorrelationID;
-import messageUtilities.cqrs.events.Event2;
+import messageUtilities.cqrs.CorrelationID;
+import messageUtilities.MessageEvent;
 import messageUtilities.queues.IDTUPayMessageQueue2;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.UserId;
@@ -44,7 +44,7 @@ public class ReportService {
 
     public List<Payment> getPaymentByCustomerId(UserId id, Token token) throws PaymentNotFoundException {
         List<Payment> customerPayments = repository.getPaymentsByToken(token);
-        Event2 event = new Event2("CustomerReportGenerated", new Object[]{new CustomerReportGenerated(id, customerPayments)});
+        MessageEvent event = new MessageEvent("CustomerReportGenerated", new Object[]{new CustomerReportGenerated(id, customerPayments)});
         messageQueue.publish(event);
         return customerPayments;
 

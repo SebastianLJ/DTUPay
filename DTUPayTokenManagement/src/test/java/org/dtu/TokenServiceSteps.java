@@ -1,13 +1,11 @@
 package org.dtu;
 
-import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import messageUtilities.CorrelationID;
-import messageUtilities.cqrs.events.Event;
-import messageUtilities.cqrs.events.Event2;
+import messageUtilities.cqrs.CorrelationID;
+import messageUtilities.MessageEvent;
 import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ2;
 import org.dtu.aggregate.UserId;
@@ -31,7 +29,7 @@ public class TokenServiceSteps {
      */
     DTUPayRabbitMQ2 eventQueue = new DTUPayRabbitMQ2("localhost") {
         @Override
-        public void publish(Event2 event) {
+        public void publish(MessageEvent event) {
             switch (event.getType()) {
                 case "TokensGenerated":
                     TokensGenerated tokensGenerated = event.getArgument(0, TokensGenerated.class);
@@ -63,7 +61,7 @@ public class TokenServiceSteps {
         }
 
         @Override
-        public void addHandler(String eventType, Consumer<Event2> handler) {
+        public void addHandler(String eventType, Consumer<MessageEvent> handler) {
             super.addHandler(eventType, handler);
         }
     };
@@ -103,7 +101,7 @@ public class TokenServiceSteps {
         userId1 = new UserId(UUID.randomUUID());
         usedUserTokens.put(userId1, new ArrayList<>());
         TokensRequested tokensRequested = new TokensRequested(CorrelationID.randomID(),3,userId1);
-        Event2 newEvent = new Event2("TokensRequested", new Object[]{tokensRequested});
+        MessageEvent newEvent = new MessageEvent("TokensRequested", new Object[]{tokensRequested});
         publishedEvents.put(tokensRequested.getCorrelationID(),new CompletableFuture<>());
         eventQueue.publish(newEvent);
         TokensGenerated tokensGenerated = (TokensGenerated) publishedEvents.get(tokensRequested.getCorrelationID()).join();
@@ -129,7 +127,7 @@ public class TokenServiceSteps {
         userId2 = new UserId(UUID.randomUUID());
         usedUserTokens.put(userId2, new ArrayList<>());
         TokensRequested tokensRequested = new TokensRequested(CorrelationID.randomID(),4,userId2);
-        Event2 newEvent = new Event2("TokensRequested", new Object[]{tokensRequested});
+        MessageEvent newEvent = new MessageEvent("TokensRequested", new Object[]{tokensRequested});
         publishedEvents.put(tokensRequested.getCorrelationID(),new CompletableFuture<>());
         eventQueue.publish(newEvent);
         TokensGenerated tokensGenerated = (TokensGenerated) publishedEvents.get(tokensRequested.getCorrelationID()).join();
@@ -176,7 +174,7 @@ public class TokenServiceSteps {
     @And("the new user consumes tokens")
     public void theNewUserConsumesTokens() throws InterruptedException {
         ConsumeToken consumeToken = new ConsumeToken(CorrelationID.randomID(),userTokens.get(userId1).get(0));
-        Event2 newEvent = new Event2("TokenVerificationRequested", new Object[]{consumeToken});
+        MessageEvent newEvent = new MessageEvent("TokenVerificationRequested", new Object[]{consumeToken});
         publishedEvents.put(consumeToken.getCorrelationID(),new CompletableFuture<>());
         eventQueue.publish(newEvent);
         TokenConsumed tokenConsumed = (TokenConsumed) publishedEvents.get(consumeToken.getCorrelationID()).join();
@@ -192,7 +190,7 @@ public class TokenServiceSteps {
     @Then("he can get a list of the consumed tokens")
     public void heCanGetAListOfTheConsumedTokens() throws InterruptedException {
         UserTokensRequested userTokensRequested = new UserTokensRequested(CorrelationID.randomID(), userId1);
-        Event2 newEvent = new Event2("UserTokensRequested", new Object[]{userTokensRequested});
+        MessageEvent newEvent = new MessageEvent("UserTokensRequested", new Object[]{userTokensRequested});
         publishedEvents.put(userTokensRequested.getCorrelationID(),new CompletableFuture<>());
         eventQueue.publish(newEvent);
         UserTokensGenerated userTokensGenerated = (UserTokensGenerated) publishedEvents.get(userTokensRequested.getCorrelationID()).join();
@@ -209,15 +207,15 @@ public class TokenServiceSteps {
     @Then("the user cannot consume the same token twice")
     public void theUserCannotConsumeTheSameTokenTwice() {
         ConsumeToken consumeToken1 = new ConsumeToken(CorrelationID.randomID(),userTokens.get(userId1).get(0));
-        Event2 newEvent1 = new Event2("TokenVerificationRequested", new Object[]{consumeToken1});
+        MessageEvent newEvent1 = new MessageEvent("TokenVerificationRequested", new Object[]{consumeToken1});
         publishedEvents.put(consumeToken1.getCorrelationID(),new CompletableFuture<>());
         eventQueue.publish(newEvent1);
         TokenConsumed tokenConsumed1 = (TokenConsumed) publishedEvents.get(consumeToken1.getCorrelationID()).join();
 
         ConsumeToken consumeToken2 = new ConsumeToken(CorrelationID.randomID(),userTokens.get(userId1).get(0));
-        Event2 newEvent2 = new Event2("TokenVerificationRequested", new Object[]{consumeToken2});
+        MessageEvent newMessageEvent = new MessageEvent("TokenVerificationRequested", new Object[]{consumeToken2});
         publishedEvents.put(consumeToken2.getCorrelationID(),new CompletableFuture<>());
-        eventQueue.publish(newEvent2);
+        eventQueue.publish(newMessageEvent);
         TokenConsumed tokenConsumed2 = (TokenConsumed) publishedEvents.get(consumeToken2.getCorrelationID()).join();
 
         assertEquals(tokenConsumed2.getMessage(), "Token does not exist");
@@ -237,7 +235,7 @@ public class TokenServiceSteps {
     @Then("the user cannot request more tokens")
     public void theUserCannotRequestMoreTokens() {
         TokensRequested tokensRequested = new TokensRequested(CorrelationID.randomID(),2,userId1);
-        Event2 newEvent = new Event2("TokensRequested", new Object[]{tokensRequested});
+        MessageEvent newEvent = new MessageEvent("TokensRequested", new Object[]{tokensRequested});
         publishedEvents.put(tokensRequested.getCorrelationID(),new CompletableFuture<>());
         eventQueue.publish(newEvent);
         TokensGenerated tokensGenerated = (TokensGenerated) publishedEvents.get(tokensRequested.getCorrelationID()).join();
@@ -251,7 +249,7 @@ public class TokenServiceSteps {
     @Then("the user cannot request an invalid amount")
     public void theUserCannotRequestAnInvalidAmount() {
         TokensRequested tokensRequested = new TokensRequested(CorrelationID.randomID(),7,userId1);
-        Event2 newEvent = new Event2("TokensRequested", new Object[]{tokensRequested});
+        MessageEvent newEvent = new MessageEvent("TokensRequested", new Object[]{tokensRequested});
         publishedEvents.put(tokensRequested.getCorrelationID(),new CompletableFuture<>());
         eventQueue.publish(newEvent);
         TokensGenerated tokensGenerated = (TokensGenerated) publishedEvents.get(tokensRequested.getCorrelationID()).join();

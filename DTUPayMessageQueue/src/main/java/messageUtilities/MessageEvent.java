@@ -1,4 +1,4 @@
-package messageUtilities.cqrs.events;
+package messageUtilities;
 
 import com.google.gson.Gson;
 
@@ -12,22 +12,22 @@ import java.util.stream.Collectors;
  * @Autor Jákup Viljam Dam - s185095
  * Used the event class from messageUtilities
  */
-public class Event2 implements Serializable {
+public class MessageEvent implements Serializable {
     private static final long serialVersionUID = 4986172999588690076L;
     private String type;
     private Object[] arguments = null;
 
-    public Event2() {
+    public MessageEvent() {
     }
 
     ;
 
-    public Event2(String topic, Object[] arguments) {
+    public MessageEvent(String topic, Object[] arguments) {
         this.type = topic;
         this.arguments = arguments;
     }
 
-    public Event2(String type) {
+    public MessageEvent(String type) {
         this.type = type;
     }
 
@@ -58,7 +58,7 @@ public class Event2 implements Serializable {
         if (!this.getClass().equals(o.getClass())) {
             return false;
         }
-        Event2 other = (Event2) o;
+        MessageEvent other = (MessageEvent) o;
         return this.type.equals(other.type) &&
                 (this.getArguments() != null &&
                         Arrays.equals(getArguments(), other.getArguments())) ||

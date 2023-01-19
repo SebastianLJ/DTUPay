@@ -3,7 +3,6 @@ package aggregate;
 
 import lombok.Getter;
 import lombok.Setter;
-import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
 
 import java.io.Serializable;

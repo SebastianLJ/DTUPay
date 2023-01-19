@@ -3,11 +3,9 @@ package org.dtu.event;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
-import messageUtilities.CorrelationID;
+import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.cqrs.events.Event;
 import org.dtu.aggregate.User;
-
-import java.util.UUID;
 
 @Value
 @AllArgsConstructor

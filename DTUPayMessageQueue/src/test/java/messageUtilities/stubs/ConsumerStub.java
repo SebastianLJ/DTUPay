@@ -1,7 +1,6 @@
 package messageUtilities.stubs;
 
-import messageUtilities.cqrs.events.Event2;
-import messageUtilities.queues.IDTUPayMessageQueue;
+import messageUtilities.MessageEvent;
 import messageUtilities.queues.IDTUPayMessageQueue2;
 
 /**
@@ -27,7 +26,7 @@ public class ConsumerStub {
     public void consumeQueueEvent(EventRequestedStub event) {
         EventCreatedStub createdEvent = new EventCreatedStub(event.getCorrelationID());
         System.out.println( "CreatedEvent CorrelationID: " + createdEvent.getCorrelationID());
-        Event2 newEvent = new Event2("EventCreatedStub", new Object[]{createdEvent});
+        MessageEvent newEvent = new MessageEvent("EventCreatedStub", new Object[]{createdEvent});
         messageQueue.publish(newEvent);
     }
 }

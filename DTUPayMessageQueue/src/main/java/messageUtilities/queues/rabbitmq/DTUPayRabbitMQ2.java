@@ -5,7 +5,7 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
-import messageUtilities.cqrs.events.Event2;
+import messageUtilities.MessageEvent;
 import messageUtilities.queues.IDTUPayMessageQueue2;
 
 import java.io.IOException;
@@ -37,7 +37,7 @@ public class DTUPayRabbitMQ2 implements IDTUPayMessageQueue2 {
     }
 
     @Override
-    public void publish(Event2 event) {
+    public void publish(MessageEvent event) {
         String message = new Gson().toJson(event);
         System.out.println(TAG + "::" + message + "::Published");
         try {
@@ -62,7 +62,7 @@ public class DTUPayRabbitMQ2 implements IDTUPayMessageQueue2 {
     }
 
     @Override
-    public void addHandler(String eventType, Consumer<Event2> handler) {
+    public void addHandler(String eventType, Consumer<MessageEvent> handler) {
         var chan = setUpChannel();
         System.out.println(TAG + "::" + handler.getClass().getSimpleName() + "::" + eventType + "::Listener");
         try {
@@ -72,7 +72,7 @@ public class DTUPayRabbitMQ2 implements IDTUPayMessageQueue2 {
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(), "UTF-8");
 
-                Event2 event = new Gson().fromJson(message, Event2.class);
+                MessageEvent event = new Gson().fromJson(message, MessageEvent.class);
 
                 if (eventType.equals(event.getType())) {
                     System.out.println(TAG + "::" + handler.getClass().getName() + "::" + message + "::Consumed");

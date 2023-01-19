@@ -4,10 +4,9 @@ package org.dtu.services;
 import dtu.ws.fastmoney.BankService;
 import dtu.ws.fastmoney.BankServiceException_Exception;
 import dtu.ws.fastmoney.BankServiceService;
-import messageUtilities.CorrelationID;
-import messageUtilities.cqrs.events.Event2;
+import messageUtilities.cqrs.CorrelationID;
+import messageUtilities.MessageEvent;
 import messageUtilities.queues.IDTUPayMessage;
-import messageUtilities.queues.IDTUPayMessageQueue;
 import messageUtilities.queues.IDTUPayMessageQueue2;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
@@ -62,7 +61,7 @@ public class MerchantService {
     public Payment createPayment(Payment payment) throws InvalidMerchantIdException, BankServiceException_Exception, InvalidCustomerIdException, CustomerNotFoundException, PaymentAlreadyExistsException, CustomerTokenAlreadyConsumedException {
         ConsumeToken consumeTokenEvent = new ConsumeToken(new CorrelationID(UUID.randomUUID()), payment.getToken());
         correlations.put(consumeTokenEvent.getCorrelationID(), new CompletableFuture<>());
-        Event2 newEvent = new Event2("TokenVerificationRequested", new Object[]{consumeTokenEvent});
+        MessageEvent newEvent = new MessageEvent("TokenVerificationRequested", new Object[]{consumeTokenEvent});
         messageQueue.publish(newEvent);
 
         TokenConsumed consumeTokenEventResult = (TokenConsumed) correlations.get(consumeTokenEvent.getCorrelationID()).join();
@@ -80,7 +79,7 @@ public class MerchantService {
 
         bankService.transferMoneyFromTo(customer.getBankNumber(), merchant.getBankNumber(), BigDecimal.valueOf(payment.getAmount()), "Transfer money");
         paymentRepository.save(payment);
-        messageQueue.publish(new Event2("MoneyTransferred", new Object[]{payment}));
+        messageQueue.publish(new MessageEvent("MoneyTransferred", new Object[]{payment}));
         return payment;
     }
 

@@ -5,8 +5,8 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.cqrs.events.Event;
-import messageUtilities.cqrs.events.Event2;
 import messageUtilities.queues.IDTUPayMessageQueue2;
 import messageUtilities.stubs.ConsumerStub;
 import messageUtilities.stubs.EventCreatedStub;
@@ -49,7 +49,7 @@ public class MessageQueueSteps {
     public void aMessageQueueHasBeenInitialized() {
         messageQueue = new IDTUPayMessageQueue2() {
             @Override
-            public void publish(Event2 message) {
+            public void publish(MessageEvent message) {
                 switch (message.getType()) {
                     case "EventRequestedStub":
                         EventRequestedStub requestedEvent = message.getArgument(0, EventRequestedStub.class);
@@ -69,7 +69,7 @@ public class MessageQueueSteps {
             }
 
             @Override
-            public void addHandler(String eventType, Consumer<Event2> handler) {
+            public void addHandler(String eventType, Consumer<MessageEvent> handler) {
 
             }
         };

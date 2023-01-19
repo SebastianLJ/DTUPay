@@ -2,6 +2,7 @@ package messageUtilities;
 
 import lombok.Getter;
 import lombok.Setter;
+import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.queues.IDTUPayMessage;
 
 import java.io.Serializable;
@@ -15,7 +16,7 @@ public abstract class Message implements IDTUPayMessage, Serializable {
     @Getter @Setter
     private String message;
     @Getter
-    private CorrelationID correlationID;
+    private final CorrelationID correlationID;
     @Getter
     private final Date date;
 

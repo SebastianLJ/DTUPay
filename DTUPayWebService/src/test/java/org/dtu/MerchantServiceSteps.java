@@ -6,17 +6,14 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import messageUtilities.CorrelationID;
-import messageUtilities.cqrs.events.Event;
-import messageUtilities.cqrs.events.Event2;
+import messageUtilities.cqrs.CorrelationID;
+import messageUtilities.MessageEvent;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ2;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
 import org.dtu.domain.Token;
 import org.dtu.events.ConsumeToken;
-import org.dtu.events.MoneyTransferred;
 import org.dtu.events.TokenConsumed;
-import org.dtu.events.TokensRequested;
 import org.dtu.exceptions.*;
 import org.dtu.repositories.CustomerRepository;
 import org.dtu.repositories.MerchantRepository;
@@ -30,7 +27,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
@@ -42,10 +38,10 @@ public class MerchantServiceSteps {
 
     MerchantRepository repository = new MerchantRepository();
     CustomerRepository customerRepository = new CustomerRepository();
-    ConcurrentHashMap<CorrelationID, CompletableFuture<Event2>> eventMap = new ConcurrentHashMap<>();
+    ConcurrentHashMap<CorrelationID, CompletableFuture<MessageEvent>> eventMap = new ConcurrentHashMap<>();
     DTUPayRabbitMQ2 queue = new DTUPayRabbitMQ2("localhost"){
         @Override
-        public void publish(Event2 event) {
+        public void publish(MessageEvent event) {
             if (event.getType().equals("TokenVerificationRequested")) {
                 Token token = event.getArgument(0, ConsumeToken.class).getToken();
                 tokenEvents.get(token).complete(event);
@@ -60,7 +56,7 @@ public class MerchantServiceSteps {
     MerchantService merchantService = new MerchantService(queue, repository, new PaymentRepository());
     CustomerService customerService = new CustomerService(queue, customerRepository);
 
-    ConcurrentHashMap<Token, CompletableFuture<Event2>> tokenEvents = new ConcurrentHashMap<>();
+    ConcurrentHashMap<Token, CompletableFuture<MessageEvent>> tokenEvents = new ConcurrentHashMap<>();
 
     BankService bankService = new BankServiceService().getBankServicePort();
     String merchantBankNumber;
@@ -261,20 +257,20 @@ public class MerchantServiceSteps {
         merchantService.createPaymentConsumedTokenEventResult(new TokenConsumed(consumeToken.getCorrelationID(), null));
     }
 
-    private void handleMoneyTransferred(Event2 event) {
+    private void handleMoneyTransferred(MessageEvent event) {
         moneyTransferredCompletableFuture.complete(event.getArgument(0, Payment.class));
     }
 
-    private void handleTokenVerificationRequestedEvent(Event2 event) {
+    private void handleTokenVerificationRequestedEvent(MessageEvent event) {
         ConsumeToken requestedEvent = event.getArgument(0, ConsumeToken.class);
         TokenConsumed newEvent = new TokenConsumed(requestedEvent.getCorrelationID(), customer.getUserId());
-        queue.publish(new Event2("TokenConsumed", new Object[]{newEvent}));
+        queue.publish(new MessageEvent("TokenConsumed", new Object[]{newEvent}));
     }
 
-    private void handleTokenVerificationRequestedEventInvalid(Event2 event) {
+    private void handleTokenVerificationRequestedEventInvalid(MessageEvent event) {
         ConsumeToken requestedEvent = event.getArgument(0, ConsumeToken.class);
         TokenConsumed newEvent = new TokenConsumed(requestedEvent.getCorrelationID(), null);
-        queue.publish(new Event2("TokenConsumed", new Object[]{newEvent}));
+        queue.publish(new MessageEvent("TokenConsumed", new Object[]{newEvent}));
     }
 
     @And("The customer's bank account balance is now {int}")
