@@ -117,7 +117,6 @@ public class MerchantService {
     public void createPaymentConsumedTokenEventResult(TokenConsumed event) {
         try {
             correlations.get(event.getCorrelationID()).complete(event);
-            correlations.remove(event.getCorrelationID());
         } catch (Exception e) {
             throw new Error(e.getMessage());
         }
