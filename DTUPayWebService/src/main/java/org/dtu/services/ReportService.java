@@ -1,21 +1,15 @@
 package org.dtu.services;
 
-import com.sun.xml.bind.v2.TODO;
 import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event2;
-import messageUtilities.queues.IDTUPayMessageQueue;
 import messageUtilities.queues.IDTUPayMessageQueue2;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.UserId;
 import org.dtu.domain.Token;
 import org.dtu.events.CustomerReportGenerated;
-import org.dtu.events.FullReportGenerated;
-import org.dtu.events.MerchantReportGenerated;
 import org.dtu.exceptions.PaymentNotFoundException;
 import org.dtu.repositories.PaymentRepository;
-
 import java.util.List;
-import java.util.UUID;
 
 public class ReportService {
 
