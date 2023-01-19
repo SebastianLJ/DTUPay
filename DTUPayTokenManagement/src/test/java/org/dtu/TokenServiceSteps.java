@@ -202,4 +202,15 @@ public class TokenServiceSteps {
 
         assertEquals(tokensGenerated.getMessage(),"User must have either 0 or 1 token to request more tokens.");
     }
+
+    @Then("the user cannot request an invalid amount")
+    public void theUserCannotRequestAnInvalidAmount() {
+        TokensRequested tokensRequested = new TokensRequested(CorrelationID.randomID(),7,userId1);
+        Event2 newEvent = new Event2("TokensRequested", new Object[]{tokensRequested});
+        publishedEvents.put(tokensRequested.getCorrelationID(),new CompletableFuture<>());
+        eventQueue.publish(newEvent);
+        TokensGenerated tokensGenerated = (TokensGenerated) publishedEvents.get(tokensRequested.getCorrelationID()).join();
+
+        assertEquals(tokensGenerated.getMessage(),"Token amount requested is invalid");
+    }
 }

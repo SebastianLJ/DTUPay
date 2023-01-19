@@ -25,3 +25,8 @@ Feature: Token Service
     And a new user is created
     And the user has more than one token
     Then the user cannot request more tokens
+
+  Scenario: User cannot request an invalid token amount
+    When a message queue is started
+    And a new user is created
+    Then the user cannot request an invalid amount
