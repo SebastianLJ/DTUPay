@@ -37,13 +37,13 @@ public class MerchantApp {
         }
     }
 
-    public UUID deregister(User user) throws Exception {
+    public User deregister(User user) throws Exception {
         Response response = r.path("merchants/" + user.getUserId().getUuid())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
                 .delete();
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(UUID.class);
+            return response.readEntity(User.class);
         } else {
             throw new Exception("code: " + response.getStatus());
         }
@@ -70,7 +70,7 @@ public class MerchantApp {
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(User.class);
         } else {
-            throw new MerchantDoesNotExist();
+            throw new MerchantDoesNotExist(response.readEntity(String.class));
         }
     }
 

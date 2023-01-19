@@ -50,11 +50,7 @@ public class MerchantService {
     }
 
     public User getMerchant (UUID id) throws InvalidMerchantIdException {
-        try {
-             return merchantRepository.getMerchant(id);
-        } catch (InvalidMerchantIdException e) {
-            throw new InvalidMerchantIdException();
-        }
+         return merchantRepository.getMerchant(id);
     }
 
     public Payment createPayment(Payment payment) throws InvalidMerchantIdException, BankServiceException_Exception, InvalidCustomerIdException, CustomerNotFoundException, PaymentAlreadyExistsException, CustomerTokenAlreadyConsumedException {
@@ -121,7 +117,6 @@ public class MerchantService {
     public void createPaymentConsumedTokenEventResult(TokenConsumed event) {
         try {
             correlations.get(event.getCorrelationID()).complete(event);
-            correlations.remove(event.getCorrelationID());
         } catch (Exception e) {
             throw new Error(e.getMessage());
         }
