@@ -14,3 +14,5 @@ Feature: Token Service
     And a new user is created
     And the new user consumes tokens
     Then he can get a list of the consumed tokens
+
+  Scenario: User cannot consume the same token multiple times

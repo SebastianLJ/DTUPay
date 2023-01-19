@@ -10,3 +10,4 @@ Feature: Customer tests
       When a customer is deleted
       Then the customer is no longer in the system
       And the customers tokens have been deleted
+

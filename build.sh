@@ -13,8 +13,8 @@ mvn clean install -q -DskipTests
 popd
 
 pushd DTUPayWebService
-./mvnw clean install -q -DskipTests
-./mvnw package -q -DskipTests
+mvn clean install -q -DskipTests
+mvn package -q -DskipTests
 popd
 
 # Clean docker images
@@ -25,11 +25,11 @@ docker image prune -f
 # Prune & build the docker images and run them
 printf "\n\033[94mStep 3/4: build the docker images and run them\033[0m\n"
 docker-compose up -d rabbitMq
-sleep 10
+sleep 5
 docker-compose up -d
 
 # Wait for any builds to run
-sleep 10
+sleep 1
 
 # Run project tests
 printf "\n\033[94mStep 4/4: Run project tests\033[0m\n"

@@ -51,6 +51,24 @@ public class ReadModelRepository {
                 apply(newEvent);
             }
         });
+        messageQueue.addHandler("AccountDeletionRequested", e -> {
+            AccountDeletionRequested newEvent = e.getArgument(0, AccountDeletionRequested.class);
+            UUID eventID = newEvent.getCorrelationID().getId();
+            if (processedEventsByCorrelationId.get(eventID) == null){
+                processedEventsByCorrelationId.putIfAbsent(eventID, true);
+                apply(newEvent);
+            }
+
+        });
+    }
+
+    private void apply(AccountDeletionRequested event) {
+        tokenAmountRepository.remove(event.getUser().getUserId());
+        tokenRepository.entrySet()
+                .removeIf(entry -> entry.getValue().equals(event.getUser().getUserId()));
+        TokensDeleted tokensDeleted = new TokensDeleted(event.getCorrelationID(),event.getUser());
+        Event2 newEvent = new Event2("TokensDeleted", new Object[]{tokensDeleted});
+        messageQueue.publish(newEvent);
     }
 
     public void apply(ConsumeToken event) {
