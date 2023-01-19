@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TokenServiceSteps {
 
 
-    DTUPayRabbitMQ2 eventQueue = new DTUPayRabbitMQ2("localhost");
+    DTUPayRabbitMQ2 eventQueue;
     TokenService tokenService;
 
     UserId userId1 = new UserId(UUID.randomUUID());
@@ -57,6 +57,7 @@ public class TokenServiceSteps {
 
     @When("a message queue is started")
     public void aMessageQueueIsStarted() {
+        eventQueue = new DTUPayRabbitMQ2("localhost");
         tokenService = new TokenService(eventQueue);
         eventQueue.addHandler("TokensGenerated", e -> {
             TokensGenerated newEvent = e.getArgument(0, TokensGenerated.class);
@@ -87,7 +88,7 @@ public class TokenServiceSteps {
 
     @And("a second user is created")
     public void aSecondUserIsCreated() throws InterruptedException {
-        TokensRequested tokensRequested = new TokensRequested(4,userId2);
+        TokensRequested tokensRequested = new TokensRequested(CorrelationID.randomID(),4,userId2);
         Event2 newEvent = new Event2("TokensRequested", new Object[]{tokensRequested});
         eventQueue.publish(newEvent);
         /*eventQueue.publish(generateToken);*/
@@ -117,7 +118,7 @@ public class TokenServiceSteps {
 
     @And("the new user consumes tokens")
     public void theNewUserConsumesTokens() throws InterruptedException {
-        ConsumeToken consumeToken = new ConsumeToken(generatedTokens.get(0));
+        ConsumeToken consumeToken = new ConsumeToken(CorrelationID.randomID(),generatedTokens.get(0));
         consumedTokenId = generatedTokens.get(0).getId();
         Event2 newEvent = new Event2("ConsumeToken", new Object[]{consumeToken});
         eventQueue.publish(newEvent);
@@ -127,7 +128,7 @@ public class TokenServiceSteps {
 
     @Then("he can get a list of the consumed tokens")
     public void heCanGetAListOfTheConsumedTokens() throws InterruptedException {
-        UserTokensRequested userTokensRequested = new UserTokensRequested(userId1);
+        UserTokensRequested userTokensRequested = new UserTokensRequested(CorrelationID.randomID(), userId1);
         Event2 newEvent = new Event2("UserTokensRequested", new Object[]{userTokensRequested});
         eventQueue.publish(newEvent);
         Thread.sleep(1000);
