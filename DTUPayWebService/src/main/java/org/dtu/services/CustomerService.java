@@ -55,10 +55,8 @@ public class CustomerService {
     }
 
     public User addCustomer(User user) throws CustomerAlreadyExistsException, InvalidCustomerNameException {
-        System.out.println("Adding customer");
         Event2 event = new Event2("CustomerAccountCreated", new Object[]{new CustomerAccountCreated(user)});
         messageQueue.publish(event);
-        System.out.println("Customer added");
         return repository.addCustomer(user);
     }
 
@@ -76,12 +74,13 @@ public class CustomerService {
         return user;
     }
 
+    /**
+     * @author Sebastian Lund (s184209)
+     */
     public ArrayList<Token> getTokens(UserId userId, int amount) {
         CorrelationID correlationID = CorrelationID.randomID();
-        System.out.println("Created TokensRequested event: " + correlationID);
         Event2 event = new Event2("TokensRequested", new Object[]{new TokensRequested(correlationID, amount, userId)});
         messageQueue.publish(event);
-        System.out.println("Published TokensRequested event: " + correlationID);
         token_events.put(correlationID, new CompletableFuture<TokensGenerated>());
         TokensGenerated result = token_events.get(correlationID).join();
         return result.getTokens();

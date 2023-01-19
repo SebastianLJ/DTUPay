@@ -53,6 +53,9 @@ public class MerchantService {
          return merchantRepository.getMerchant(id);
     }
 
+    /**
+     * @author Jakub (s185095)
+     */
     public Payment createPayment(Payment payment) throws InvalidMerchantIdException, BankServiceException_Exception, InvalidCustomerIdException, CustomerNotFoundException, PaymentAlreadyExistsException, CustomerTokenAlreadyConsumedException {
         ConsumeToken consumeTokenEvent = new ConsumeToken(new CorrelationID(UUID.randomUUID()), payment.getToken());
         correlations.put(consumeTokenEvent.getCorrelationID(), new CompletableFuture<>());
@@ -95,6 +98,9 @@ public class MerchantService {
         }
     }
 
+    /**
+     * @author Sebastian Lund (s184209)
+     */
     public User registerMerchant(User user) throws MerchantAlreadyExistsException {
         try {
             return merchantRepository.addMerchant(user);
@@ -122,6 +128,9 @@ public class MerchantService {
         });
     }
 
+    /**
+     * @author Sebastian Lund (s184209)
+     */
     public void createPaymentConsumedTokenEventResult(TokenConsumed event) {
         try {
             correlations.get(event.getCorrelationID()).complete(event);

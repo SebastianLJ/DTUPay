@@ -19,6 +19,9 @@ import java.util.UUID;
 public class MerchantFacade {
     MerchantService service = new MerchantFactory().getService();
 
+    /**
+     * @author Sebastian Lund (s184209)
+     */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
