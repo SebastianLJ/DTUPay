@@ -52,6 +52,11 @@ public class PaymentSteps {
         merchant = merchantApp.register("Fred", "Again", merchantBankAccount);
     }
 
+    @Given("the merchant is not a member of DTUPay")
+    public void theMerchantIsNotAMemberOfDTUPay() {
+        merchant = new User("Fred", "Again", "NoBank");
+    }
+
     @Given("a customer has a bank account with a balance of {int}")
     public void aCustomerHasABankAccountWithABalanceOf(int balance) throws BankServiceException_Exception {
         dtu.ws.fastmoney.User bankUser = new dtu.ws.fastmoney.User();

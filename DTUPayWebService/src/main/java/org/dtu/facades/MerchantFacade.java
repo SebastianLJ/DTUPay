@@ -83,7 +83,7 @@ public class MerchantFacade {
                     .build();
         } catch (CustomerTokenAlreadyConsumedException e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("customer token already consumed")
+                    .entity("token is invalid")
                     .build();
         } catch (BankServiceException_Exception | InvalidCustomerIdException e) {
             return Response.status(Response.Status.BAD_REQUEST)

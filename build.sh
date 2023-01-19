@@ -33,11 +33,11 @@ docker image prune -f
 # @author Jákup Viljam Dam - s185095
 printf "\n\033[94mStep 3/5: build the docker images and run them\033[0m\n"
 docker-compose up -d rabbitMq
-sleep 10
+sleep 20
 docker-compose up -d
 
 # Wait for any builds to run
-sleep 5
+sleep 10
 
 # Run project tests
 
