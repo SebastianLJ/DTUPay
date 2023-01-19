@@ -14,6 +14,7 @@ import java.util.function.Consumer;
 
 public class DTUPayRabbitMQ2 implements IDTUPayMessageQueue2 {
 
+    private static final String TAG = "Message Queue";
     private static final String TOPIC = "events";
     private static final String DEFAULT_HOSTNAME = "localhost";
     private static final String EXCHANGE_NAME = "eventsExchange";
@@ -34,7 +35,7 @@ public class DTUPayRabbitMQ2 implements IDTUPayMessageQueue2 {
     @Override
     public void publish(Event2 event) {
         String message = new Gson().toJson(event);
-        System.out.println("[x] Publish event " + message);
+        System.out.println(TAG + "::" + message + "::Published");
         try {
             channel.basicPublish(EXCHANGE_NAME, TOPIC, null, message.getBytes("UTF-8"));
         } catch (IOException e) {
@@ -59,7 +60,7 @@ public class DTUPayRabbitMQ2 implements IDTUPayMessageQueue2 {
     @Override
     public void addHandler(String eventType, Consumer<Event2> handler) {
         var chan = setUpChannel();
-        System.out.println("[x] handler " + handler + " for event type " + eventType + " installed");
+        System.out.println(TAG + "::" + handler.getClass().getSimpleName() + "::" + eventType + "::Listener");
         try {
             String queueName = chan.queueDeclare().getQueue();
             chan.queueBind(queueName, EXCHANGE_NAME, TOPIC);
@@ -67,11 +68,10 @@ public class DTUPayRabbitMQ2 implements IDTUPayMessageQueue2 {
             DeliverCallback deliverCallback = (consumerTag, delivery) -> {
                 String message = new String(delivery.getBody(), "UTF-8");
 
-
                 Event2 event = new Gson().fromJson(message, Event2.class);
 
                 if (eventType.equals(event.getType())) {
-                    System.out.println("[x] handle event " + message);
+                    System.out.println(TAG + "::" + handler.getClass().getName() + "::" + message + "::Consumed");
                     handler.accept(event);
                 }
             };

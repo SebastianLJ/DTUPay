@@ -16,6 +16,9 @@ services:
     container_name: DTUPayTokenManagement
     networks:
       - DTUPayNetwork
+    depends_on:
+      rabbitMq:
+        condition: service_started
   DTUPayWebService:
     build: DTUPayWebService
     image: dtu_pay_web_service
@@ -24,6 +27,9 @@ services:
       - "8080:8080"
     networks:
       - DTUPayNetwork
+    depends_on:
+      rabbitMq:
+        condition: service_started
 networks:
   DTUPayNetwork:
     driver: bridge

@@ -62,18 +62,18 @@ public class TokenServiceSteps {
         }
     };
 
+    TokenService tokenService;
+
     ConcurrentHashMap<UserId, ArrayList<Token>> userTokens = new ConcurrentHashMap<>();
 
     ConcurrentHashMap<UserId, ArrayList<Token>> usedUserTokens = new ConcurrentHashMap<>();
-
-    TokenService tokenService  = new TokenService(eventQueue);
 
     UserId userId1;
     UserId userId2;
 
     @When("a message queue is started")
     public void aMessageQueueIsStarted() {
-
+        tokenService  = new TokenService(eventQueue);
     }
 
     @And("a new user is created")
