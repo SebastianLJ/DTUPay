@@ -21,4 +21,22 @@ Feature: Payment
     And the customer has an unknown token
     When the merchant initializes a payment of 500
     And the customer shares a token with the merchant
-    Then the payment is rejected
+    Then the payment is rejected with "code: 400 message: customer token already consumed"
+
+  Scenario: The customer does not have a bankaccount associated
+    Given a merchant has a bank account with a balance of 1000
+    And the merchant is a member of DTUPay
+    And the customer is a member of DTUPay
+    And the customer has at least one valid token
+    When the merchant initializes a payment of 500
+    And the customer shares a token with the merchant
+    Then the payment is rejected with "code: 400 message: Debtor account does not exist"
+
+  Scenario: The merchant does not have a bankaccount associated
+    Given the merchant is a member of DTUPay
+    And a customer has a bank account with a balance of 2000
+    And the customer is a member of DTUPay
+    And the customer has at least one valid token
+    When the merchant initializes a payment of 500
+    And the customer shares a token with the merchant
+    Then the payment is rejected with "code: 400 message: Creditor account does not exist"

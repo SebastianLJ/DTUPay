@@ -28,8 +28,8 @@ public class PaymentSteps {
     User customer;
     User merchant;
 
-    String customerBankAccount;
-    String merchantBankAccount;
+    String customerBankAccount = "";
+    String merchantBankAccount = "";
 
     Payment payment;
 
@@ -97,13 +97,13 @@ public class PaymentSteps {
         merchantApp.pay(merchant.getUserId(), payment.getToken(), payment.getAmount());
     }
 
-    @Then("the payment is rejected")
-    public void thePaymentIsRejected() {
+    @Then("the payment is rejected with {string}")
+    public void thePaymentIsRejected(String message) {
         try {
             merchantApp.pay(merchant.getUserId(), payment.getToken(), payment.getAmount());
             fail("payment succeeded when it should have been rejected");
         } catch (Exception e) {
-            assertEquals("code: 400 message: customer token already consumed", e.getMessage());
+            assertEquals(message, e.getMessage());
         }
     }
 
