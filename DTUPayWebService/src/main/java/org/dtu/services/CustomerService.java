@@ -34,6 +34,9 @@ public class CustomerService {
         repository = new CustomerRepository();
     }
 
+    /**
+     * @Autor Jákup Viljam Dam - s185095
+     */
     public CustomerService(IDTUPayMessageQueue2 messageQueue, CustomerRepository repository) {
         this.repository = repository;
         this.messageQueue = messageQueue;
@@ -86,6 +89,9 @@ public class CustomerService {
         return result.getTokens();
     }
 
+    /**
+     * @Autor Jákup Viljam Dam - s185095
+     */
     public void handleTokensGenerated(Event2 event) {
         TokensGenerated newEvent = event.getArgument(0, TokensGenerated.class);
         System.out.println("Received TokensGenerated event: " + newEvent.getCorrelationID());
@@ -94,6 +100,9 @@ public class CustomerService {
         }
     }
 
+    /**
+     * @Autor Jákup Viljam Dam - s185095
+     */
     public void handleTokensDeleted(Event2 event) {
         TokensDeleted newEvent = event.getArgument(0, TokensDeleted.class);
         this.deletedCustomer.complete(newEvent.getUser());

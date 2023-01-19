@@ -39,7 +39,9 @@ public class CustomerApp {
         }
     }
 
-
+    /**
+     * @Autor Jákup Viljam Dam - s185095
+     */
     public User deRegisterCustomer(User user) throws Exception {
         Response response = r.path("customers/" + user.getUserId().getUuid())
                 .request()

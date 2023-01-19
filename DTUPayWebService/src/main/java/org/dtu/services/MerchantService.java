@@ -35,6 +35,9 @@ public class MerchantService {
     private final PaymentRepository paymentRepository;
     private final IDTUPayMessageQueue2 messageQueue;
 
+    /**
+     * @Autor Jákup Viljam Dam - s185095
+     */
     public MerchantService(IDTUPayMessageQueue2 messageQueue, MerchantRepository merchantRepository, PaymentRepository paymentRepository) {
         this.messageQueue = messageQueue;
         this.merchantRepository = merchantRepository;
@@ -54,7 +57,7 @@ public class MerchantService {
     }
 
     /**
-     * @author Jakub (s185095)
+     * @Autor Jákup Viljam Dam - s185095
      */
     public Payment createPayment(Payment payment) throws InvalidMerchantIdException, BankServiceException_Exception, InvalidCustomerIdException, CustomerNotFoundException, PaymentAlreadyExistsException, CustomerTokenAlreadyConsumedException {
         ConsumeToken consumeTokenEvent = new ConsumeToken(new CorrelationID(UUID.randomUUID()), payment.getToken());

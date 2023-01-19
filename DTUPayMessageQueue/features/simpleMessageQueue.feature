@@ -1,4 +1,4 @@
-# Jákup Viljam Dam - s185095
+# @Autor Jákup Viljam Dam - s185095
 #Feature: Simple Message Queue
 #  Scenario: A simple RabbitMQ is established with events
 #    Given DTUPayMessageQueue has been established

@@ -49,12 +49,12 @@ popd
 
 # @author Alexander Faarup Christensen - s174355
 pushd DTUPayTokenManagement
-#mvn test
+mvn test
 popd
 
 # @author Jákup Viljam Dam - s185095
 pushd DTUPayWebService
-#mvn test
+mvn test
 popd
 
 # @author Jákup Viljam Dam - s185095
