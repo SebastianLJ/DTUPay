@@ -27,6 +27,12 @@ public class MerchantRepository {
         return merchant;
     }
 
+    public User addMerchant(User user) throws MerchantAlreadyExistsException {
+        User merchant = new User(user.getName().getFirstName(), user.getName().getLastName(), user.getBankNumber());
+        merchants.add(merchant);
+        return merchant;
+    }
+
     public User getMerchant (UUID id) throws InvalidMerchantIdException {
         for (User merchant:
                 merchants)  {

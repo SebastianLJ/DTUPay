@@ -26,6 +26,9 @@ public class TokenServiceSteps {
 
     ConcurrentHashMap<CorrelationID, CompletableFuture<IDTUPayMessage>> publishedEvents = new ConcurrentHashMap<>();
 
+    /**
+     * @author Alexander Faarup Christensen - s174355
+     */
     DTUPayRabbitMQ2 eventQueue = new DTUPayRabbitMQ2("localhost") {
         @Override
         public void publish(Event2 event) {
@@ -74,6 +77,9 @@ public class TokenServiceSteps {
     UserId userId1;
     UserId userId2;
 
+    /**
+     * @author Alexander Faarup Christensen - s174355
+     */
     @Before
     public void resetState(){
         userTokens.clear();
@@ -81,11 +87,17 @@ public class TokenServiceSteps {
         publishedEvents.clear();
     }
 
+    /**
+     * @author Alexander Faarup Christensen - s174355
+     */
     @When("a message queue is started")
     public void aMessageQueueIsStarted() {
         tokenService  = new TokenService(eventQueue);
     }
 
+    /**
+     * @author Asama Hayder - s185099
+     */
     @And("a new user is created")
     public void aUserRequestsAnAccount() throws InterruptedException {
         userId1 = new UserId(UUID.randomUUID());
@@ -100,12 +112,18 @@ public class TokenServiceSteps {
         assertNotNull(tokensGenerated.getTokens());
     }
 
+    /**
+     * @author Alexander Faarup Christensen - s174355
+     */
     @Then("the user has a valid amount of tokens")
     public void theUserHasAValidAmountOfTokens() {
         assertTrue(userTokens.get(userId1).size() > 0);
         assertTrue(userTokens.get(userId1).size() < 7);
     }
 
+    /**
+     * @author Asama Hayder - s185099
+     */
     @And("a second user is created")
     public void aSecondUserIsCreated() throws InterruptedException {
         userId2 = new UserId(UUID.randomUUID());
@@ -120,12 +138,18 @@ public class TokenServiceSteps {
         assertNotNull(tokensGenerated.getTokens());
     }
 
+    /**
+     * @author Alexander Faarup Christensen - s174355
+     */
     @Then("they must have different ids")
     public void theyMustHaveDifferentIds() {
         assertNotSame(userId1, userId2);
     }
 
 
+    /**
+     * @author Alexander Faarup Christensen - s174355
+     */
     @And("they must have different tokens")
     public void theyMustHaveDifferentTokens() {
         assertNotEquals(userTokens.get(userId1),userTokens.get(userId2));
@@ -135,6 +159,9 @@ public class TokenServiceSteps {
         }
     }
 
+    /**
+     * @author Alexander Faarup Christensen - s174355
+     */
     @Then("all tokens are unique")
     public void allTokensAreUnique() {
         Set<UUID> set = new HashSet<>();
@@ -143,6 +170,9 @@ public class TokenServiceSteps {
         }
     }
 
+    /**
+     * @author Asama Hayder - s185099
+     */
     @And("the new user consumes tokens")
     public void theNewUserConsumesTokens() throws InterruptedException {
         ConsumeToken consumeToken = new ConsumeToken(CorrelationID.randomID(),userTokens.get(userId1).get(0));
@@ -156,6 +186,9 @@ public class TokenServiceSteps {
     }
 
 
+    /**
+     * @author Asama Hayder - s185099
+     */
     @Then("he can get a list of the consumed tokens")
     public void heCanGetAListOfTheConsumedTokens() throws InterruptedException {
         UserTokensRequested userTokensRequested = new UserTokensRequested(CorrelationID.randomID(), userId1);
@@ -170,6 +203,9 @@ public class TokenServiceSteps {
         assertEquals(usedUserTokens.get(userId1).size(),userTokensGenerated.getTokens().size());
     }
 
+    /**
+     * @author Alexander Faarup Christensen - s174355
+     */
     @Then("the user cannot consume the same token twice")
     public void theUserCannotConsumeTheSameTokenTwice() {
         ConsumeToken consumeToken1 = new ConsumeToken(CorrelationID.randomID(),userTokens.get(userId1).get(0));
@@ -187,11 +223,17 @@ public class TokenServiceSteps {
         assertEquals(tokenConsumed2.getMessage(), "Token does not exist");
     }
 
+    /**
+     * @author Alexander Faarup Christensen - s174355
+     */
     @And("the user has more than one token")
     public void theUserHasMoreThanOneToken() {
         assertTrue(userTokens.get(userId1).size() > 1);
     }
 
+    /**
+     * @author Alexander Faarup Christensen - s174355
+     */
     @Then("the user cannot request more tokens")
     public void theUserCannotRequestMoreTokens() {
         TokensRequested tokensRequested = new TokensRequested(CorrelationID.randomID(),2,userId1);
@@ -203,6 +245,9 @@ public class TokenServiceSteps {
         assertEquals(tokensGenerated.getMessage(),"User must have either 0 or 1 token to request more tokens.");
     }
 
+    /**
+     * @author Alexander Faarup Christensen - s174355
+     */
     @Then("the user cannot request an invalid amount")
     public void theUserCannotRequestAnInvalidAmount() {
         TokensRequested tokensRequested = new TokensRequested(CorrelationID.randomID(),7,userId1);

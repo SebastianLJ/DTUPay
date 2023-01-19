@@ -35,6 +35,9 @@ import java.util.function.Consumer;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * @author Sebastian Lund (s184209)
+ */
 public class MerchantServiceSteps {
 
     MerchantRepository repository = new MerchantRepository();
@@ -222,7 +225,7 @@ public class MerchantServiceSteps {
         new Thread(() -> {
             try {
                 System.out.println("Creating payment");
-                Payment completedTransaction = merchantService.createPayment(payment);
+                merchantService.createPayment(payment);
                 System.out.println("Payment created");
             } catch (InvalidMerchantIdException |
                     BankServiceException_Exception |

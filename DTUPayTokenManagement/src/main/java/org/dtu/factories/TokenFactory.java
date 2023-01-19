@@ -6,6 +6,9 @@ import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ2;
 import messageUtilities.queues.rabbitmq.HostnameType;
 import org.dtu.services.TokenService;
 
+/**
+ * @author Alexander Faarup Christensen - s174355
+ */
 public class TokenFactory {
 
     static TokenService service = null;

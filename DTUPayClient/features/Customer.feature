@@ -1,5 +1,5 @@
 Feature: Customer tests
-
+  #Sebastian Lund (s184209)
   Scenario: A customer requests new tokens
     Given a customer is in the system
     When the customer requests 3 tokens
