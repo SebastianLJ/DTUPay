@@ -25,7 +25,6 @@ public class MerchantAppSteps {
     public void a_merchant_is_being_created() {
         try {
             merchant = merchantApp.register("Diana", "Isabel", "MoneyMoneyMoney");
-            Thread.sleep(1000);
         } catch (Exception e) {
             e.printStackTrace();
         }
