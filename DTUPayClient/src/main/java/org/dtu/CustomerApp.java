@@ -72,6 +72,9 @@ public class CustomerApp {
         }
     }
 
+    /**
+     * @author Sebastian Lund (s184209)
+     */
     public User getCustomer(User user) throws CustomerDoesNotExist {
         Response response = r.path("customers/" + user.getUserId().getUuid())
                 .request()
