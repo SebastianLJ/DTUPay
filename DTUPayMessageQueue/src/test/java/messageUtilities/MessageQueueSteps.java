@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @Autor Jákup Viljam Dam - s185095
@@ -52,11 +53,13 @@ public class MessageQueueSteps {
                 switch (message.getType()) {
                     case "EventRequestedStub":
                         EventRequestedStub requestedEvent = message.getArgument(0, EventRequestedStub.class);
+                        assertNotNull(requestedEvent);
                         consumer.consumeQueueEvent(requestedEvent);
                         requestedEventFutures.get(requestedEvent.getCorrelationID()).complete(requestedEvent);
                         break;
                     case "EventCreatedStub":
                         EventCreatedStub createdEvent = message.getArgument(0, EventCreatedStub.class);
+                        assertNotNull(createdEvent);
                         producer.produceQueueEvent(createdEvent);
                         createdEventFutures.get(createdEvent.getCorrelationID()).complete(createdEvent);
                         break;
@@ -91,6 +94,7 @@ public class MessageQueueSteps {
         createdEventFutures.put(requestedEvent1.getCorrelationID(), new CompletableFuture<>());
         new Thread(() -> {
            createdEvent1 = this.producer.produceEvent(requestedEvent1);
+           assertNotNull(createdEvent1);
            createdEventFutures.get(createdEvent1.getCorrelationID()).complete(createdEvent1);
         }).start();
     }
