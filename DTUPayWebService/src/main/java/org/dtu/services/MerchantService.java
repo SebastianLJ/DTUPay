@@ -114,7 +114,7 @@ public class MerchantService {
         });
     }
 
-    private void createPaymentConsumedTokenEventResult(TokenConsumed event) {
+    public void createPaymentConsumedTokenEventResult(TokenConsumed event) {
         try {
             correlations.get(event.getCorrelationID()).complete(event);
             correlations.remove(event.getCorrelationID());

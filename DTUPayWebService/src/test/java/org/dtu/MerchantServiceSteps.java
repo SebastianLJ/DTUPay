@@ -40,9 +40,24 @@ public class MerchantServiceSteps {
     MerchantRepository repository = new MerchantRepository();
     CustomerRepository customerRepository = new CustomerRepository();
     ConcurrentHashMap<CorrelationID, CompletableFuture<Event2>> eventMap = new ConcurrentHashMap<>();
-    DTUPayRabbitMQ2 queue = new DTUPayRabbitMQ2("localhost");
-    MerchantService merchantService = new MerchantService(new DTUPayRabbitMQ2("localhost"), repository, new PaymentRepository());
-    CustomerService customerService = new CustomerService(new DTUPayRabbitMQ2("localhost"), customerRepository);
+    DTUPayRabbitMQ2 queue = new DTUPayRabbitMQ2("localhost"){
+        @Override
+        public void publish(Event2 event) {
+            if (event.getType().equals("TokenVerificationRequested")) {
+                Token token = event.getArgument(0, ConsumeToken.class).getToken();
+                tokenEvents.get(token).complete(event);
+            } else if (event.getType().equals("MoneyTransferred")) {
+                moneyTransferredCompletableFuture.complete(event.getArgument(0, Payment.class));
+            } else {
+                super.publish(event);
+
+            }
+        }
+    };
+    MerchantService merchantService = new MerchantService(queue, repository, new PaymentRepository());
+    CustomerService customerService = new CustomerService(queue, customerRepository);
+
+    ConcurrentHashMap<Token, CompletableFuture<Event2>> tokenEvents = new ConcurrentHashMap<>();
 
     BankService bankService = new BankServiceService().getBankServicePort();
     String merchantBankNumber;
@@ -176,28 +191,20 @@ public class MerchantServiceSteps {
     @And("the customer has at least one valid token")
     public void theCustomerHasAtLeastOneToken() {
         tokens.add(new Token());
-        queue.addHandler("TokenVerificationRequested", this::handleTokenVerificationRequestedEvent);
+        tokenEvents.put(tokens.get(0), new CompletableFuture<>());
     }
 
     @And("the customer has one invalid token")
     public void theCustomerHasOneInvalidToken() {
         tokens.add(new Token());
-        queue.addHandler("TokenVerificationRequested", this::handleTokenVerificationRequestedEventInvalid);
+        tokenEvents.put(tokens.get(0), new CompletableFuture<>());
     }
-
-
-
 
     @When("the merchant initializes a payment of {int}")
     public void theMerchantInitializesAPaymentOf(int amount) {
         payment = new Payment();
         payment.setMid(merchant.getUserId().getUuid());
         payment.setAmount(amount);
-    }
-
-    @And("the customer has a valid token")
-    public void theCustomerHasAValidToken() {
-        queue.addHandler("TokenVerificationRequested", this::handleTokenVerificationRequestedEvent);
     }
 
     @And("the customer shares a token with the merchant")
@@ -207,8 +214,6 @@ public class MerchantServiceSteps {
 
     @Then("a payment can be done")
     public void aPaymentCanBeDone() {
-
-        queue.addHandler("MoneyTransferred", this::handleMoneyTransferred);
         new Thread(() -> {
             try {
                 System.out.println("Creating payment");
@@ -223,6 +228,8 @@ public class MerchantServiceSteps {
                 fail(e.getMessage());
             }
         }).start();
+        ConsumeToken consumeToken = tokenEvents.get(tokens.get(0)).join().getArgument(0, ConsumeToken.class);
+        merchantService.createPaymentConsumedTokenEventResult(new TokenConsumed(consumeToken.getCorrelationID(), customer.getUserId()));
         moneyTransferredCompletableFuture.join();
     }
 
@@ -239,9 +246,11 @@ public class MerchantServiceSteps {
                     BankServiceException_Exception |
                     CustomerNotFoundException |
                     InvalidMerchantIdException e) {
-                fail();
+                fail(e.getMessage());
             }
         }).start();
+        ConsumeToken consumeToken = tokenEvents.get(tokens.get(0)).join().getArgument(0, ConsumeToken.class);
+        merchantService.createPaymentConsumedTokenEventResult(new TokenConsumed(consumeToken.getCorrelationID(), null));
     }
 
     private void handleMoneyTransferred(Event2 event) {
