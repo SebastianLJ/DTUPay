@@ -20,12 +20,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class CustomerService {
     CustomerRepository repository;
     IDTUPayMessageQueue2 messageQueue;
 
-    HashMap<CorrelationID, CompletableFuture<TokensGenerated>> token_events = new HashMap<>();
+    ConcurrentHashMap<CorrelationID, CompletableFuture<TokensGenerated>> token_events = new ConcurrentHashMap<>();
 
     CompletableFuture<User> deletedCustomer;
 

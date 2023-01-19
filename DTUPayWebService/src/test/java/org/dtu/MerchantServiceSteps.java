@@ -239,8 +239,11 @@ public class MerchantServiceSteps {
     }
 
     @After
-    public void cleanUp() throws BankServiceException_Exception {
-        bankService.retireAccount(merchantBankNumber);
-        bankService.retireAccount(customerBankNumber);
+    public void cleanUp() {
+        try {
+            bankService.retireAccount(merchantBankNumber);
+            bankService.retireAccount(customerBankNumber);
+        } catch (BankServiceException_Exception ignored) {
+        }
     }
 }
