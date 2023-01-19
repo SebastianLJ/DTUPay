@@ -33,7 +33,6 @@
         <artifactId>cucumber-picocontainer</artifactId>
         <version>7.9.0</version>
       </dependency>
-      <!-- This is JUnit 5 aka Jupiter -->
       <dependency>
         <groupId>org.junit.jupiter</groupId>
         <artifactId>junit-jupiter-engine</artifactId>
@@ -70,6 +69,10 @@
     <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-arc</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.quarkus</groupId>
+      <artifactId>quarkus-smallrye-openapi</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
@@ -152,7 +155,6 @@
       <artifactId>jakarta.jakartaee-api</artifactId>
       <version>10.0.0</version>
     </dependency>
-
   </dependencies>
   <build>
     <plugins>
