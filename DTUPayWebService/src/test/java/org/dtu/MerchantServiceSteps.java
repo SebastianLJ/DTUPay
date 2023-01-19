@@ -40,9 +40,24 @@ public class MerchantServiceSteps {
     MerchantRepository repository = new MerchantRepository();
     CustomerRepository customerRepository = new CustomerRepository();
     ConcurrentHashMap<CorrelationID, CompletableFuture<Event2>> eventMap = new ConcurrentHashMap<>();
-    DTUPayRabbitMQ2 queue = new DTUPayRabbitMQ2("localhost");
-    MerchantService merchantService = new MerchantService(new DTUPayRabbitMQ2("localhost"), repository, new PaymentRepository());
-    CustomerService customerService = new CustomerService(new DTUPayRabbitMQ2("localhost"), customerRepository);
+    DTUPayRabbitMQ2 queue = new DTUPayRabbitMQ2("localhost"){
+        @Override
+        public void publish(Event2 event) {
+            if (event.getType().equals("TokenVerificationRequested")) {
+                Token token = event.getArgument(0, ConsumeToken.class).getToken();
+                tokenEvents.get(token).complete(event);
+            } else if (event.getType().equals("MoneyTransferred")) {
+                moneyTransferredCompletableFuture.complete(event.getArgument(0, Payment.class));
+            } else {
+                super.publish(event);
+
+            }
+        }
+    };
+    MerchantService merchantService = new MerchantService(queue, repository, new PaymentRepository());
+    CustomerService customerService = new CustomerService(queue, customerRepository);
+
+    ConcurrentHashMap<Token, CompletableFuture<Event2>> tokenEvents = new ConcurrentHashMap<>();
 
     BankService bankService = new BankServiceService().getBankServicePort();
     String merchantBankNumber;
@@ -173,11 +188,17 @@ public class MerchantServiceSteps {
         );
     }
 
-    @And("the customer has at least one token")
+    @And("the customer has at least one valid token")
     public void theCustomerHasAtLeastOneToken() {
         tokens.add(new Token());
+        tokenEvents.put(tokens.get(0), new CompletableFuture<>());
     }
 
+    @And("the customer has one invalid token")
+    public void theCustomerHasOneInvalidToken() {
+        tokens.add(new Token());
+        tokenEvents.put(tokens.get(0), new CompletableFuture<>());
+    }
 
     @When("the merchant initializes a payment of {int}")
     public void theMerchantInitializesAPaymentOf(int amount) {
@@ -193,8 +214,6 @@ public class MerchantServiceSteps {
 
     @Then("a payment can be done")
     public void aPaymentCanBeDone() {
-        queue.addHandler("TokenVerificationRequested", this::handleTokenVerificationRequestedEvent);
-        queue.addHandler("MoneyTransferred", this::handleMoneyTransferred);
         new Thread(() -> {
             try {
                 System.out.println("Creating payment");
@@ -209,7 +228,29 @@ public class MerchantServiceSteps {
                 fail(e.getMessage());
             }
         }).start();
+        ConsumeToken consumeToken = tokenEvents.get(tokens.get(0)).join().getArgument(0, ConsumeToken.class);
+        merchantService.createPaymentConsumedTokenEventResult(new TokenConsumed(consumeToken.getCorrelationID(), customer.getUserId()));
         moneyTransferredCompletableFuture.join();
+    }
+
+    @Then("the payment fails")
+    public void thePaymentFails() {
+        new Thread(() -> {
+            try {
+                merchantService.createPayment(payment);
+                fail();
+            } catch (CustomerTokenAlreadyConsumedException e) {
+                assertEquals("Invalid token", e.getMessage());
+            } catch (InvalidCustomerIdException |
+                    PaymentAlreadyExistsException |
+                    BankServiceException_Exception |
+                    CustomerNotFoundException |
+                    InvalidMerchantIdException e) {
+                fail(e.getMessage());
+            }
+        }).start();
+        ConsumeToken consumeToken = tokenEvents.get(tokens.get(0)).join().getArgument(0, ConsumeToken.class);
+        merchantService.createPaymentConsumedTokenEventResult(new TokenConsumed(consumeToken.getCorrelationID(), null));
     }
 
     private void handleMoneyTransferred(Event2 event) {
@@ -220,7 +261,12 @@ public class MerchantServiceSteps {
         ConsumeToken requestedEvent = event.getArgument(0, ConsumeToken.class);
         TokenConsumed newEvent = new TokenConsumed(requestedEvent.getCorrelationID(), customer.getUserId());
         queue.publish(new Event2("TokenConsumed", new Object[]{newEvent}));
+    }
 
+    private void handleTokenVerificationRequestedEventInvalid(Event2 event) {
+        ConsumeToken requestedEvent = event.getArgument(0, ConsumeToken.class);
+        TokenConsumed newEvent = new TokenConsumed(requestedEvent.getCorrelationID(), null);
+        queue.publish(new Event2("TokenConsumed", new Object[]{newEvent}));
     }
 
     @And("The customer's bank account balance is now {int}")
@@ -234,8 +280,11 @@ public class MerchantServiceSteps {
     }
 
     @After
-    public void cleanUp() throws BankServiceException_Exception {
-        bankService.retireAccount(merchantBankNumber);
-        bankService.retireAccount(customerBankNumber);
+    public void cleanUp() {
+        try {
+            bankService.retireAccount(merchantBankNumber);
+            bankService.retireAccount(customerBankNumber);
+        } catch (BankServiceException_Exception ignored) {
+        }
     }
 }
