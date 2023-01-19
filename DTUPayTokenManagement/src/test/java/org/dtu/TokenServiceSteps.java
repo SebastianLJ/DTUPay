@@ -45,12 +45,15 @@ public class TokenServiceSteps {
                 case "TokenVerificationRequested":
                     ConsumeToken consumeToken = event.getArgument(0, ConsumeToken.class);
                     tokenService.readModelRepository.apply(consumeToken);
+                    break;
                 case "TokensRequested":
                     TokensRequested tokensRequested = event .getArgument(0, TokensRequested.class);
                     tokenService.readModelRepository.apply(tokensRequested);
+                    break;
                 case "UserTokensRequested":
                     UserTokensRequested userTokensRequested = event.getArgument(0, UserTokensRequested.class);
                     tokenService.readModelRepository.apply(userTokensRequested);
+                    break;
                 default:
                     //super.publish(event);
             }
@@ -70,6 +73,13 @@ public class TokenServiceSteps {
 
     UserId userId1;
     UserId userId2;
+
+    @Before
+    public void resetState(){
+        userTokens.clear();
+        usedUserTokens.clear();
+        publishedEvents.clear();
+    }
 
     @When("a message queue is started")
     public void aMessageQueueIsStarted() {
@@ -160,10 +170,36 @@ public class TokenServiceSteps {
         assertEquals(usedUserTokens.get(userId1).size(),userTokensGenerated.getTokens().size());
     }
 
-    @Before
-    public void resetState(){
-        userTokens.clear();
-        usedUserTokens.clear();
-        publishedEvents.clear();
+    @Then("the user cannot consume the same token twice")
+    public void theUserCannotConsumeTheSameTokenTwice() {
+        ConsumeToken consumeToken1 = new ConsumeToken(CorrelationID.randomID(),userTokens.get(userId1).get(0));
+        Event2 newEvent1 = new Event2("TokenVerificationRequested", new Object[]{consumeToken1});
+        publishedEvents.put(consumeToken1.getCorrelationID(),new CompletableFuture<>());
+        eventQueue.publish(newEvent1);
+        TokenConsumed tokenConsumed1 = (TokenConsumed) publishedEvents.get(consumeToken1.getCorrelationID()).join();
+
+        ConsumeToken consumeToken2 = new ConsumeToken(CorrelationID.randomID(),userTokens.get(userId1).get(0));
+        Event2 newEvent2 = new Event2("TokenVerificationRequested", new Object[]{consumeToken2});
+        publishedEvents.put(consumeToken2.getCorrelationID(),new CompletableFuture<>());
+        eventQueue.publish(newEvent2);
+        TokenConsumed tokenConsumed2 = (TokenConsumed) publishedEvents.get(consumeToken2.getCorrelationID()).join();
+
+        assertEquals(tokenConsumed2.getMessage(), "Token does not exist");
+    }
+
+    @And("the user has more than one token")
+    public void theUserHasMoreThanOneToken() {
+        assertTrue(userTokens.get(userId1).size() > 1);
+    }
+
+    @Then("the user cannot request more tokens")
+    public void theUserCannotRequestMoreTokens() {
+        TokensRequested tokensRequested = new TokensRequested(CorrelationID.randomID(),2,userId1);
+        Event2 newEvent = new Event2("TokensRequested", new Object[]{tokensRequested});
+        publishedEvents.put(tokensRequested.getCorrelationID(),new CompletableFuture<>());
+        eventQueue.publish(newEvent);
+        TokensGenerated tokensGenerated = (TokensGenerated) publishedEvents.get(tokensRequested.getCorrelationID()).join();
+
+        assertEquals(tokensGenerated.getMessage(),"User must have either 0 or 1 token to request more tokens.");
     }
 }

@@ -122,6 +122,8 @@ public class ReadModelRepository {
         if (!(amount == 0 || amount == 1)){
             TokensGenerated tokensGenerated = new TokensGenerated(event.getCorrelationID(), event.getUserId(),tokens);
             tokensGenerated.setMessage("User must have either 0 or 1 token to request more tokens.");
+            newEvent = new Event2("TokensGenerated", new Object[]{tokensGenerated});
+            messageQueue.publish(newEvent);
             return;
         }
         for (int i = 0; i < event.getAmount(); i++) {
