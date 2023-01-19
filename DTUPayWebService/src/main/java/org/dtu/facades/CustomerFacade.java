@@ -21,6 +21,9 @@ import java.util.UUID;
 public class CustomerFacade {
     CustomerService customerService = new CustomerFactory().getService();
 
+    /**
+     * @author Sebastian Lund (s184209)
+     */
     @Path("/{id}/tokens")
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
@@ -65,6 +68,9 @@ public class CustomerFacade {
         }
     }
 
+    /**
+     * @author Sebastian Lund (s184209)
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -135,6 +141,9 @@ public class CustomerFacade {
         }
     }
 
+    /**
+     * @author Sebastian Lund (s184209)
+     */
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getALlCustomers() {
