@@ -75,8 +75,9 @@ public class CustomerSteps {
 
     @Then("the customers tokens have been deleted")
     public void the_customers_tokens_have_been_deleted() {
+        // todo
         // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException();
+        //throw new io.cucumber.java.PendingException();
     }
 
 

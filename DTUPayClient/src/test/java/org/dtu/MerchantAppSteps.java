@@ -20,10 +20,10 @@ public class MerchantAppSteps {
     public void a_merchant_is_being_created() {
         try {
             merchant = merchantApp.register("Diana", "Isabel", "MoneyMoneyMoney");
+            Thread.sleep(1000);
         } catch (Exception e) {
             e.printStackTrace();
         }
-        throw new io.cucumber.java.PendingException();
     }
 
     @Then("the merchant registered can be found by the ID")
@@ -33,7 +33,6 @@ public class MerchantAppSteps {
         } catch (MerchantDoesNotExist e) {
             throw new RuntimeException(e);
         }
-        throw new io.cucumber.java.PendingException();
     }
 
     @Given("a merchant is already in the system")
@@ -43,7 +42,6 @@ public class MerchantAppSteps {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        throw new io.cucumber.java.PendingException();
     }
 
     @When("a merchant is being deleted")
@@ -53,7 +51,6 @@ public class MerchantAppSteps {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        throw new io.cucumber.java.PendingException();
     }
 
     @Then("the merchant is no longer in the system")
@@ -66,4 +63,9 @@ public class MerchantAppSteps {
         }
     }
 
+    @Then("the merchant can be found in the system")
+    public void theMerchantCanBeFoundInTheSystem() throws MerchantDoesNotExist {
+        //assertEquals(merchant.getUserId().getUuid(), merchantApp.getMerchant(merchant).getUserId().getUuid());
+        assertEquals(merchant.getUserId().getUuid(), merchantApp.getMerchant(merchant).getUserId().getUuid());
+    }
 }
