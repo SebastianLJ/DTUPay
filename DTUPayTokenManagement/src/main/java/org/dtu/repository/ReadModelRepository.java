@@ -23,6 +23,10 @@ public class ReadModelRepository {
 
     private final IDTUPayMessageQueue2 messageQueue;
 
+    /**
+     *
+     * @author Alexander Faarup Christensen
+     */
     public ReadModelRepository(IDTUPayMessageQueue2 messageQueue) {
         System.out.println("Read model init");
         this.messageQueue = messageQueue;
@@ -62,6 +66,9 @@ public class ReadModelRepository {
         });
     }
 
+    /**
+     * @author Alexander Faarup Christensen - s174355
+     */
     private void apply(AccountDeletionRequested event) {
         tokenAmountRepository.remove(event.getUser().getUserId());
         tokenRepository.entrySet()
@@ -71,6 +78,9 @@ public class ReadModelRepository {
         messageQueue.publish(newEvent);
     }
 
+    /**
+     * @author Asama Hayder - s185099
+     */
     public void apply(ConsumeToken event) {
         UserId userid = tokenRepository.get(event.getToken());
         if (userid == null){
@@ -96,6 +106,9 @@ public class ReadModelRepository {
         messageQueue.publish(newEvent);
     }
 
+    /**
+     * @author Asama Hayder - s185099
+     */
     public void apply(UserTokensRequested event){
         List<Token> usedTokens = usedTokenRepository.get(event.getUserId());
         //TODO handle no list
@@ -104,6 +117,10 @@ public class ReadModelRepository {
         messageQueue.publish(newEvent);
     }
 
+    /**
+     *
+     * @author Alexander Faarup Christensen - s174355
+     */
     public void apply(TokensRequested event) {
         System.out.println("Handle tokens requested");
         ArrayList<Token> tokens = new ArrayList<>();
