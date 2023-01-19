@@ -53,8 +53,14 @@ public class ReadModelRepository {
         });
     }
 
-    private void apply(ConsumeToken event) {
+    public void apply(ConsumeToken event) {
         UserId userid = tokenRepository.get(event.getToken());
+        if (userid == null){
+            TokenConsumed tokenConsumed = new TokenConsumed(event.getCorrelationID(),null);
+            tokenConsumed.setMessage("Token does not exist");
+            Event2 newEvent = new Event2("TokenConsumed", new Object[]{tokenConsumed});
+            messageQueue.publish(newEvent);
+        }
         tokenRepository.remove(event.getToken());
         tokenAmountRepository.put(userid, tokenAmountRepository.get(userid) - 1);
 
@@ -66,20 +72,20 @@ public class ReadModelRepository {
             usedTokenRepository.get(userid).add(event.getToken());
         }
 
-        TokenConsumed tokenConsumed = new TokenConsumed(userid);
+        TokenConsumed tokenConsumed = new TokenConsumed(event.getCorrelationID(),userid);
         Event2 newEvent = new Event2("TokenConsumed", new Object[]{tokenConsumed});
         messageQueue.publish(newEvent);
     }
 
-    private void apply(UserTokensRequested event){
+    public void apply(UserTokensRequested event){
         List<Token> usedTokens = usedTokenRepository.get(event.getUserId());
         //TODO handle no list
-        UserTokensGenerated userTokensGenerated = new UserTokensGenerated(event.getUserId(), usedTokens);
+        UserTokensGenerated userTokensGenerated = new UserTokensGenerated(event.getCorrelationID(),event.getUserId(), usedTokens);
         Event2 newEvent = new Event2("UserTokensGenerated", new Object[]{userTokensGenerated});
         messageQueue.publish(newEvent);
     }
 
-    private void apply(TokensRequested event) {
+    public void apply(TokensRequested event) {
         System.out.println("Handle tokens requested");
         ArrayList<Token> tokens = new ArrayList<>();
         Event2 newEvent;
@@ -109,17 +115,5 @@ public class ReadModelRepository {
         newEvent = new Event2("TokensGenerated", new Object[]{tokensGenerated});
         messageQueue.publish(newEvent);
         System.out.println("Published tokens generated");
-    }
-
-    public UserId getUserIdByToken(Token token){
-        return tokenRepository.get(token);
-    }
-
-    public Integer getAmountTokensForUser(UserId userid){
-        return tokenAmountRepository.get(userid);
-    }
-
-    public Integer hashmapSize(){
-        return tokenRepository.size();
     }
 }
