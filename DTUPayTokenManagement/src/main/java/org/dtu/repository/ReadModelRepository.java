@@ -9,7 +9,9 @@ import org.dtu.aggregate.UserId;
 import org.dtu.event.*;
 
 import java.io.NotSerializableException;
+import java.sql.Struct;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ReadModelRepository {
 
@@ -17,7 +19,7 @@ public class ReadModelRepository {
     private HashMap<UserId, Integer> tokenAmountRepository = new HashMap<>();
     private HashMap<UserId, List<Token>> usedTokenRepository = new HashMap<>();
 
-    private HashSet<UUID> processedEventsByCorrelationId = new HashSet<>();
+    private ConcurrentHashMap<UUID, Boolean> processedEventsByCorrelationId = new ConcurrentHashMap<>();
 
     private final IDTUPayMessageQueue2 messageQueue;
 
@@ -27,8 +29,8 @@ public class ReadModelRepository {
         messageQueue.addHandler("TokensRequested", e -> {
             TokensRequested newEvent = e.getArgument(0, TokensRequested.class);
             UUID eventID = newEvent.getCorrelationID().getId();
-            if (!processedEventsByCorrelationId.contains(eventID)){
-                processedEventsByCorrelationId.add(eventID);
+            if (processedEventsByCorrelationId.get(eventID) == null){
+                processedEventsByCorrelationId.putIfAbsent(eventID, true);
                 apply(newEvent);
             }
 
@@ -36,16 +38,16 @@ public class ReadModelRepository {
         messageQueue.addHandler("TokenVerificationRequested", e -> {
             ConsumeToken newEvent = e.getArgument(0, ConsumeToken.class);
             UUID eventID = newEvent.getCorrelationID().getId();
-            if (!processedEventsByCorrelationId.contains(eventID)){
-                processedEventsByCorrelationId.add(eventID);
+            if (processedEventsByCorrelationId.get(eventID) == null){
+                processedEventsByCorrelationId.putIfAbsent(eventID, true);
                 apply(newEvent);
             }
         });
         messageQueue.addHandler("UserTokensRequested", e -> {
             UserTokensRequested newEvent = e.getArgument(0, UserTokensRequested.class);
             UUID eventID = newEvent.getCorrelationID().getId();
-            if (!processedEventsByCorrelationId.contains(eventID)){
-                processedEventsByCorrelationId.add(eventID);
+            if (processedEventsByCorrelationId.get(eventID) == null){
+                processedEventsByCorrelationId.putIfAbsent(eventID, true);
                 apply(newEvent);
             }
         });
