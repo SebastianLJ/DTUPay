@@ -78,6 +78,7 @@ public class ReadModelRepository {
             tokenConsumed.setMessage("Token does not exist");
             Event2 newEvent = new Event2("TokenConsumed", new Object[]{tokenConsumed});
             messageQueue.publish(newEvent);
+            return;
         }
         tokenRepository.remove(event.getToken());
         tokenAmountRepository.put(userid, tokenAmountRepository.get(userid) - 1);
