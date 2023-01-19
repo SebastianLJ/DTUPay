@@ -7,15 +7,14 @@ import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
 import org.dtu.aggregate.User;
 
-import java.util.UUID;
-
 @Value
 @AllArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-public class AccountDeletionRequested extends Event {
+public class TokensDeleted extends Event {
+
     User user;
 
-    public AccountDeletionRequested(CorrelationID correlationID, User user) {
+    public TokensDeleted(CorrelationID correlationID, User user) {
         super(correlationID);
         this.user = user;
     }
