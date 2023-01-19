@@ -13,6 +13,11 @@ import messageUtilities.queues.QueueType;
 import java.io.*;
 import java.util.function.Consumer;
 
+/**
+ * @Autor Jákup Viljam Dam - s185095
+ * Used the mwssageUtilities with some slight modifications, mainly the enums and printouts &
+ * restructuring the code a bit
+ */
 public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
 
     /**
@@ -25,6 +30,9 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
     private final String queueType;
     private final Channel channel;
 
+    /**
+     * @Autor Jákup Viljam Dam - s185095
+     */
     public DTUPayRabbitMQ(QueueType queueType, HostnameType hostnameType) {
         this.queueType = queueType.name();
         this.hostname = hostnameType.name();

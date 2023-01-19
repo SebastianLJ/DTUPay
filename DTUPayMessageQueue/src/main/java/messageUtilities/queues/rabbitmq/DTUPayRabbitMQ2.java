@@ -12,6 +12,10 @@ import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 
+/**
+ * @Autor Jákup Viljam Dam - s185095
+ * Used the messageUtilities from the course
+ */
 public class DTUPayRabbitMQ2 implements IDTUPayMessageQueue2 {
 
     private static final String TAG = "Message Queue";

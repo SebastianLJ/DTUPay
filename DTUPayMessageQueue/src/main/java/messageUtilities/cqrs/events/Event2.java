@@ -8,6 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * @Autor Jákup Viljam Dam - s185095
+ * Used the event class from messageUtilities
+ */
 public class Event2 implements Serializable {
     private static final long serialVersionUID = 4986172999588690076L;
     private String type;
