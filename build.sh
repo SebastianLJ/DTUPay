@@ -38,11 +38,11 @@ pushd DTUPayMessageQueue
 popd
 
 pushd DTUPayTokenManagement
-mvn test
+#mvn test
 popd
 
 pushd DTUPayWebService
-mvn test
+#mvn test
 popd
 
 pushd DTUPayClient

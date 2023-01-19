@@ -22,6 +22,9 @@ public class CustomerApp {
     Client c = ClientBuilder.newClient();
     WebTarget r = c.target("http://localhost:8080/");
 
+    /**
+     * @author Sebastian Lund (s184209)
+     */
     public User register(String firstName, String lastName, String bankNumber) throws Exception {
         User user = new User(firstName, lastName, bankNumber);
         Response response = r.path("customers")
@@ -50,7 +53,9 @@ public class CustomerApp {
         }
     }
 
-
+    /**
+     * @author Sebastian Lund (s184209)
+     */
     public List<Token> generateTokens(UserId userId, int tokenCount) throws Exception {
         Response response = r.path(
                         "customers/"+

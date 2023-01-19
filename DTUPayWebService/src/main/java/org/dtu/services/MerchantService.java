@@ -95,6 +95,14 @@ public class MerchantService {
         }
     }
 
+    public User registerMerchant(User user) throws MerchantAlreadyExistsException {
+        try {
+            return merchantRepository.addMerchant(user);
+        } catch (MerchantAlreadyExistsException e) {
+            throw new MerchantAlreadyExistsException();
+        }
+    }
+
     public ArrayList<User> getMerchantList() {
         return merchantRepository.getMerchantList();
     }
