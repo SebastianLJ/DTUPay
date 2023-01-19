@@ -38,10 +38,10 @@ public class PaymentRepository {
                 .collect(Collectors.toList());
     }
 
-    public List<Payment> getPaymentsByToken(Token token) {
+    public Payment getPaymentsByToken(Token token) {
         return payments.stream()
                 .filter(payment -> payment.getToken().equals(token))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()).get(0);
     }
 
     public Payment deletePayment(UUID id) throws PaymentNotFoundException {

@@ -32,6 +32,7 @@ public class MerchantApp {
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(User.class);
         } else {
+            System.out.println(response.getStatus() +" "+ Response.Status.OK.getStatusCode());
             System.out.println("!!!! " + response.readEntity(String.class) + " !!!!");
             throw new Exception("code: " + response.getStatus());
         }

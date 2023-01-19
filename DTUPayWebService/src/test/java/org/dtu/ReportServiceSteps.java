@@ -5,10 +5,16 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import messageUtilities.CorrelationID;
+import messageUtilities.cqrs.events.Event2;
+import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ2;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
+import org.dtu.aggregate.UserId;
 import org.dtu.domain.Token;
+import org.dtu.events.UserTokensGenerated;
+import org.dtu.events.UserTokensRequested;
 import org.dtu.exceptions.*;
 import org.dtu.repositories.CustomerRepository;
 import org.dtu.repositories.MerchantRepository;
@@ -18,20 +24,25 @@ import org.dtu.services.MerchantService;
 import org.dtu.services.ReportService;
 import org.junit.After;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ReportServiceSteps {
 
     MerchantService merchantService = new MerchantService(new DTUPayRabbitMQ2("localhost"), new MerchantRepository(), new PaymentRepository());
     CustomerService customerService = new CustomerService(new DTUPayRabbitMQ2("localhost"), new CustomerRepository());
-    ReportService reportService = new ReportService(new DTUPayRabbitMQ2("localhost"), new PaymentRepository());
 
-    //PaymentRepository paymentRepository = new PaymentRepository();
+    ConcurrentHashMap<CorrelationID, CompletableFuture<IDTUPayMessage>> publishedEvents = new ConcurrentHashMap<>();
+    ConcurrentHashMap<UserId, CompletableFuture<IDTUPayMessage>> publishedUsers = new ConcurrentHashMap<>();
 
     Payment payment = null;
     List<Payment> merchantPayments = null;
-    List<Payment> customerPayments = null;
+    List<Payment> customerPayments = new ArrayList<>();
     User merchant = null;
 
     User merchant2 = null;
@@ -39,6 +50,25 @@ public class ReportServiceSteps {
 
     User customer2 = null;
     Token token = null;
+
+    CompletableFuture<List<Payment>> future = new CompletableFuture<>();
+
+    DTUPayRabbitMQ2 eventQueue = new DTUPayRabbitMQ2("localhost") {
+        @Override
+        public void publish(Event2 event) {
+            switch(event.getType()) {
+                case "UserTokensRequested":
+                    UserTokensRequested userTokensRequested = event.getArgument(0, UserTokensRequested.class);
+                    publishedUsers.get(userTokensRequested.getUserId()).complete(userTokensRequested);
+            }
+        }
+        @Override
+        public void addHandler(String eventType, Consumer<Event2> handler){
+        }
+    };
+    ReportService reportService = new ReportService(eventQueue, new PaymentRepository());
+
+
 
     //A merchant retrieves a list of payments
     @Given("a merchant is rregistered in the system")
@@ -87,6 +117,7 @@ public class ReportServiceSteps {
     @Given("a customer is rregistered in the system")
     public void a_customer_is_rregistered_in_the_system() throws CustomerAlreadyExistsException {
         customer = customerService.addCustomer("Tyrion", "Lanister");
+        publishedUsers.put(customer.getUserId(), new CompletableFuture<>());
     }
 
     @And("the customer has been involved in a payment")
@@ -98,12 +129,33 @@ public class ReportServiceSteps {
 
     @When("the customer retrieves a list of payments")
     public void the_customer_retrieves_a_list_of_payments() throws PaymentNotFoundException {
-      //  customerPayments = reportService.getPaymentByCustomerId(customer.getUserId(), token);
+        new Thread(()-> {
+            try {
+                customerPayments = reportService.getPaymentByCustomerId(customer.getUserId());
+                future.complete(customerPayments);
+            } catch (PaymentNotFoundException e) {
+                e.printStackTrace();
+            }
+        }).start();
+
     }
+
+
+
 
     @Then("the customer can see a list of all transactions they have been involved in")
     public void the_customer_can_see_a_list_of_all_transactions_they_have_been_involved_in() {
-     //  assertEquals(payment, customerPayments.get(0));
+        publishedUsers.get(customer.getUserId()).join();
+        ArrayList<Token> newList = new ArrayList<>();
+        CorrelationID correlationID = ((UserTokensRequested) publishedUsers.get(customer.getUserId()).join()).getCorrelationID();
+        newList.add(token);
+        UserTokensGenerated userTokensGenerated = new UserTokensGenerated(correlationID,customer.getUserId(), newList);
+        Event2 newEvent = new Event2("UserTokensGenerated", new Object[]{userTokensGenerated});
+        reportService.completeEvent(newEvent);
+
+        future.join();
+
+       assertEquals(payment, customerPayments.get(0));
     }
 
     //A customer cannot retrieve a list of another customers payments

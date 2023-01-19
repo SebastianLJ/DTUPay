@@ -3,6 +3,7 @@ package org.dtu.events;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Value;
+import messageUtilities.CorrelationID;
 import messageUtilities.cqrs.events.Event;
 import org.dtu.domain.Token;
 import org.dtu.aggregate.UserId;
@@ -16,4 +17,10 @@ public class UserTokensGenerated extends Event {
     private static final long serialVersionUID = -9043605699436268036L;
     UserId userId;
     List<Token> tokens;
+
+    public UserTokensGenerated(CorrelationID correlationID, UserId userId, List<Token> tokens){
+        super(correlationID);
+        this.userId = userId;
+        this.tokens=tokens;
+    }
 }
