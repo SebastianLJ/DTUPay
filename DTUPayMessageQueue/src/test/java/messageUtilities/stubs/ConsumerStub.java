@@ -26,8 +26,7 @@ public class ConsumerStub {
      */
     public void consumeQueueEvent(EventRequestedStub event) {
         EventCreatedStub createdEvent = new EventCreatedStub(event.getCorrelationID());
-        createdEvent.setMessage("World!");
-        System.out.println(createdEvent.getCorrelationID().toString() + " " + createdEvent.getMessage());
+        System.out.println( "CreatedEvent CorrelationID: " + createdEvent.getCorrelationID());
         Event2 newEvent = new Event2("EventCreatedStub", new Object[]{createdEvent});
         messageQueue.publish(newEvent);
     }

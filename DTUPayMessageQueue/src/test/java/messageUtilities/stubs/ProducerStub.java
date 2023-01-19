@@ -32,8 +32,8 @@ public class ProducerStub {
      * @Autor Jákup Viljam Dam - s185095
      */
     public EventCreatedStub produceEvent(EventRequestedStub event) {
-        System.out.println(event.getCorrelationID().toString() + " " + event.getMessage());
         correlations.put(event.getCorrelationID(), new CompletableFuture<>());
+        System.out.println( "RequestedEvent CorrelationID: " + event.getCorrelationID());
         Event2 newEvent = new Event2("EventRequestedStub", new Object[]{event});
         messageQueue.publish(newEvent);
         return correlations.get(event.getCorrelationID()).join();
