@@ -173,10 +173,19 @@ public class MerchantServiceSteps {
         );
     }
 
-    @And("the customer has at least one token")
+    @And("the customer has at least one valid token")
     public void theCustomerHasAtLeastOneToken() {
         tokens.add(new Token());
+        queue.addHandler("TokenVerificationRequested", this::handleTokenVerificationRequestedEvent);
     }
+
+    @And("the customer has one invalid token")
+    public void theCustomerHasOneInvalidToken() {
+        tokens.add(new Token());
+        queue.addHandler("TokenVerificationRequested", this::handleTokenVerificationRequestedEventInvalid);
+    }
+
+
 
 
     @When("the merchant initializes a payment of {int}")
@@ -217,6 +226,24 @@ public class MerchantServiceSteps {
         moneyTransferredCompletableFuture.join();
     }
 
+    @Then("the payment fails")
+    public void thePaymentFails() {
+        new Thread(() -> {
+            try {
+                merchantService.createPayment(payment);
+                fail();
+            } catch (CustomerTokenAlreadyConsumedException e) {
+                assertEquals("Invalid token", e.getMessage());
+            } catch (InvalidCustomerIdException |
+                    PaymentAlreadyExistsException |
+                    BankServiceException_Exception |
+                    CustomerNotFoundException |
+                    InvalidMerchantIdException e) {
+                fail();
+            }
+        }).start();
+    }
+
     private void handleMoneyTransferred(Event2 event) {
         moneyTransferredCompletableFuture.complete(event.getArgument(0, Payment.class));
     }
@@ -225,7 +252,12 @@ public class MerchantServiceSteps {
         ConsumeToken requestedEvent = event.getArgument(0, ConsumeToken.class);
         TokenConsumed newEvent = new TokenConsumed(requestedEvent.getCorrelationID(), customer.getUserId());
         queue.publish(new Event2("TokenConsumed", new Object[]{newEvent}));
+    }
 
+    private void handleTokenVerificationRequestedEventInvalid(Event2 event) {
+        ConsumeToken requestedEvent = event.getArgument(0, ConsumeToken.class);
+        TokenConsumed newEvent = new TokenConsumed(requestedEvent.getCorrelationID(), null);
+        queue.publish(new Event2("TokenConsumed", new Object[]{newEvent}));
     }
 
     @And("The customer's bank account balance is now {int}")

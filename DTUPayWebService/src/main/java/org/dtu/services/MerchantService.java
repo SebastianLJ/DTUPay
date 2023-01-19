@@ -64,8 +64,8 @@ public class MerchantService {
         messageQueue.publish(newEvent);
 
         TokenConsumed consumeTokenEventResult = (TokenConsumed) correlations.get(consumeTokenEvent.getCorrelationID()).join();
-        if (!consumeTokenEventResult.getMessage().isEmpty()) {
-            throw new CustomerTokenAlreadyConsumedException("Token already consumed");
+        if (consumeTokenEventResult.getUserId() == null) {
+            throw new CustomerTokenAlreadyConsumedException("Invalid token");
         }
 
         User merchant = getMerchant(payment.getMid());
