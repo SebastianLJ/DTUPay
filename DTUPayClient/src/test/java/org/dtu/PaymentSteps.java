@@ -14,6 +14,7 @@ import io.cucumber.java.en.When;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -73,6 +74,12 @@ public class PaymentSteps {
         customerTokens = customerApp.generateTokens(customer.getUserId(), 4);
     }
 
+    @And("the customer has an unknown token")
+    public void theCustomerHasAnUnknownToken() {
+        customerTokens = new ArrayList<>();
+        customerTokens.add(new Token());
+    }
+
     @When("the merchant initializes a payment of {int}")
     public void theMerchantInitializesAPaymentOf(int amount) {
         payment = new Payment();
@@ -88,6 +95,16 @@ public class PaymentSteps {
     @Then("a payment can be done")
     public void aPaymentCanBeDone() throws Exception {
         merchantApp.pay(merchant.getUserId(), payment.getToken(), payment.getAmount());
+    }
+
+    @Then("the payment is rejected")
+    public void thePaymentIsRejected() {
+        try {
+            merchantApp.pay(merchant.getUserId(), payment.getToken(), payment.getAmount());
+            fail("payment succeeded when it should have been rejected");
+        } catch (Exception e) {
+            assertEquals("code: 400 message: customer token already consumed", e.getMessage());
+        }
     }
 
     @Then("The customer's bank account balance is now {int}")
