@@ -33,7 +33,7 @@ public class ReadModelRepository {
             }
 
         });
-        messageQueue.addHandler("ConsumeToken", e -> {
+        messageQueue.addHandler("TokenVerificationRequested", e -> {
             ConsumeToken newEvent = e.getArgument(0, ConsumeToken.class);
             UUID eventID = newEvent.getCorrelationID().getId();
             if (!processedEventsByCorrelationId.contains(eventID)){

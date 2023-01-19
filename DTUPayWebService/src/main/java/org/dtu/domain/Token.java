@@ -11,6 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Token implements Serializable {
 
+    private static final long serialVersionUID = -2743453326392792795L;
     UUID id;
 
     public Token(){

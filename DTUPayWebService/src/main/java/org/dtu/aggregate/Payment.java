@@ -8,13 +8,15 @@ import org.dtu.events.PaymentRequested;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
-public class Payment {
+public class Payment implements Serializable {
+    private static final long serialVersionUID = -4831808956822934219L;
     UUID id;
     UUID mid;
     int amount;

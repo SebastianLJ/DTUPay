@@ -42,6 +42,7 @@ public class MerchantService {
         this.bankService = new BankServiceService().getBankServicePort();
         this.customerService = new CustomerFactory().getService(messageQueue);
         this.correlations = new ConcurrentHashMap<>();
+        registerHandlers();
     }
 
     public List<User> getMerchants() {
@@ -59,7 +60,7 @@ public class MerchantService {
     public Payment createPayment(Payment payment) throws InvalidMerchantIdException, BankServiceException_Exception, InvalidCustomerIdException, CustomerNotFoundException, PaymentAlreadyExistsException, CustomerTokenAlreadyConsumedException {
         ConsumeToken consumeTokenEvent = new ConsumeToken(new CorrelationID(UUID.randomUUID()), payment.getToken());
         correlations.put(consumeTokenEvent.getCorrelationID(), new CompletableFuture<>());
-        Event2 newEvent = new Event2("ConsumeToken", new Object[]{consumeTokenEvent});
+        Event2 newEvent = new Event2("TokenVerificationRequested", new Object[]{consumeTokenEvent});
         messageQueue.publish(newEvent);
 
         TokenConsumed consumeTokenEventResult = (TokenConsumed) correlations.get(consumeTokenEvent.getCorrelationID()).join();
@@ -76,8 +77,8 @@ public class MerchantService {
         } catch (PaymentNotFoundException ignored) { }
 
         bankService.transferMoneyFromTo(customer.getBankNumber(), merchant.getBankNumber(), BigDecimal.valueOf(payment.getAmount()), "Transfer money");
-
         paymentRepository.save(payment);
+        messageQueue.publish(new Event2("MoneyTransferred", new Object[]{payment}));
         return payment;
     }
 
@@ -118,7 +119,7 @@ public class MerchantService {
             correlations.get(event.getCorrelationID()).complete(event);
             correlations.remove(event.getCorrelationID());
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            throw new Error(e.getMessage());
         }
     }
 
