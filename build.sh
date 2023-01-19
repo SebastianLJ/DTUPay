@@ -38,7 +38,7 @@ pushd DTUPayMessageQueue
 popd
 
 pushd DTUPayTokenManagement
-#mvn test -q
+mvn test -q
 popd
 
 pushd DTUPayClient
@@ -46,6 +46,6 @@ mvn test -q
 popd
 
 pushd DTUPayWebService
-#mvn test -q
+mvn test -q
 popd
 
