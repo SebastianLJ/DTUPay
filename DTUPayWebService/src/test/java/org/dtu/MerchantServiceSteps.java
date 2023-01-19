@@ -103,7 +103,11 @@ public class MerchantServiceSteps {
         } catch (BankServiceException_Exception e) {
             throw new RuntimeException(e);
         }
-        merchant = merchantService.registerMerchant(merchantBankUser.getFirstName(), merchantBankUser.getLastName(), bankNumber);
+        merchant = merchantService.registerMerchant(
+                merchantBankUser.getFirstName(),
+                merchantBankUser.getLastName(),
+                bankNumber
+        );
     }
 
     @When("a merchant is deleted")
@@ -171,7 +175,11 @@ public class MerchantServiceSteps {
 
     @And("the customer is a member of DTUPay")
     public void theCustomerIsAMemberOfDTUPay() throws InvalidCustomerNameException, CustomerAlreadyExistsException {
-        customer = customerService.addCustomer(new User("Jane", "Doe", customerBankNumber));
+        customer = customerService.addCustomer(
+                new User("Jane",
+                        "Doe",
+                        customerBankNumber)
+        );
     }
 
     @And("the customer has at least one token")
@@ -198,7 +206,12 @@ public class MerchantServiceSteps {
             try {
                 Payment completedTransaction = merchantService.createPayment(payment);
                 paymentTransactionFuture.complete(completedTransaction);
-            } catch (InvalidMerchantIdException | BankServiceException_Exception | InvalidCustomerIdException | CustomerNotFoundException | PaymentAlreadyExistsException | CustomerTokenAlreadyConsumedException e) {
+            } catch (InvalidMerchantIdException |
+                    BankServiceException_Exception |
+                    InvalidCustomerIdException |
+                    CustomerNotFoundException |
+                    PaymentAlreadyExistsException |
+                    CustomerTokenAlreadyConsumedException e) {
                 fail(e.getMessage());
             }
         });
