@@ -1,10 +1,13 @@
 package org.dtu;
 
+import aggregate.Payment;
+import aggregate.Token;
 import aggregate.User;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.dtu.exceptions.MerchantDoesNotExist;
+import org.dtu.exceptions.PaymentDoesNotExist;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -15,6 +18,8 @@ public class MerchantAppSteps {
     MerchantApp merchantApp = new MerchantApp();
 
     User merchant;
+
+    Payment payment;
 
     @When("a merchant is being created")
     public void a_merchant_is_being_created() {
@@ -65,5 +70,49 @@ public class MerchantAppSteps {
             assertTrue(true);
         }
     }
+
+    //Report testing
+    @Given("a merchant is rregistered in the system")
+    public void a_merchant_is_rregistered_in_the_system() {
+
+    }
+
+    @Given("the merchant has been involved in a payment")
+    public void the_merchant_has_been_involved_in_a_payment() throws Exception {
+
+    }
+
+    @When("a merchant retrieves a list of payments")
+    public void a_merchant_retrieves_a_list_of_payments() throws PaymentDoesNotExist {
+
+    }
+
+    @Then("the merchant can see a list of all transactions they have been involved in")
+    public void the_merchant_can_see_a_list_of_all_transactions_they_have_been_involved_in() throws PaymentDoesNotExist {
+
+    }
+
+
+    // A merchant cannot retrieve a list of another merchants payments
+    @Given("two merchants is registered in the system")
+    public void two_merchants_is_registered_in_the_system() {
+
+    }
+
+    @Given("merchant1 has been involved in a payment")
+    public void merchant1_has_been_involved_in_a_payment() {
+
+    }
+
+    @When("merchant2 retrieves a list of payments")
+    public void merchant2_retrieves_a_list_of_payments() {
+
+    }
+
+    @Then("the merchant will not be able to see the other merchants payment")
+    public void the_merchant_will_not_be_able_to_see_the_other_merchants_payment() {
+
+    }
+
 
 }
