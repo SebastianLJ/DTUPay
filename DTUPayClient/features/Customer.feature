@@ -1,4 +1,4 @@
-Feature: Customer tests
+Feature: Customer end-to-end
   #Sebastian Lund (s184209)
   Scenario: A customer requests new tokens
     Given a customer is in the system

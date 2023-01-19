@@ -1,4 +1,4 @@
-Feature: Merchant App
+Feature: Merchant end-to-end
 
   Scenario: A merchant is successfully created
     When a merchant is being created

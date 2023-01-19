@@ -1,5 +1,5 @@
 #Sebastian Lund (s184209)
-Feature: Payment
+Feature: Payment end-to-end
 
   Scenario: A payment is completed
     Given a merchant has a bank account with a balance of 1000
