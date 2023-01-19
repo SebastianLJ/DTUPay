@@ -107,6 +107,10 @@ public class MerchantService {
         return merchantRepository.deleteMerchant(id);
     }
 
+    public void deletePayment(UUID id) throws PaymentNotFoundException {
+        paymentRepository.deletePayment(id);
+    }
+
     private void registerHandlers() {
         this.messageQueue.addHandler("TokenConsumed", e -> {
             TokenConsumed newEvent = e.getArgument(0, TokenConsumed.class);

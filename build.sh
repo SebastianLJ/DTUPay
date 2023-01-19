@@ -13,8 +13,8 @@ mvn clean install -q -DskipTests
 popd
 
 pushd DTUPayWebService
-./mvnw clean install -q -DskipTests
-./mvnw package -q -DskipTests
+mvn clean install -q -DskipTests
+mvn package -q -DskipTests
 popd
 
 # Clean docker images
