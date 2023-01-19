@@ -2,10 +2,12 @@ package org.dtu.services;
 
 import com.sun.xml.bind.v2.TODO;
 import messageUtilities.CorrelationID;
+import messageUtilities.cqrs.events.Event2;
 import messageUtilities.queues.IDTUPayMessageQueue;
 import messageUtilities.queues.IDTUPayMessageQueue2;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.UserId;
+import org.dtu.domain.Token;
 import org.dtu.events.CustomerReportGenerated;
 import org.dtu.events.FullReportGenerated;
 import org.dtu.events.MerchantReportGenerated;
@@ -46,11 +48,15 @@ public class ReportService {
         return merchantPayments;
     }
 
-//    public List<Payment> getPaymentByCustomerId(UserId id) throws PaymentNotFoundException {
-//        List<Payment> customerPayments = repository.getPaymentsByToken();
-//        CustomerReportGenerated event = new CustomerReportGenerated(id, customerPayments);
-//        messageQueue.publish(event);
-//        return customerPayments;
-//
-//    }
+    public List<Payment> getPaymentByCustomerId(UserId id, Token token) throws PaymentNotFoundException {
+        List<Payment> customerPayments = repository.getPaymentsByToken(token);
+        Event2 event = new Event2("CustomerReportGenerated", new Object[]{new CustomerReportGenerated(id, customerPayments)});
+        messageQueue.publish(event);
+        return customerPayments;
+
+    }
+
+    public void savePayment(Payment payment) {
+        repository.save(payment);
+    }
 }
