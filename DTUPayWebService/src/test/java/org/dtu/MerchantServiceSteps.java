@@ -122,8 +122,13 @@ public class MerchantServiceSteps {
     }
 
     @Then("the merchant cannot be found")
-    public void the_merchant_cannot_be_found() throws InvalidMerchantIdException {
-        assertNull(merchantService.getMerchant(merchant.getUserId().getUuid()));
+    public void the_merchant_cannot_be_found() {
+        try {
+            merchantService.getMerchant(merchant.getUserId().getUuid());
+            fail();
+        } catch (InvalidMerchantIdException e) {
+            assertTrue(true);
+        }
     }
 
     @Then("the merchant has a bank account")

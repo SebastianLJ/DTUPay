@@ -28,15 +28,13 @@ public class MerchantRepository {
     }
 
     public User getMerchant (UUID id) throws InvalidMerchantIdException {
-        User targetMerchant = null;
         for (User merchant:
                 merchants)  {
             if (merchant.getUserId().getUuid().equals(id)) {
-                targetMerchant = merchant;
-                break;
+                return merchant;
             }
         }
-        return targetMerchant;
+        throw new InvalidMerchantIdException();
     }
 
     public ArrayList<User> getMerchantList() {

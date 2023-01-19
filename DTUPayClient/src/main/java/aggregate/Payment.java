@@ -3,31 +3,29 @@ package aggregate;
 
 import lombok.Getter;
 import lombok.Setter;
+import messageUtilities.CorrelationID;
+import messageUtilities.cqrs.events.Event;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
-public class Payment {
+public class Payment implements Serializable {
+    private static final long serialVersionUID = -4831808956822934219L;
     UUID id;
-    UUID cid, mid;
+    UUID mid;
     int amount;
     Token token;
 
+    private List<Event> appliedEvents = new ArrayList<Event>();
 
 
     public Payment() {
         this.id = UUID.randomUUID();
     }
-
-//    public Payment(UUID cid, UUID mid, int amount) {
-//        this.id = UUID.randomUUID();
-//        this.cid = cid;
-//        this.mid = mid;
-//        this.amount = amount;
-//    }
 
     public Payment(Token token, UUID mid, int amount) {
         this.id = UUID.randomUUID();

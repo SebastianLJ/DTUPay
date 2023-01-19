@@ -37,14 +37,14 @@ public class CustomerApp {
     }
 
 
-    public UUID deRegisterCustomer(User user) throws Exception {
+    public User deRegisterCustomer(User user) throws Exception {
         Response response = r.path("customers/" + user.getUserId().getUuid())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
                 .delete();
 
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(UUID.class);
+            return response.readEntity(User.class);
         } else {
             throw new Exception("code: " + response.getStatus());
         }
@@ -72,7 +72,6 @@ public class CustomerApp {
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
                 .get();
-
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(User.class);
         } else {

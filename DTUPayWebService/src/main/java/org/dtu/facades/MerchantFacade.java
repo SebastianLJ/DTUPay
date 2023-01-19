@@ -7,6 +7,7 @@ import org.dtu.exceptions.*;
 import org.dtu.factories.MerchantFactory;
 import org.dtu.services.MerchantService;
 
+import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -18,14 +19,32 @@ import java.util.UUID;
 public class MerchantFacade {
     MerchantService service = new MerchantFactory().getService();
 
+    @GET
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
+    public Response getMerchant(@PathParam("id") String id) {
+        UUID merchantId = UUID.fromString(id);
+        try {
+            User merchant = service.getMerchant(merchantId);
+            return Response.status(Response.Status.OK)
+                    .entity(merchant)
+                    .build();
+        } catch (InvalidMerchantIdException e) {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response registerMerchant(String firstName, String lastName, String bankAccount) {
         try {
             User newUser = service.registerMerchant(firstName, lastName, bankAccount);
-            return Response.status(Response.Status.CREATED)
-                    .entity("merchant with id " + newUser.getUserId().getUuid() + " created")
+            return Response.status(Response.Status.OK)
+                    .entity(newUser)
                     .build();
         } catch (MerchantAlreadyExistsException e) {
             return Response.status(Response.Status.CONFLICT)

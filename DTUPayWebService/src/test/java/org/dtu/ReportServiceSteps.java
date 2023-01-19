@@ -33,11 +33,9 @@ public class ReportServiceSteps {
     List<Payment> merchantPayments = null;
     List<Payment> customerPayments = null;
     User merchant = null;
-    User merchant1 = null;
 
     User merchant2 = null;
     User customer = null;
-    User customer1 = null;
 
     User customer2 = null;
     Token token = null;
@@ -66,14 +64,14 @@ public class ReportServiceSteps {
     //A merchant cannot retrieve a list of another merchants payments
     @Given("two merchants is registered in the system")
     public void two_merchants_is_registered_in_the_system() throws MerchantAlreadyExistsException {
-        merchant1 = merchantService.registerMerchant("Oberyn", "Martell", "MoneyMoney");
+        merchant = merchantService.registerMerchant("Oberyn", "Martell", "MoneyMoney");
         merchant2 = merchantService.registerMerchant("Arya", "Stark", "BankAcc11");
     }
 
     @And("merchant1 has been involved in a payment")
     public void merchant1_has_been_involved_in_a_payment() throws CustomerAlreadyExistsException, CustomerTokenAlreadyConsumedException, BankServiceException_Exception, PaymentAlreadyExistsException, CustomerNotFoundException, InvalidCustomerIdException, InvalidMerchantIdException, PaymentNotFoundException {
         token = new Token();
-        payment = new Payment(token, merchant1.getUserId().getUuid(), 500);
+        payment = new Payment(token, merchant.getUserId().getUuid(), 500);
         reportService.savePayment(payment);
     }
     @When("merchant2 retrieves a list of payments")
@@ -111,7 +109,7 @@ public class ReportServiceSteps {
     //A customer cannot retrieve a list of another customers payments
     @Given("two customers is registered in the system")
     public void another_customer_is_registered_in_the_system() throws CustomerAlreadyExistsException {
-        customer1 = customerService.addCustomer("Davos", "Seaworth");
+        customer = customerService.addCustomer("Davos", "Seaworth");
         customer2 = customerService.addCustomer("Theon", "Greyjoy");
 
     }
@@ -119,7 +117,7 @@ public class ReportServiceSteps {
     @And("customer1 has been involved in a payment")
     public void customer1_has_been_involved_in_a_payment() throws CustomerTokenAlreadyConsumedException, InvalidCustomerIdException, BankServiceException_Exception, InvalidMerchantIdException, PaymentAlreadyExistsException, CustomerNotFoundException, MerchantAlreadyExistsException {
         token = new Token();
-        payment = new Payment(token, customer1.getUserId().getUuid(), 500);
+        payment = new Payment(token, customer.getUserId().getUuid(), 500);
         reportService.savePayment(payment);
     }
 

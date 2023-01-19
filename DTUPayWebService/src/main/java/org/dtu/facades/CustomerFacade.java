@@ -115,8 +115,7 @@ public class CustomerFacade {
     }
 
     @GET
-    @Path("{id}")
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getCustomer(@PathParam("id") String id) {
         try {
