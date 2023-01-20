@@ -12,11 +12,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class ReadModelRepository {
 
-    private HashMap<Token, UserId> tokenRepository = new HashMap<>();
-    private HashMap<UserId, Integer> tokenAmountRepository = new HashMap<>();
-    private HashMap<UserId, List<Token>> usedTokenRepository = new HashMap<>();
-
-    private ConcurrentHashMap<UUID, Boolean> processedEventsByCorrelationId = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Token, UserId> tokenRepository = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UserId, Integer> tokenAmountRepository = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UserId, List<Token>> usedTokenRepository = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<UUID, Boolean> processedEventsByCorrelationId = new ConcurrentHashMap<>();
 
     private final IDTUPayMessageQueue messageQueue;
 

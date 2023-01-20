@@ -20,16 +20,12 @@ import java.util.concurrent.ConcurrentHashMap;
 
 
 public class CustomerService {
-    CustomerRepository repository;
-    IDTUPayMessageQueue messageQueue;
+    private final CustomerRepository repository;
+    private final IDTUPayMessageQueue messageQueue;
 
-    ConcurrentHashMap<CorrelationID, CompletableFuture<TokensGenerated>> token_events = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<CorrelationID, CompletableFuture<TokensGenerated>> token_events = new ConcurrentHashMap<>();
 
-    CompletableFuture<User> deletedCustomer;
-
-    public CustomerService() {
-        repository = new CustomerRepository();
-    }
+    private CompletableFuture<User> deletedCustomer = new CompletableFuture<>();
 
     /**
      * @author Jákup Viljam Dam - s185095
@@ -56,7 +52,6 @@ public class CustomerService {
             throw new CustomerAlreadyExistsException();
         }
     }
-
 
     /**
      @author Noah Christiansen (s184186)
@@ -99,7 +94,7 @@ public class CustomerService {
     }
 
     /**
-     * @Autor Jákup Viljam Dam - s185095
+     * @autor Jákup Viljam Dam - s185095
      */
     public synchronized void handleTokensGenerated(MessageEvent event) {
         TokensGenerated newEvent = event.getArgument(0, TokensGenerated.class);
@@ -110,7 +105,7 @@ public class CustomerService {
     }
 
     /**
-     * @Autor Jákup Viljam Dam - s185095
+     * @autor Jákup Viljam Dam - s185095
      */
     public synchronized void handleTokensDeleted(MessageEvent event) {
         TokensDeleted newEvent = event.getArgument(0, TokensDeleted.class);
