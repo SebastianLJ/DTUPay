@@ -8,17 +8,17 @@ set -e
 printf "\033[94mStep 1/5: Clean and build projects\033[0m\n"
 
 pushd DTUPayMessageQueue
-mvn clean install -q -DskipTests -U
+mvn clean install -q -DskipTests
 popd
 
 # @author Alexander Faarup Christensen - s174355
 pushd DTUPayTokenManagement
-mvn clean install -q -DskipTests -U
+mvn clean install -q -DskipTests
 popd
 
 # @author Jákup Viljam Dam - s185095
 pushd DTUPayWebService
-mvn clean install -q -DskipTests -U
+mvn clean install -q -DskipTests
 mvn package -q -DskipTests
 popd
 
