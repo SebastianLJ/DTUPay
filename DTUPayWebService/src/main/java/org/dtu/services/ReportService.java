@@ -34,13 +34,13 @@ public class ReportService {
         this.repository = repository;
     }
 
-    public void completeEvent(MessageEvent e) {
+    public synchronized void completeEvent(MessageEvent e) {
         UserTokensGenerated newEvent = e.getArgument(0, UserTokensGenerated.class);
         publishedEvents.get(newEvent.getCorrelationID()).complete(newEvent);
     }
 
     //TODO implement Event2
-    public List<Payment> getPayments() throws PaymentNotFoundException {
+    public synchronized List<Payment> getPayments() throws PaymentNotFoundException {
         List<Payment> payments = repository.getPayments();
         CorrelationID correlationID = CorrelationID.randomID();
         //FullReportGenerated event = new FullReportGenerated(payments);
@@ -50,7 +50,7 @@ public class ReportService {
         return payments;
     }
 
-    public List<Payment> getPaymentByMerchantId(UserId id) throws PaymentNotFoundException {
+    public synchronized List<Payment> getPaymentByMerchantId(UserId id) throws PaymentNotFoundException {
         List<Payment> merchantPayments = repository.getPaymentsByMerchantId(id.getUuid());
         CorrelationID correlationID = CorrelationID.randomID();
         //MerchantReportGenerated event = new MerchantReportGenerated(id, merchantPayments);
@@ -60,7 +60,7 @@ public class ReportService {
         return merchantPayments;
     }
 
-    public List<Payment> getPaymentByCustomerId(UserId id) {
+    public synchronized List<Payment> getPaymentByCustomerId(UserId id) {
         UserTokensRequested userTokensRequested = new UserTokensRequested(CorrelationID.randomID(),id);
         MessageEvent event = new MessageEvent("UserTokensRequested", new Object[]{userTokensRequested});
         publishedEvents.put(userTokensRequested.getCorrelationID(), new CompletableFuture<>());
@@ -77,7 +77,7 @@ public class ReportService {
 
 
 
-    public void savePayment(Payment payment) {
+    public synchronized void savePayment(Payment payment) {
         repository.save(payment);
     }
 }

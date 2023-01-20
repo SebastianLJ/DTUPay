@@ -22,13 +22,13 @@ public class CustomerRepository {
     /**
      * @author Nicklas Olabi (s205347)
      */
-    public User addCustomer(String firstName, String lastName) throws CustomerAlreadyExistsException {
+    public synchronized User addCustomer(String firstName, String lastName) throws CustomerAlreadyExistsException {
         User newUser = new User(firstName, lastName);
         customers.add(newUser);
         return newUser;
     }
 
-    public User addCustomer(User user) throws CustomerAlreadyExistsException, InvalidCustomerNameException {
+    public synchronized User addCustomer(User user) throws CustomerAlreadyExistsException, InvalidCustomerNameException {
         try {
             User newUser = new User(user.getName().getFirstName(), user.getName().getLastName(), user.getBankNumber());
             customers.add(newUser);
@@ -42,7 +42,7 @@ public class CustomerRepository {
     /**
      * @author Noah Christiansen (s184186)
      */
-    public static User getCustomer(UUID id) throws CustomerNotFoundException {
+    public synchronized static User getCustomer(UUID id) throws CustomerNotFoundException {
         for (User customer :
                 customers) {
             if (customer.getUserId().getUuid().equals(id)) {
@@ -52,14 +52,14 @@ public class CustomerRepository {
         throw new CustomerNotFoundException("Customer not found!");
     }
 
-    public ArrayList<User> getCustomerList() {
+    public synchronized ArrayList<User> getCustomerList() {
         return new ArrayList<>(customers);
     }
 
     /**
      * @author Noah Christiansen (s184186)
      */
-    public User deleteCustomer(User customer) {
+    public synchronized User deleteCustomer(User customer) {
         this.customers.remove(customer);
         return customer;
     }
