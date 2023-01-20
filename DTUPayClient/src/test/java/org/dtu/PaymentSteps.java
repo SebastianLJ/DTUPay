@@ -130,39 +130,6 @@ public class PaymentSteps {
                 bankService.getAccount(merchantBankAccount).getBalance());
 
     }
-
-    /**
-     * @author Sebastian Juste pedersen (s205335)
-     * @author Nicklas Olabi (s205347)
-     */
-
-    // Reporting
-    @When("a payment is done")
-    public void aPaymentIsDone() throws Exception {
-        merchantApp.pay(merchant.getUserId(), payment.getToken(), payment.getAmount());
-    }
-
-    @When("a merchant retrieves a list of payments")
-    public void a_merchant_retrieves_a_list_of_payments() throws PaymentDoesNotExist {
-       //merchantPayments = merchantApp.getMerchantReport(merchant);
-    }
-
-
-    @When("a customer retrieves a list of payments")
-    public void a_customer_retrieves_a_list_of_payments() throws PaymentDoesNotExist {
-        //customerPayments = customerApp.getCustomerReport(customer);
-    }
-
-    @Then("the merchant can see a list of all transactions they have been involved in")
-    public void the_merchant_can_see_a_list_of_all_transactions_they_have_been_involved_in() {
-        //assertEquals(payment, merchantPayments.get(0));
-    }
-    @Then("the customer can see a list of all transactions they have been involved in")
-    public void the_customer_can_see_a_list_of_all_transactions_they_have_been_involved_in() {
-        //assertEquals(payment, customerPayments.get(0));
-    }
-
-
     /**
      * @Autor Jákup Viljam Dam - s185095
      */
