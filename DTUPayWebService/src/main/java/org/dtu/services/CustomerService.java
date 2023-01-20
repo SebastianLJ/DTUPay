@@ -18,9 +18,6 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
-@author Noah (s184186)
- */
 
 public class CustomerService {
     CustomerRepository repository;
@@ -57,6 +54,10 @@ public class CustomerService {
         }
     }
 
+
+    /**
+     @author Noah Christiansen (s184186)
+     */
     public User addCustomer(User user) throws CustomerAlreadyExistsException, InvalidCustomerNameException {
         MessageEvent event = new MessageEvent("CustomerAccountCreated", new Object[]{new CustomerAccountCreated(user)});
         messageQueue.publish(event);
@@ -66,6 +67,11 @@ public class CustomerService {
     public ArrayList<User> getCustomerList() {
         return repository.getCustomerList();
     }
+
+
+    /**
+     @author Noah Christiansen (s184186)
+     */
 
     public User deleteCustomer(User user) throws CustomerNotFoundException {
         getCustomer(user.getUserId().getUuid());

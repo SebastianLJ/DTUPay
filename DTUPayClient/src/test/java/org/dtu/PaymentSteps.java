@@ -7,6 +7,7 @@ import dtu.ws.fastmoney.BankService;
 import dtu.ws.fastmoney.BankServiceException_Exception;
 import dtu.ws.fastmoney.BankServiceService;
 import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -40,7 +41,7 @@ public class PaymentSteps {
         dtu.ws.fastmoney.User bankUser = new dtu.ws.fastmoney.User();
         bankUser.setFirstName("Fred");
         bankUser.setLastName("Again");
-        bankUser.setCprNumber("2309958585");
+        bankUser.setCprNumber("2309958584");
         merchantBankAccount = bankService.createAccountWithBalance(
                 bankUser,
                 BigDecimal.valueOf(balance)
@@ -62,7 +63,7 @@ public class PaymentSteps {
         dtu.ws.fastmoney.User bankUser = new dtu.ws.fastmoney.User();
         bankUser.setFirstName("Four");
         bankUser.setLastName("Tet");
-        bankUser.setCprNumber("141275293");
+        bankUser.setCprNumber("141275292");
         customerBankAccount = bankService.createAccountWithBalance(
                 bankUser,
                 BigDecimal.valueOf(balance)
@@ -123,6 +124,25 @@ public class PaymentSteps {
         assertEquals(BigDecimal.valueOf(balance),
                 bankService.getAccount(merchantBankAccount).getBalance());
 
+    }
+
+    /**
+     * @Autor Jákup Viljam Dam - s185095
+     */
+    @Before
+    public void cleanup2() {
+        if (customerBankAccount != null) {
+            try {
+                bankService.retireAccount(customerBankAccount);
+            } catch (BankServiceException_Exception ignored) {
+            }
+        }
+        if (merchantBankAccount != null) {
+            try {
+                bankService.retireAccount(merchantBankAccount);
+            } catch (BankServiceException_Exception ignored) {
+            }
+        }
     }
 
     @After
