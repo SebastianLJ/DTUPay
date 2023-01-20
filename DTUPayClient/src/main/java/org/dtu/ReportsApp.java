@@ -13,14 +13,15 @@ import org.dtu.exceptions.PaymentDoesNotExist;
 import java.util.List;
 
 public class ReportsApp {
-    private final Client client = ClientBuilder.newClient();
-    private final WebTarget webTarget = client.target("http://localhost:8080/");
+    private Client client;
+    private WebTarget webTarget;
 
     /**
      * @author Sebastian Juste pedersen (s205335)
      * @author Nicklas Olabi (s205347)
      */
     public List<Payment> getAllReports() throws PaymentDoesNotExist {
+        createClient();
         try (Response response = webTarget.path("reports")
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
@@ -32,6 +33,8 @@ public class ReportsApp {
                 System.out.println(response.getStatus());
                 throw new PaymentDoesNotExist();
             }
+        } finally {
+            closeClient();
         }
     }
 
@@ -40,6 +43,7 @@ public class ReportsApp {
      * @author Nicklas Olabi (s205347)
      */
     public List<Payment> getMerchantReport(User user) throws PaymentDoesNotExist {
+        createClient();
         try (Response response = webTarget.path("reports/merchant/" + user.getUserId().getUuid())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
@@ -51,6 +55,8 @@ public class ReportsApp {
                 System.out.println(response.getStatus());
                 throw new PaymentDoesNotExist();
             }
+        } finally {
+            closeClient();
         }
     }
 
@@ -59,16 +65,30 @@ public class ReportsApp {
      * @author Nicklas Olabi (s205347)
      */
     public List<Payment> getCustomerReport(User user) throws PaymentDoesNotExist {
-        Response response = webTarget.path("reports/customer/" + user.getUserId().getUuid())
-                .request()
-                .accept(MediaType.APPLICATION_JSON)
-                .get();
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(new GenericType<List<Payment>>() {
-            });
-        } else {
-            System.out.println(response.getStatus());
-            throw new PaymentDoesNotExist();
+        createClient();
+        try {
+            Response response = webTarget.path("reports/customer/" + user.getUserId().getUuid())
+                    .request()
+                    .accept(MediaType.APPLICATION_JSON)
+                    .get();
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return response.readEntity(new GenericType<List<Payment>>() {
+                });
+            } else {
+                System.out.println(response.getStatus());
+                throw new PaymentDoesNotExist();
+            }
+        }finally {
+            closeClient();
         }
+    }
+
+    public void createClient(){
+        client = ClientBuilder.newClient();
+        webTarget = client.target("http://localhost:8080/");
+    }
+
+    public void closeClient(){
+        client.close();
     }
 }

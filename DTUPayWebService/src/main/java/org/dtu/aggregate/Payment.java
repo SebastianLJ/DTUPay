@@ -4,7 +4,6 @@ package org.dtu.aggregate;
 import lombok.Getter;
 import lombok.Setter;
 import messageUtilities.cqrs.events.Event;
-import org.dtu.domain.Token;
 
 import java.io.Serializable;
 import java.util.ArrayList;

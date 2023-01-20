@@ -12,7 +12,7 @@ import messageUtilities.queues.rabbitmq.DTUPayRabbitMq;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
-import org.dtu.domain.Token;
+import org.dtu.aggregate.Token;
 import org.dtu.events.UserTokensGenerated;
 import org.dtu.events.UserTokensRequested;
 import org.dtu.exceptions.*;
@@ -25,7 +25,6 @@ import org.dtu.services.ReportService;
 import org.junit.After;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;

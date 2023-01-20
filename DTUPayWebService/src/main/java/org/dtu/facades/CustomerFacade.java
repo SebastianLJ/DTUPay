@@ -1,11 +1,10 @@
 package org.dtu.facades;
 
 import org.dtu.aggregate.UserId;
-import org.dtu.domain.Token;
+import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.CustomerNotFoundException;
-import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.exceptions.InvalidCustomerNameException;
 import org.dtu.factories.CustomerFactory;
 import org.dtu.services.CustomerService;
