@@ -88,6 +88,7 @@ public class ReportsSteps {
                 User merchant = merchants.get(i);
                 User customer = customers.get(j);
                 Payment payment = merchantApp.pay(merchant.getUserId(), customerTokens.get(customer.getUserId()).get(0), 100);
+                Thread.sleep(1000);
                 customerTokens.get(customer.getUserId()).remove(0);
                 allPayments.add(payment);
             }
