@@ -43,6 +43,10 @@ public class CustomerSteps {
     }
 
 
+    /**
+     * @author Sebastian Juste pedersen (s205335)
+     * @author Nicklas Olabi (s205347)
+     */
     //Test of customer deleted along with its tokens
     @Given("a customer is already in the system")
     public void a_customer_is_already_in_the_system() {
@@ -79,61 +83,5 @@ public class CustomerSteps {
         // Write code here that turns the phrase above into concrete actions
         //throw new io.cucumber.java.PendingException();
     }
-
-    //Report testing
-    @Given("a customer is rregistered in the system")
-    public void a_customer_is_rregistered_in_the_system() {
-        // Write code here that turns the phrase above into concrete actions
-        //throw new io.cucumber.java.PendingException();
-    }
-
-    @Given("the customer has been involved in a payment")
-    public void the_customer_has_been_involved_in_a_payment() {
-        // Write code here that turns the phrase above into concrete actions
-        //throw new io.cucumber.java.PendingException();
-    }
-
-    @When("the customer retrieves a list of payments")
-    public void the_customer_retrieves_a_list_of_payments() {
-        // Write code here that turns the phrase above into concrete actions
-        //throw new io.cucumber.java.PendingException();
-    }
-
-    @Then("the customer can see a list of all transactions they have been involved in")
-    public void the_customer_can_see_a_list_of_all_transactions_they_have_been_involved_in() {
-        // Write code here that turns the phrase above into concrete actions
-        //throw new io.cucumber.java.PendingException();
-    }
-
-
-    // A customer cannot retrieve a list of another customers payments
-    @Given("two customers is registered in the system")
-    public void two_customers_is_registered_in_the_system() {
-        // Write code here that turns the phrase above into concrete actions
-        //throw new io.cucumber.java.PendingException();
-    }
-
-    @Given("customer1 has been involved in a payment")
-    public void customer1_has_been_involved_in_a_payment() {
-        // Write code here that turns the phrase above into concrete actions
-        //throw new io.cucumber.java.PendingException();
-    }
-
-    @When("customer2 retrieves a list of payments")
-    public void customer2_retrieves_a_list_of_payments() {
-        // Write code here that turns the phrase above into concrete actions
-        //throw new io.cucumber.java.PendingException();
-    }
-
-    @Then("the customer will not be able to see the other customers payment")
-    public void the_customer_will_not_be_able_to_see_the_other_customers_payment() {
-        // Write code here that turns the phrase above into concrete actions
-        //throw new io.cucumber.java.PendingException();
-    }
-
-
-
-
-
 
 }

@@ -83,6 +83,9 @@ public class MerchantService {
         return payment;
     }
 
+    /**
+     * @author Sebastian Juste pedersen (s205335)
+     */
     public User registerMerchant(String firstName, String lastName) throws MerchantAlreadyExistsException {
         try {
             return merchantRepository.addMerchant(firstName, lastName);
@@ -110,6 +113,11 @@ public class MerchantService {
             throw new MerchantAlreadyExistsException();
         }
     }
+
+    /**
+     * @author Sebastian Juste pedersen (s205335)
+     * @author Nicklas Olabi (s205347)
+     */
 
     public ArrayList<User> getMerchantList() {
         return merchantRepository.getMerchantList();

@@ -14,23 +14,14 @@ import java.net.URISyntaxException;
 import java.util.List;
 import java.util.UUID;
 
+/**
+ * @author Sebastian Juste pedersen (s205335)
+ * @author Nicklas Olabi (s205347)
+ */
 @Path("/reports")
 public class ReportingFacade {
 
     ReportService reportService = new ReportFactory().getService();
-
-//    @Path("/{id}")
-//    @GET
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getPayments(@PathParam("id") String id) {
-//        try {
-//            UUID uuid = UUID.fromString(id);
-//            return Response.status(Response.Status.OK).build();
-//        } catch (IllegalArgumentException e) {
-//            return Response.status(Response.Status.BAD_REQUEST)
-//                    .build();
-//        }
-//    }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
@@ -69,25 +60,25 @@ public class ReportingFacade {
         }
     }
 
-//    @Path("/customer/{id}")
-//    @GET
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response getPaymentsByCustomerId(@PathParam("id") String id) {
-//        try {
-//            UUID uuid = UUID.fromString(id);
-//            UserId userid = new UserId(uuid);
-//            List<Payment> merchantPayments = reportService.getPaymentByCustomerId(userid);
-//            return  Response
-//                    .status(Response.Status.OK)
-//                    .entity(merchantPayments)
-//                    .build();
-//        } catch(PaymentNotFoundException e) {
-//            return Response
-//                    .status(Response.Status.BAD_REQUEST)
-//                    .entity(e.getMessage())
-//                    .build();
-//        }
-//    }
+    @Path("/customer/{id}")
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPaymentsByCustomerId(@PathParam("id") String id) {
+        try {
+            UUID uuid = UUID.fromString(id);
+            UserId userid = new UserId(uuid);
+            List<Payment> merchantPayments = reportService.getPaymentByCustomerId(userid);
+            return  Response
+                    .status(Response.Status.OK)
+                    .entity(merchantPayments)
+                    .build();
+        } catch(PaymentNotFoundException e) {
+            return Response
+                    .status(Response.Status.BAD_REQUEST)
+                    .entity(e.getMessage())
+                    .build();
+        }
+    }
 
 
 }

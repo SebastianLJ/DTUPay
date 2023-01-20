@@ -12,6 +12,8 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.dtu.exceptions.PaymentDoesNotExist;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
@@ -34,6 +36,9 @@ public class PaymentSteps {
 
     Payment payment;
 
+    List<Payment> merchantPayments;
+    List<Payment> customerPayments;
+
     List<Token> customerTokens;
 
     @Given("a merchant has a bank account with a balance of {int}")
@@ -41,7 +46,7 @@ public class PaymentSteps {
         dtu.ws.fastmoney.User bankUser = new dtu.ws.fastmoney.User();
         bankUser.setFirstName("Fred");
         bankUser.setLastName("Again");
-        bankUser.setCprNumber("2309958584");
+        bankUser.setCprNumber("2339958584");
         merchantBankAccount = bankService.createAccountWithBalance(
                 bankUser,
                 BigDecimal.valueOf(balance)
@@ -63,7 +68,7 @@ public class PaymentSteps {
         dtu.ws.fastmoney.User bankUser = new dtu.ws.fastmoney.User();
         bankUser.setFirstName("Four");
         bankUser.setLastName("Tet");
-        bankUser.setCprNumber("141275292");
+        bankUser.setCprNumber("141285292");
         customerBankAccount = bankService.createAccountWithBalance(
                 bankUser,
                 BigDecimal.valueOf(balance)
@@ -127,6 +132,38 @@ public class PaymentSteps {
     }
 
     /**
+     * @author Sebastian Juste pedersen (s205335)
+     * @author Nicklas Olabi (s205347)
+     */
+
+    // Reporting
+    @When("a payment is done")
+    public void aPaymentIsDone() throws Exception {
+        merchantApp.pay(merchant.getUserId(), payment.getToken(), payment.getAmount());
+    }
+
+    @When("a merchant retrieves a list of payments")
+    public void a_merchant_retrieves_a_list_of_payments() throws PaymentDoesNotExist {
+       //merchantPayments = merchantApp.getMerchantReport(merchant);
+    }
+
+
+    @When("a customer retrieves a list of payments")
+    public void a_customer_retrieves_a_list_of_payments() throws PaymentDoesNotExist {
+        //customerPayments = customerApp.getCustomerReport(customer);
+    }
+
+    @Then("the merchant can see a list of all transactions they have been involved in")
+    public void the_merchant_can_see_a_list_of_all_transactions_they_have_been_involved_in() {
+        //assertEquals(payment, merchantPayments.get(0));
+    }
+    @Then("the customer can see a list of all transactions they have been involved in")
+    public void the_customer_can_see_a_list_of_all_transactions_they_have_been_involved_in() {
+        //assertEquals(payment, customerPayments.get(0));
+    }
+
+
+    /**
      * @Autor Jákup Viljam Dam - s185095
      */
     @Before
@@ -156,4 +193,5 @@ public class PaymentSteps {
         } catch (BankServiceException_Exception ignored) {
         }
     }
+
 }

@@ -1,5 +1,7 @@
 Feature: reporting
 
+  #Sebastian Juste Pedersen (s205335)
+  #Nicklas Olabi (s205347)
   Scenario: A merchant retrieves a list of payments
     Given a merchant is rregistered in the system
     And the merchant has been involved in a payment

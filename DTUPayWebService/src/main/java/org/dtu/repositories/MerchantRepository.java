@@ -15,6 +15,10 @@ public class MerchantRepository {
 
     }
 
+    /**
+     * @author Sebastian Juste pedersen (s205335)
+     * @author Nicklas Olabi (s205347)
+     */
     public User addMerchant(String firstName, String lastName) throws MerchantAlreadyExistsException {
         User merchant = new User(firstName, lastName);
         merchants.add(merchant);

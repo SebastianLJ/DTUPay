@@ -16,7 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-
+/**
+ * @author Sebastian Juste pedersen (s205335)
+ * @author Nicklas Olabi (s205347)
+ */
 public class ReportService {
 
     PaymentRepository repository;

@@ -40,7 +40,9 @@ public class MerchantApp {
             throw new Exception("code: " + response.getStatus());
         }
     }
-
+    /**
+     * @author Nicklas Olabi (s205347)
+     */
     public User deregister(User user) throws Exception {
         Response response = r.path("merchants/" + user.getUserId().getUuid())
                 .request()
@@ -68,6 +70,9 @@ public class MerchantApp {
         }
     }
 
+    /**
+     * @author Sebastian Juste pedersen (s205335)
+     */
     public User getMerchant(User user) throws MerchantDoesNotExist {
         Response response = r.path("merchants/" + user.getUserId().getUuid())
                 .request()
@@ -80,16 +85,20 @@ public class MerchantApp {
         }
     }
 
+    /**
+     * @author Sebastian Juste pedersen (s205335)
+     * @author Nicklas Olabi (s205347)
+     */
     public List<Payment> getMerchantReport(User user) throws PaymentDoesNotExist {
-        Response response = r.path("reports/merchants/" + user.getUserId())
+        Response response = r.path("reports/merchant/" + user.getUserId())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
                 .get();
-
         if (response.getStatus() == Response.Status.OK.getStatusCode()) {
             return response.readEntity(new GenericType<List<Payment>>() {
             });
         } else {
+            System.out.println(response.getStatus());
             throw new PaymentDoesNotExist();
         }
     }
