@@ -42,6 +42,9 @@ public class CustomerService {
 
     }
 
+    /**
+     * @author Nicklas Olabi (s205347)
+     */
     public User getCustomer(UUID id) throws CustomerNotFoundException {
         return repository.getCustomer(id);
     }

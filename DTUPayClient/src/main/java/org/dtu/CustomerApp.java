@@ -89,6 +89,10 @@ public class CustomerApp {
         }
     }
 
+    /**
+     * @author Sebastian Juste pedersen (s205335)
+     * @author Nicklas Olabi (s205347)
+     */
     public List<Payment> getCustomerReport(User user) throws PaymentDoesNotExist {
         Response response = r.path("reports/customer/"+user.getUserId())
                 .request()
@@ -98,6 +102,7 @@ public class CustomerApp {
             return response.readEntity(new GenericType<List<Payment>>() {
             });
         } else {
+            System.out.println(response.getStatus());
             throw new PaymentDoesNotExist();
         }
     }
