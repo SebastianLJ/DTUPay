@@ -67,7 +67,6 @@ public class ReportService {
         for(Token token : userTokensGenerated.getTokens()) {
             customerPayments.add(repository.getPaymentsByToken(token));
         }
-        System.out.println(customerPayments.get(0).toString());
         return customerPayments;
 
     }

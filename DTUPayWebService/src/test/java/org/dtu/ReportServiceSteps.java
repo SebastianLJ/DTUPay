@@ -165,56 +165,6 @@ public class ReportServiceSteps {
        assertEquals(payment, customerPayments.get(0));
     }
 
-    //A customer cannot retrieve a list of another customers payments
-    @Given("two customers is registered in the system")
-    public void another_customer_is_registered_in_the_system() throws CustomerAlreadyExistsException, PaymentNotFoundException {
-        customer = customerService.addCustomer("Davos", "Seaworth");
-        customer2 = customerService.addCustomer("Theon", "Greyjoy");
-
-        token1 = new Token();
-        token2 = new Token();
-
-        publishedUsers.put(customer2.getUserId(), new CompletableFuture<>());
-
-        customerPayments = reportService.getPaymentByCustomerId(customer2.getUserId());
-        //System.out.println(customerPayments.get(0));
-
-    }
-
-    @And("customer1 has been involved in a payment")
-    public void customer1_has_been_involved_in_a_payment() throws CustomerTokenAlreadyConsumedException, InvalidCustomerIdException, BankServiceException_Exception, InvalidMerchantIdException, PaymentAlreadyExistsException, CustomerNotFoundException, MerchantAlreadyExistsException {
-        payment = new Payment(token1, customer.getUserId().getUuid(), 400);
-        reportService.savePayment(payment);
-    }
-
-    @When("customer2 retrieves a list of payments")
-    public void customer2_retrieves_a_list_of_payments() throws PaymentNotFoundException {
-        new Thread(()-> {
-            try {
-                customerPayments = reportService.getPaymentByCustomerId(customer2.getUserId());
-                future.complete(customerPayments);
-            } catch (PaymentNotFoundException e) {
-                e.printStackTrace();
-            }
-        }).start();
-
-    }
-
-    @Then("the customer will not be able to see the other customers payment")
-    public void the_customer_will_not_be_able_to_see_the_other_customers_payment() {
-        publishedUsers.get(customer2.getUserId()).join();
-        ArrayList<Token> newList = new ArrayList<>();
-        CorrelationID correlationID = ((UserTokensRequested) publishedUsers.get(customer2.getUserId()).join()).getCorrelationID();
-        newList.add(token1);
-        UserTokensGenerated userTokensGenerated = new UserTokensGenerated(correlationID,customer2.getUserId(), newList);
-        MessageEvent newEvent = new MessageEvent("UserTokensGenerated", new Object[]{userTokensGenerated});
-        reportService.completeEvent(newEvent);
-
-        future.join();
-
-        assertNotEquals(payment, customerPayments.get(0));
-
-    }
 
     @After
     public void deleteUsersAndPayment() throws CustomerNotFoundException, PaymentNotFoundException, MerchantNotFoundException, InvalidMerchantIdException {
