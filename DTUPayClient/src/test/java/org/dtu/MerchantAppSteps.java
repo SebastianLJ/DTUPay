@@ -72,9 +72,11 @@ public class MerchantAppSteps {
         //assertEquals(merchant.getUserId().getUuid(), merchantApp.getMerchant(merchant).getUserId().getUuid());
         assertEquals(merchant.getUserId().getUuid(), merchantApp.getMerchant(merchant).getUserId().getUuid());
     }
+
     //Report testing
     @Given("a merchant is rregistered in the system")
-    public void a_merchant_is_rregistered_in_the_system() {
+    public void a_merchant_is_rregistered_in_the_system() throws Exception {
+        merchant = merchantApp.register("Tony", "Soprano", "MafiaMoney");
 
     }
 

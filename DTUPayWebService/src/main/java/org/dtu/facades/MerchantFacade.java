@@ -56,6 +56,10 @@ public class MerchantFacade {
         }
     }
 
+
+    /**
+     * @author Noah Christiansen (s184186)
+     */
     @POST
     @Path("/payments")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -92,6 +96,10 @@ public class MerchantFacade {
         }
 
     }
+
+    /**
+     * @author Noah Christiansen (s184186)
+     */
 
     @DELETE
     @Path("/{id}")

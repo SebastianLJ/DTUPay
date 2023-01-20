@@ -7,6 +7,10 @@ import org.dtu.exceptions.*;
 import java.util.ArrayList;
 import java.util.UUID;
 
+/**
+ * @author Noah(s184186)
+ */
+
 public class CustomerRepository {
 
     static ArrayList<User> customers = new ArrayList<>();
