@@ -7,7 +7,7 @@ import dtu.ws.fastmoney.BankServiceService;
 import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.MessageEvent;
 import messageUtilities.queues.IDTUPayMessage;
-import messageUtilities.queues.IDTUPayMessageQueue2;
+import messageUtilities.queues.IDTUPayMessageQueue;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
 import org.dtu.events.ConsumeToken;
@@ -32,12 +32,12 @@ public class MerchantService {
     private final Map<CorrelationID, CompletableFuture<IDTUPayMessage>> correlations;
     private final MerchantRepository merchantRepository;
     private final PaymentRepository paymentRepository;
-    private final IDTUPayMessageQueue2 messageQueue;
+    private final IDTUPayMessageQueue messageQueue;
 
     /**
      * @Autor Jákup Viljam Dam - s185095
      */
-    public MerchantService(IDTUPayMessageQueue2 messageQueue, MerchantRepository merchantRepository, PaymentRepository paymentRepository) {
+    public MerchantService(IDTUPayMessageQueue messageQueue, MerchantRepository merchantRepository, PaymentRepository paymentRepository) {
         this.messageQueue = messageQueue;
         this.merchantRepository = merchantRepository;
         this.paymentRepository = paymentRepository;

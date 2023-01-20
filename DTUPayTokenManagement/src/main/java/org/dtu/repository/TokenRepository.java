@@ -2,7 +2,6 @@ package org.dtu.repository;
 
 import messageUtilities.eventSource.IEventRepository;
 import messageUtilities.queues.IDTUPayMessageQueue;
-import messageUtilities.queues.IDTUPayMessageQueue2;
 import org.dtu.aggregate.Token;
 import org.dtu.aggregate.TokenId;
 
@@ -10,7 +9,7 @@ public class TokenRepository implements IEventRepository<Token, TokenId> {
 
     private EventStore eventStore;
 
-    public TokenRepository(IDTUPayMessageQueue2 bus) {
+    public TokenRepository(IDTUPayMessageQueue bus) {
         eventStore = new EventStore(bus);
     }
 

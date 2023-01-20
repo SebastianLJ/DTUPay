@@ -7,7 +7,7 @@ import io.cucumber.java.en.When;
 import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.MessageEvent;
 import messageUtilities.queues.IDTUPayMessage;
-import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ2;
+import messageUtilities.queues.rabbitmq.DTUPayRabbitMq;
 import org.dtu.aggregate.Name;
 import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
@@ -44,7 +44,7 @@ public class CustomerServiceSteps {
 
     List<Token> tokens;
 
-    private DTUPayRabbitMQ2 q = new DTUPayRabbitMQ2("localhost") {
+    private DTUPayRabbitMq q = new DTUPayRabbitMq("localhost") {
         @Override
         public void publish(MessageEvent event) {
             super.publish(event);

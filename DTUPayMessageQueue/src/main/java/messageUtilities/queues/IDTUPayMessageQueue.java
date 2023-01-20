@@ -1,5 +1,7 @@
 package messageUtilities.queues;
 
+import messageUtilities.MessageEvent;
+
 import java.util.function.Consumer;
 
 /**
@@ -7,6 +9,6 @@ import java.util.function.Consumer;
  * Used the messageUtilities from the course
  */
 public interface IDTUPayMessageQueue {
-    void publish(IDTUPayMessage event);
-    void addHandler(Class<? extends IDTUPayMessage> event, Consumer<IDTUPayMessage> handler);
+    void publish(MessageEvent message);
+    void addHandler(String eventType, Consumer<MessageEvent> handler);
 }

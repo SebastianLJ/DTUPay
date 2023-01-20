@@ -8,7 +8,7 @@ import io.cucumber.java.en.When;
 import messageUtilities.MessageEvent;
 import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.queues.IDTUPayMessage;
-import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ2;
+import messageUtilities.queues.rabbitmq.DTUPayRabbitMq;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
@@ -34,8 +34,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ReportServiceSteps {
 
-    MerchantService merchantService = new MerchantService(new DTUPayRabbitMQ2("localhost"), new MerchantRepository(), new PaymentRepository());
-    CustomerService customerService = new CustomerService(new DTUPayRabbitMQ2("localhost"), new CustomerRepository());
+    MerchantService merchantService = new MerchantService(new DTUPayRabbitMq("localhost"), new MerchantRepository(), new PaymentRepository());
+    CustomerService customerService = new CustomerService(new DTUPayRabbitMq("localhost"), new CustomerRepository());
 
     //ConcurrentHashMap<CorrelationID, CompletableFuture<IDTUPayMessage>> publishedEvents = new ConcurrentHashMap<>();
     ConcurrentHashMap<UserId, CompletableFuture<IDTUPayMessage>> publishedUsers = new ConcurrentHashMap<>();
@@ -53,7 +53,7 @@ public class ReportServiceSteps {
 
     CompletableFuture<List<Payment>> future = new CompletableFuture<>();
 
-    DTUPayRabbitMQ2 eventQueue = new DTUPayRabbitMQ2("localhost") {
+    DTUPayRabbitMq eventQueue = new DTUPayRabbitMq("localhost") {
         @Override
         public void publish(MessageEvent event) {
             switch(event.getType()) {

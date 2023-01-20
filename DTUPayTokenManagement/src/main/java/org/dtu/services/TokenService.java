@@ -1,6 +1,6 @@
 package org.dtu.services;
 
-import messageUtilities.queues.IDTUPayMessageQueue2;
+import messageUtilities.queues.IDTUPayMessageQueue;
 import org.dtu.aggregate.UserId;
 import org.dtu.repository.ReadModelRepository;
 
@@ -15,7 +15,7 @@ public class TokenService {
     /**
      * @author Asama Hayder - s185099
      */
-    public TokenService(IDTUPayMessageQueue2 messageQueue) {
+    public TokenService(IDTUPayMessageQueue messageQueue) {
 /*
         this.tokenRepository = new TokenRepository(messageQueue);
 */

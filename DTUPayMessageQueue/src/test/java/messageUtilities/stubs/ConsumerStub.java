@@ -1,18 +1,18 @@
 package messageUtilities.stubs;
 
 import messageUtilities.MessageEvent;
-import messageUtilities.queues.IDTUPayMessageQueue2;
+import messageUtilities.queues.IDTUPayMessageQueue;
 
 /**
  * @Autor Jákup Viljam Dam - s185095
  */
 public class ConsumerStub {
-    private final IDTUPayMessageQueue2 messageQueue;
+    private final IDTUPayMessageQueue messageQueue;
 
     /**
      * @Autor Jákup Viljam Dam - s185095
      */
-    public ConsumerStub(IDTUPayMessageQueue2 messageQueue) {
+    public ConsumerStub(IDTUPayMessageQueue messageQueue) {
         this.messageQueue = messageQueue;
         this.messageQueue.addHandler("EventRequestedStub", e -> {
             EventRequestedStub newEvent = e.getArgument(0, EventRequestedStub.class);

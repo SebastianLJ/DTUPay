@@ -6,7 +6,7 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.DeliverCallback;
 import messageUtilities.MessageEvent;
-import messageUtilities.queues.IDTUPayMessageQueue2;
+import messageUtilities.queues.IDTUPayMessageQueue;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  * @Autor Jákup Viljam Dam - s185095
  * Used the messageUtilities from the course
  */
-public class DTUPayRabbitMQ2 implements IDTUPayMessageQueue2 {
+public class DTUPayRabbitMq implements IDTUPayMessageQueue {
 
     private static final String TAG = "Message Queue";
     private static final String TOPIC = "events";
@@ -27,11 +27,11 @@ public class DTUPayRabbitMQ2 implements IDTUPayMessageQueue2 {
     private Channel channel;
     private String hostname;
 
-    public DTUPayRabbitMQ2() {
+    public DTUPayRabbitMq() {
         this(DEFAULT_HOSTNAME);
     }
 
-    public DTUPayRabbitMQ2(String hostname) {
+    public DTUPayRabbitMq(String hostname) {
         this.hostname = hostname;
         channel = setUpChannel();
     }
