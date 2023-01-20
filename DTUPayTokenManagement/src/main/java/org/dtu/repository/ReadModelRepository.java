@@ -66,7 +66,7 @@ public class ReadModelRepository {
     /**
      * @author Alexander Faarup Christensen - s174355
      */
-    private void apply(AccountDeletionRequested event) {
+    private synchronized void apply(AccountDeletionRequested event) {
         tokenAmountRepository.remove(event.getUser().getUserId());
         tokenRepository.entrySet()
                 .removeIf(entry -> entry.getValue().equals(event.getUser().getUserId()));
@@ -78,7 +78,7 @@ public class ReadModelRepository {
     /**
      * @author Asama Hayder - s185099
      */
-    public void apply(ConsumeToken event) {
+    public synchronized void apply(ConsumeToken event) {
         UserId userid = tokenRepository.get(event.getToken());
         if (userid == null){
             TokenConsumed tokenConsumed = new TokenConsumed(event.getCorrelationID(),null);
@@ -106,7 +106,7 @@ public class ReadModelRepository {
     /**
      * @author Asama Hayder - s185099
      */
-    public void apply(UserTokensRequested event){
+    public synchronized void apply(UserTokensRequested event){
         List<Token> usedTokens = usedTokenRepository.get(event.getUserId());
         //TODO handle no list
         UserTokensGenerated userTokensGenerated = new UserTokensGenerated(event.getCorrelationID(),event.getUserId(), usedTokens);
@@ -118,7 +118,7 @@ public class ReadModelRepository {
      *
      * @author Alexander Faarup Christensen - s174355
      */
-    public void apply(TokensRequested event) {
+    public synchronized void apply(TokensRequested event) {
         System.out.println("Handle tokens requested");
         ArrayList<Token> tokens = new ArrayList<>();
         MessageEvent newEvent;
