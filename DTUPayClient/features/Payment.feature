@@ -49,3 +49,28 @@ Feature: Payment end-to-end
     When the merchant initializes a payment of 500
     And the customer shares a token with the merchant
     Then the payment is rejected with "code: 400 message: merchant is unknown"
+
+  Scenario: A merchant retrieves a list of payments
+    Given a merchant has a bank account with a balance of 1000
+    And the merchant is a member of DTUPay
+    Given a customer has a bank account with a balance of 2000
+    And the customer is a member of DTUPay
+    And the customer has at least one valid token
+    When the merchant initializes a payment of 500
+    And the customer shares a token with the merchant
+    When a payment is done
+    When a merchant retrieves a list of payments
+    Then the merchant can see a list of all transactions they have been involved in
+
+  Scenario: A customer retrieves a list of payments
+    Given a merchant has a bank account with a balance of 1000
+    And the merchant is a member of DTUPay
+    Given a customer has a bank account with a balance of 2000
+    And the customer is a member of DTUPay
+    And the customer has at least one valid token
+    When the merchant initializes a payment of 500
+    And the customer shares a token with the merchant
+    When a payment is done
+    When a customer retrieves a list of payments
+    Then the customer can see a list of all transactions they have been involved in
+

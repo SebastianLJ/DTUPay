@@ -10,8 +10,6 @@ public class TokenService {
 
     public ReadModelRepository readModelRepository;
 
-    private HashMap<UserId, Integer> tokenAmountMap = new HashMap<>();
-
     /**
      * @author Asama Hayder - s185099
      */

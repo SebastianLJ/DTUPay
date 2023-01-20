@@ -1,12 +1,10 @@
 package org.dtu.aggregate;
 
 
-import messageUtilities.cqrs.CorrelationID;
-import messageUtilities.cqrs.events.Event;
-import org.dtu.domain.Token;
-import org.dtu.events.PaymentRequested;
 import lombok.Getter;
 import lombok.Setter;
+import messageUtilities.cqrs.events.Event;
+import org.dtu.domain.Token;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -34,14 +32,6 @@ public class Payment implements Serializable {
         this.token = token;
         this.mid = mid;
         this.amount = amount;
-    }
-
-    public static Payment create(Token token, UUID mid, int amount) {
-        Payment payment = new Payment();
-        payment.id = UUID.randomUUID();
-        PaymentRequested paymentRequested = new PaymentRequested(CorrelationID.randomID(), token.getId(), token.getId(), mid, amount);
-        payment.appliedEvents.add(paymentRequested);
-        return payment;
     }
 
     public Token getToken() {

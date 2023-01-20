@@ -32,6 +32,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
+/**
+ * @author Sebastian Juste pedersen (s205335)
+ * @author Nicklas Olabi (s205347)
+ */
 
 public class ReportServiceSteps {
 

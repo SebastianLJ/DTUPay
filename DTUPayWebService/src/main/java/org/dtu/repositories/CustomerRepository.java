@@ -19,6 +19,9 @@ public class CustomerRepository {
 
     }
 
+    /**
+     * @author Nicklas Olabi (s205347)
+     */
     public User addCustomer(String firstName, String lastName) throws CustomerAlreadyExistsException {
         User newUser = new User(firstName, lastName);
         customers.add(newUser);

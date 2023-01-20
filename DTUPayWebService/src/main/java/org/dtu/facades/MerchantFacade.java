@@ -40,6 +40,9 @@ public class MerchantFacade {
         }
     }
 
+    /**
+     * @author Sebastian Juste pedersen (s205335)
+     */
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
