@@ -1,14 +1,12 @@
 package org.dtu.services;
 
-import messageUtilities.Message;
 import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.MessageEvent;
 import messageUtilities.queues.IDTUPayMessage;
-import messageUtilities.queues.IDTUPayMessageQueue2;
+import messageUtilities.queues.IDTUPayMessageQueue;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.UserId;
 import org.dtu.domain.Token;
-import org.dtu.events.CustomerReportGenerated;
 import org.dtu.events.UserTokensGenerated;
 import org.dtu.events.UserTokensRequested;
 import org.dtu.exceptions.PaymentNotFoundException;
@@ -22,12 +20,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ReportService {
 
     PaymentRepository repository;
-    IDTUPayMessageQueue2 messageQueue;
+    IDTUPayMessageQueue messageQueue;
 
     ConcurrentHashMap<CorrelationID, CompletableFuture<IDTUPayMessage>> publishedEvents = new ConcurrentHashMap<>();
 
 
-    public ReportService(IDTUPayMessageQueue2 messageQueue, PaymentRepository repository) {
+    public ReportService(IDTUPayMessageQueue messageQueue, PaymentRepository repository) {
         this.messageQueue = messageQueue;
         messageQueue.addHandler("UserTokensGenerated", this::completeEvent);
         this.repository = repository;

@@ -7,7 +7,7 @@ import com.rabbitmq.client.DeliverCallback;
 import lombok.NonNull;
 import messageUtilities.cqrs.events.Event;
 import messageUtilities.queues.IDTUPayMessage;
-import messageUtilities.queues.IDTUPayMessageQueue;
+import messageUtilities.queues.IDTUPayMessageQueueCQRS;
 import messageUtilities.queues.QueueType;
 
 import java.io.*;
@@ -18,7 +18,7 @@ import java.util.function.Consumer;
  * Used the mwssageUtilities with some slight modifications, mainly the enums and printouts &
  * restructuring the code a bit
  */
-public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
+public class DTUPayRabbitMqCQRS implements IDTUPayMessageQueueCQRS {
 
     /**
      * WHEN DEPLOYING TO DOCKER, RABBITMQ SERVICE NAME IS REQUIRED FOR HOSTNAME
@@ -33,7 +33,7 @@ public class DTUPayRabbitMQ implements IDTUPayMessageQueue {
     /**
      * @Autor Jákup Viljam Dam - s185095
      */
-    public DTUPayRabbitMQ(QueueType queueType, HostnameType hostnameType) {
+    public DTUPayRabbitMqCQRS(QueueType queueType, HostnameType hostnameType) {
         this.queueType = queueType.name();
         this.hostname = hostnameType.name();
         this.exchangeName = "eventsExchange";

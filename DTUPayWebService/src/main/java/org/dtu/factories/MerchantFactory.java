@@ -1,9 +1,6 @@
 package org.dtu.factories;
 
-import messageUtilities.queues.QueueType;
-import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
-import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ2;
-import messageUtilities.queues.rabbitmq.HostnameType;
+import messageUtilities.queues.rabbitmq.DTUPayRabbitMq;
 import org.dtu.repositories.MerchantRepository;
 import org.dtu.repositories.PaymentRepository;
 import org.dtu.services.MerchantService;
@@ -14,7 +11,7 @@ public class MerchantFactory {
     public synchronized MerchantService getService() {
         if (service == null) {
             service = new MerchantService(
-                    new DTUPayRabbitMQ2(
+                    new DTUPayRabbitMq(
                             "rabbitmq"
                     ),
                     new MerchantRepository(),

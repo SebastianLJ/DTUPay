@@ -6,9 +6,9 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.queues.IDTUPayMessage;
-import messageUtilities.queues.IDTUPayMessageQueue;
+import messageUtilities.queues.IDTUPayMessageQueueCQRS;
 import messageUtilities.queues.QueueType;
-import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
+import messageUtilities.queues.rabbitmq.DTUPayRabbitMqCQRS;
 import messageUtilities.queues.rabbitmq.HostnameType;
 import messageUtilities.stubs.ConsumerStub;
 import messageUtilities.stubs.EventCreatedStub;
@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @Autor Jákup Viljam Dam - s185095
  */
 public class SimpleMessageQueueSteps {
-    private IDTUPayMessageQueue messageQueue;
+    private IDTUPayMessageQueueCQRS messageQueue;
     private ProducerStub producer;
     private ConsumerStub consumer;
     private EventRequestedStub requestedEvent1, requestedEvent2;
@@ -39,7 +39,7 @@ public class SimpleMessageQueueSteps {
      */
     @Given("DTUPayMessageQueue has been established")
     public void dtupaymessagequeueHasBeenEstablished() {
-        this.messageQueue = new DTUPayRabbitMQ(QueueType.DTUPay, HostnameType.localhost) {
+        this.messageQueue = new DTUPayRabbitMqCQRS(QueueType.DTUPay, HostnameType.localhost) {
             @Override
             public void publish(IDTUPayMessage message) {
                 if (message instanceof EventRequestedStub) {

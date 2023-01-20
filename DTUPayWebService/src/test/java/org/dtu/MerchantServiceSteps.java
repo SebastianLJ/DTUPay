@@ -8,7 +8,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.MessageEvent;
-import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ2;
+import messageUtilities.queues.rabbitmq.DTUPayRabbitMq;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
 import org.dtu.domain.Token;
@@ -40,7 +40,7 @@ public class MerchantServiceSteps {
     MerchantRepository repository = new MerchantRepository();
     CustomerRepository customerRepository = new CustomerRepository();
     ConcurrentHashMap<CorrelationID, CompletableFuture<MessageEvent>> eventMap = new ConcurrentHashMap<>();
-    DTUPayRabbitMQ2 queue = new DTUPayRabbitMQ2("localhost"){
+    DTUPayRabbitMq queue = new DTUPayRabbitMq("localhost"){
         @Override
         public void publish(MessageEvent event) {
             if (event.getType().equals("TokenVerificationRequested")) {

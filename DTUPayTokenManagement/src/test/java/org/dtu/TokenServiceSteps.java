@@ -7,7 +7,7 @@ import io.cucumber.java.en.When;
 import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.MessageEvent;
 import messageUtilities.queues.IDTUPayMessage;
-import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ2;
+import messageUtilities.queues.rabbitmq.DTUPayRabbitMq;
 import org.dtu.aggregate.UserId;
 import org.dtu.domain.Token;
 import org.dtu.event.*;
@@ -27,7 +27,7 @@ public class TokenServiceSteps {
     /**
      * @author Alexander Faarup Christensen - s174355
      */
-    DTUPayRabbitMQ2 eventQueue = new DTUPayRabbitMQ2("localhost") {
+    DTUPayRabbitMq eventQueue = new DTUPayRabbitMq("localhost") {
         @Override
         public void publish(MessageEvent event) {
             switch (event.getType()) {

@@ -7,7 +7,7 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.cqrs.events.Event;
-import messageUtilities.queues.IDTUPayMessageQueue2;
+import messageUtilities.queues.IDTUPayMessageQueue;
 import messageUtilities.stubs.ConsumerStub;
 import messageUtilities.stubs.EventCreatedStub;
 import messageUtilities.stubs.EventRequestedStub;
@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 public class MessageQueueSteps {
 
-    private IDTUPayMessageQueue2 messageQueue;
+    private IDTUPayMessageQueue messageQueue;
     private ProducerStub producer;
     private ConsumerStub consumer;
     private EventRequestedStub requestedEvent1, requestedEvent2;
@@ -47,7 +47,7 @@ public class MessageQueueSteps {
      */
     @Given("A message queue has been initialized")
     public void aMessageQueueHasBeenInitialized() {
-        messageQueue = new IDTUPayMessageQueue2() {
+        messageQueue = new IDTUPayMessageQueue() {
             @Override
             public void publish(MessageEvent message) {
                 switch (message.getType()) {

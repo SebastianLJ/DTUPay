@@ -3,7 +3,7 @@ package org.dtu.services;
 
 import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.MessageEvent;
-import messageUtilities.queues.IDTUPayMessageQueue2;
+import messageUtilities.queues.IDTUPayMessageQueue;
 import org.dtu.domain.Token;
 import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
@@ -24,7 +24,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class CustomerService {
     CustomerRepository repository;
-    IDTUPayMessageQueue2 messageQueue;
+    IDTUPayMessageQueue messageQueue;
 
     ConcurrentHashMap<CorrelationID, CompletableFuture<TokensGenerated>> token_events = new ConcurrentHashMap<>();
 
@@ -37,7 +37,7 @@ public class CustomerService {
     /**
      * @Autor Jákup Viljam Dam - s185095
      */
-    public CustomerService(IDTUPayMessageQueue2 messageQueue, CustomerRepository repository) {
+    public CustomerService(IDTUPayMessageQueue messageQueue, CustomerRepository repository) {
         this.repository = repository;
         this.messageQueue = messageQueue;
         this.messageQueue.addHandler("TokensGenerated", this::handleTokensGenerated);

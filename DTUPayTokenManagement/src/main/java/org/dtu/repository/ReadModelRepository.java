@@ -2,7 +2,7 @@ package org.dtu.repository;
 
 import messageUtilities.MessageEvent;
 /*import org.dtu.aggregate.Token;*/
-import messageUtilities.queues.IDTUPayMessageQueue2;
+import messageUtilities.queues.IDTUPayMessageQueue;
 import org.dtu.domain.Token;
 import org.dtu.aggregate.UserId;
 import org.dtu.event.*;
@@ -18,13 +18,13 @@ public class ReadModelRepository {
 
     private ConcurrentHashMap<UUID, Boolean> processedEventsByCorrelationId = new ConcurrentHashMap<>();
 
-    private final IDTUPayMessageQueue2 messageQueue;
+    private final IDTUPayMessageQueue messageQueue;
 
     /**
      *
      * @author Alexander Faarup Christensen
      */
-    public ReadModelRepository(IDTUPayMessageQueue2 messageQueue) {
+    public ReadModelRepository(IDTUPayMessageQueue messageQueue) {
         System.out.println("Read model init");
         this.messageQueue = messageQueue;
         messageQueue.addHandler("TokensRequested", e -> {
