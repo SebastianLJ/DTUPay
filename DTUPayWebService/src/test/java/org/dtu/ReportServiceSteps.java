@@ -5,8 +5,8 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import messageUtilities.CorrelationID;
-import messageUtilities.cqrs.events.Event2;
+import messageUtilities.MessageEvent;
+import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ2;
 import org.dtu.aggregate.Payment;
@@ -37,7 +37,7 @@ public class ReportServiceSteps {
     MerchantService merchantService = new MerchantService(new DTUPayRabbitMQ2("localhost"), new MerchantRepository(), new PaymentRepository());
     CustomerService customerService = new CustomerService(new DTUPayRabbitMQ2("localhost"), new CustomerRepository());
 
-    ConcurrentHashMap<CorrelationID, CompletableFuture<IDTUPayMessage>> publishedEvents = new ConcurrentHashMap<>();
+    //ConcurrentHashMap<CorrelationID, CompletableFuture<IDTUPayMessage>> publishedEvents = new ConcurrentHashMap<>();
     ConcurrentHashMap<UserId, CompletableFuture<IDTUPayMessage>> publishedUsers = new ConcurrentHashMap<>();
 
     Payment payment = null;
@@ -55,7 +55,7 @@ public class ReportServiceSteps {
 
     DTUPayRabbitMQ2 eventQueue = new DTUPayRabbitMQ2("localhost") {
         @Override
-        public void publish(Event2 event) {
+        public void publish(MessageEvent event) {
             switch(event.getType()) {
                 case "UserTokensRequested":
                     UserTokensRequested userTokensRequested = event.getArgument(0, UserTokensRequested.class);
@@ -63,7 +63,7 @@ public class ReportServiceSteps {
             }
         }
         @Override
-        public void addHandler(String eventType, Consumer<Event2> handler){
+        public void addHandler(String eventType, Consumer<MessageEvent> handler){
         }
     };
     ReportService reportService = new ReportService(eventQueue, new PaymentRepository());
@@ -150,7 +150,7 @@ public class ReportServiceSteps {
         CorrelationID correlationID = ((UserTokensRequested) publishedUsers.get(customer.getUserId()).join()).getCorrelationID();
         newList.add(token);
         UserTokensGenerated userTokensGenerated = new UserTokensGenerated(correlationID,customer.getUserId(), newList);
-        Event2 newEvent = new Event2("UserTokensGenerated", new Object[]{userTokensGenerated});
+        MessageEvent newEvent = new MessageEvent("UserTokensGenerated", new Object[]{userTokensGenerated});
         reportService.completeEvent(newEvent);
 
         future.join();

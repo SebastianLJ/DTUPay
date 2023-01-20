@@ -1,7 +1,9 @@
 package org.dtu.services;
 
+import messageUtilities.Message;
 import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.MessageEvent;
+import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.IDTUPayMessageQueue2;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.UserId;
@@ -31,7 +33,7 @@ public class ReportService {
         this.repository = repository;
     }
 
-    public void completeEvent(Event2 e) {
+    public void completeEvent(MessageEvent e) {
         UserTokensGenerated newEvent = e.getArgument(0, UserTokensGenerated.class);
         publishedEvents.get(newEvent.getCorrelationID()).complete(newEvent);
     }
@@ -59,7 +61,7 @@ public class ReportService {
 
     public List<Payment> getPaymentByCustomerId(UserId id) throws PaymentNotFoundException {
         UserTokensRequested userTokensRequested = new UserTokensRequested(CorrelationID.randomID(),id);
-        Event2 event = new Event2("UserTokensRequested", new Object[]{userTokensRequested});
+        MessageEvent event = new MessageEvent("UserTokensRequested", new Object[]{userTokensRequested});
         publishedEvents.put(userTokensRequested.getCorrelationID(), new CompletableFuture<>());
         messageQueue.publish(event);
         UserTokensGenerated userTokensGenerated = (UserTokensGenerated) publishedEvents.get(userTokensRequested.getCorrelationID()).join();
