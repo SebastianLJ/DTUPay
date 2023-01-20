@@ -4,6 +4,9 @@ import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
 
+/**
+ * @autor Jákup Viljam Dam - s185095
+ */
 public final class AppStart {
 
     private static AppStart instance;

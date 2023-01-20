@@ -1,12 +1,10 @@
 package org.dtu;
 
-import aggregate.Payment;
 import aggregate.Token;
 import aggregate.User;
 import aggregate.UserId;
 
 import jakarta.ws.rs.client.Client;
-import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.WebTarget;
 import jakarta.ws.rs.core.GenericType;
@@ -44,7 +42,7 @@ public class CustomerApp {
     }
 
     /**
-     * @Autor Jákup Viljam Dam - s185095
+     * @autor Jákup Viljam Dam - s185095
      */
     public User deRegisterCustomer(User user) throws Exception {
         try (Response response = webTarget.path("customers/" + user.getUserId().getUuid())
