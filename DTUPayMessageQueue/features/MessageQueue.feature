@@ -1,4 +1,4 @@
-# @Author Jákup Viljam Dam - s185095
+# @author Jákup Viljam Dam - s185095
 Feature: Message Queue
   Scenario: Messages sent between services
     Given A message queue has been initialized
