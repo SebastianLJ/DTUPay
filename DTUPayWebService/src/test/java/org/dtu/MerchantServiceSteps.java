@@ -11,7 +11,7 @@ import messageUtilities.MessageEvent;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMq;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.User;
-import org.dtu.domain.Token;
+import org.dtu.aggregate.Token;
 import org.dtu.events.ConsumeToken;
 import org.dtu.events.TokenConsumed;
 import org.dtu.exceptions.*;

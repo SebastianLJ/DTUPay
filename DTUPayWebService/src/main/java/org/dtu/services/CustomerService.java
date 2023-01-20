@@ -4,7 +4,7 @@ package org.dtu.services;
 import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.MessageEvent;
 import messageUtilities.queues.IDTUPayMessageQueue;
-import org.dtu.domain.Token;
+import org.dtu.aggregate.Token;
 import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
 import org.dtu.events.*;
@@ -32,7 +32,7 @@ public class CustomerService {
     }
 
     /**
-     * @Autor Jákup Viljam Dam - s185095
+     * @author Jákup Viljam Dam - s185095
      */
     public CustomerService(IDTUPayMessageQueue messageQueue, CustomerRepository repository) {
         this.repository = repository;

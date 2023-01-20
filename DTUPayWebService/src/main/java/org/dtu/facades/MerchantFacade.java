@@ -7,7 +7,6 @@ import org.dtu.exceptions.*;
 import org.dtu.factories.MerchantFactory;
 import org.dtu.services.MerchantService;
 
-import javax.print.attribute.standard.Media;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;

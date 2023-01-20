@@ -6,7 +6,7 @@ import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.IDTUPayMessageQueue;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.UserId;
-import org.dtu.domain.Token;
+import org.dtu.aggregate.Token;
 import org.dtu.events.UserTokensGenerated;
 import org.dtu.events.UserTokensRequested;
 import org.dtu.exceptions.PaymentNotFoundException;
