@@ -20,6 +20,7 @@ public class CustomerSteps { ;
 
     @And("a customer is in the system")
     public void aCustomerIsInTheSystem() {
+        System.out.println("CustomerServiceSteps");
         try {
             customer = customerApp.register("Fred", "Again...", "MoneyInTheBank");
             //customer = dtuPay.createDTUPayCustomerAccount("fred", "again");

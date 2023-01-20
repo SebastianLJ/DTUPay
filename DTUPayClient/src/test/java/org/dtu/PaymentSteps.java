@@ -8,6 +8,7 @@ import dtu.ws.fastmoney.BankServiceException_Exception;
 import dtu.ws.fastmoney.BankServiceService;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
+import io.cucumber.java.BeforeAll;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -41,8 +42,10 @@ public class PaymentSteps {
 
     List<Token> customerTokens;
 
+
     @Given("a merchant has a bank account with a balance of {int}")
     public void aMerchantHasABankAccountWithABalanceOf(int balance) throws BankServiceException_Exception {
+        System.out.println("PaymentServiceSteps");
         dtu.ws.fastmoney.User bankUser = new dtu.ws.fastmoney.User();
         bankUser.setFirstName("Fred");
         bankUser.setLastName("Again");

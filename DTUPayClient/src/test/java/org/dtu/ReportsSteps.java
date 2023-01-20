@@ -8,6 +8,7 @@ import dtu.ws.fastmoney.BankService;
 import dtu.ws.fastmoney.BankServiceException_Exception;
 import dtu.ws.fastmoney.BankServiceService;
 import io.cucumber.java.After;
+import io.cucumber.java.BeforeAll;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -38,11 +39,11 @@ public class ReportsSteps {
     private List<Payment> fetchedReportsFromMerchant = new ArrayList<>();
 
     @After
-    private void cleanup() throws BankServiceException_Exception {
-        for (int i = 0; i < merchants.size(); i++) {
+    public void cleanup()  {
+        try {
             deleteBankUser(merchants);
             deleteBankUser(customers);
-        }
+        } catch (BankServiceException_Exception ignored) { }
     }
 
     private void deleteBankUser(List<User> userList) throws BankServiceException_Exception {
@@ -73,6 +74,7 @@ public class ReportsSteps {
 
     @Given("There are {int} customers and merchants in the system")
     public void thereAreCustomersAndMerchantsInTheSystem(int amount) throws Exception {
+        System.out.println("ReportsServiceSteps");
         for (int i = 0; i < amount; i++) {
             createBankUser("Jane", "Doe", merchants, true);
             createBankUser("John", "Does", customers, false);

@@ -6,6 +6,7 @@ import aggregate.User;
 import dtu.ws.fastmoney.BankService;
 import dtu.ws.fastmoney.BankServiceException_Exception;
 import dtu.ws.fastmoney.BankServiceService;
+import io.cucumber.java.BeforeAll;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -35,6 +36,7 @@ public class MerchantAppSteps {
 
     @When("a merchant is being created")
     public void a_merchant_is_being_created() {
+        System.out.println("MerchantServiceSteps");
         try {
             merchant = merchantApp.register("Diana", "Isabel", "MoneyMoneyMoney");
         } catch (Exception e) {
