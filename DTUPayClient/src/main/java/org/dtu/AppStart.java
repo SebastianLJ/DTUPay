@@ -4,9 +4,9 @@ import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
 import jakarta.ws.rs.client.WebTarget;
 
-public class AppStart {
+public final class AppStart {
 
-    private static final AppStart instance = new AppStart();
+    private static AppStart instance;
     private final Client client = ClientBuilder.newClient();
     private final WebTarget webTarget = client.target("http://localhost:8080/");
     private final CustomerApp customerApp = new CustomerApp(client, webTarget);
@@ -16,6 +16,9 @@ public class AppStart {
     private AppStart() { }
 
     public static AppStart getInstance() {
+        if (instance == null) {
+            instance = new AppStart();
+        }
         return instance;
     }
 

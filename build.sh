@@ -6,6 +6,10 @@ set -e
 
 # @author Alexander Faarup Christensen - s174355
 printf "\033[94mStep 1/5: Clean and build projects\033[0m\n"
+pushd DTUPayClient
+mvn clean install -q -DskipTests
+popd
+
 pushd DTUPayMessageQueue
 mvn clean install -q -DskipTests
 popd
