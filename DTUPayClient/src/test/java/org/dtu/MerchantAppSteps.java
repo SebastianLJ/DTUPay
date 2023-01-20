@@ -3,11 +3,17 @@ package org.dtu;
 import aggregate.Payment;
 import aggregate.Token;
 import aggregate.User;
+import dtu.ws.fastmoney.BankService;
+import dtu.ws.fastmoney.BankServiceService;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.dtu.exceptions.MerchantDoesNotExist;
 import org.dtu.exceptions.PaymentDoesNotExist;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
@@ -16,10 +22,24 @@ import static org.wildfly.common.Assert.assertTrue;
 public class MerchantAppSteps {
 
     MerchantApp merchantApp = new MerchantApp();
+    CustomerApp customerApp = new CustomerApp();
+    BankService bankService = new BankServiceService().getBankServicePort();
+
 
     User merchant;
+    User customer;
 
     Payment payment;
+
+    String merchantBankAccount = "";
+
+    String customerBankAccount = "";
+    List<Token> customerTokens;
+
+    Payment donePayment;
+
+    List<Payment> reportOfPayments;
+
 
     @When("a merchant is being created")
     public void a_merchant_is_being_created() {
@@ -76,23 +96,62 @@ public class MerchantAppSteps {
     //Report testing
     @Given("a merchant is rregistered in the system")
     public void a_merchant_is_rregistered_in_the_system() throws Exception {
-        merchant = merchantApp.register("Tony", "Soprano", "MafiaMoney");
+        merchant = merchantApp.register("Tony", "Soprano", merchantBankAccount);
 
     }
 
     @Given("the merchant has been involved in a payment")
-    public void the_merchant_has_been_involved_in_a_payment() throws Exception {
+    public void the_merchant_has_been_involved_in_a_payment(int balance, int amount) throws Exception {
+        //Merchant has a bank account with the balance of (int balance)
+        dtu.ws.fastmoney.User bankUser = new dtu.ws.fastmoney.User();
+        bankUser.setFirstName("Tony");
+        bankUser.setLastName("Soprano");
+        bankUser.setCprNumber("2309958585");
+        merchantBankAccount = bankService.createAccountWithBalance(
+                bankUser,
+                BigDecimal.valueOf(balance)
+        );
 
+        //A customer has a bank account with the balance of (int balance)
+        dtu.ws.fastmoney.User bankUser1 = new dtu.ws.fastmoney.User();
+        bankUser1.setFirstName("Andrew");
+        bankUser1.setLastName("T");
+        bankUser1.setCprNumber("151375283");
+        customerBankAccount = bankService.createAccountWithBalance(
+                bankUser1,
+                BigDecimal.valueOf(balance)
+        );
+
+        //A customer is registered and member of DTUPay
+        customer = customerApp.register("Andrew", "T", customerBankAccount);
+
+        //The customer has at least one valid token
+        customerTokens = customerApp.generateTokens(customer.getUserId(), 4);
+
+        //Customer has an unknown token
+        customerTokens = new ArrayList<>();
+        customerTokens.add(new Token());
+
+        //Merchant initializes a payment of (int amount)
+        payment = new Payment();
+        payment.setAmount(amount);
+        payment.setMid(merchant.getUserId().getUuid());
+
+        //Customer shares a token with the merchant
+        payment.setToken(customerTokens.get(0));
+
+        //Payment initialized
+        donePayment = merchantApp.pay(merchant.getUserId(), payment.getToken(), payment.getAmount());
     }
 
     @When("a merchant retrieves a list of payments")
     public void a_merchant_retrieves_a_list_of_payments() throws PaymentDoesNotExist {
-
+        reportOfPayments = merchantApp.getMerchantReport(merchant);
     }
 
     @Then("the merchant can see a list of all transactions they have been involved in")
     public void the_merchant_can_see_a_list_of_all_transactions_they_have_been_involved_in() throws PaymentDoesNotExist {
-
+        assertEquals(donePayment, reportOfPayments.get(0));
     }
 
 

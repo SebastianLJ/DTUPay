@@ -143,9 +143,6 @@ public class ReportServiceSteps {
 
     }
 
-
-
-
     @Then("the customer can see a list of all transactions they have been involved in")
     public void the_customer_can_see_a_list_of_all_transactions_they_have_been_involved_in() {
         publishedUsers.get(customer.getUserId()).join();
@@ -168,9 +165,6 @@ public class ReportServiceSteps {
         customer2 = customerService.addCustomer("Theon", "Greyjoy");
         publishedUsers.put(customer.getUserId(), new CompletableFuture<>());
         publishedUsers.put(customer2.getUserId(), new CompletableFuture<>());
-
-        customerPayments = reportService.getPaymentByCustomerId(customer2.getUserId());
-        //System.out.println(customerPayments.get(0));
 
     }
 
@@ -211,11 +205,11 @@ public class ReportServiceSteps {
 
     @After
     public void deleteUsersAndPayment() throws CustomerNotFoundException, PaymentNotFoundException, MerchantNotFoundException, InvalidMerchantIdException {
-//        customerService.deleteCustomer(customer);
-//        customerService.deleteCustomer(customer2);
-//        merchantService.deleteMerchant(merchant.getUserId().getUuid());
-//        merchantService.deleteMerchant(merchant2.getUserId().getUuid());
-//        merchantService.deletePayment(payment.getId());
+        customerService.deleteCustomer(customer);
+        customerService.deleteCustomer(customer2);
+        merchantService.deleteMerchant(merchant.getUserId().getUuid());
+        merchantService.deleteMerchant(merchant2.getUserId().getUuid());
+        merchantService.deletePayment(payment.getId());
     }
 
 
