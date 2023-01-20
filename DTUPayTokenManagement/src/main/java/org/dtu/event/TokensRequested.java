@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Value;
-import messageUtilities.CorrelationID;
+import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.cqrs.events.Event;
 import org.dtu.aggregate.UserId;
 

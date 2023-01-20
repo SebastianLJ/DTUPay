@@ -4,13 +4,10 @@ import io.cucumber.java.After;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import messageUtilities.CorrelationID;
-import messageUtilities.cqrs.events.Event2;
+import messageUtilities.cqrs.CorrelationID;
+import messageUtilities.MessageEvent;
 import messageUtilities.queues.IDTUPayMessage;
-import messageUtilities.queues.QueueType;
-import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ;
 import messageUtilities.queues.rabbitmq.DTUPayRabbitMQ2;
-import messageUtilities.queues.rabbitmq.HostnameType;
 import org.dtu.aggregate.Name;
 import org.dtu.aggregate.User;
 import org.dtu.aggregate.UserId;
@@ -18,7 +15,6 @@ import org.dtu.domain.Token;
 import org.dtu.events.*;
 import org.dtu.exceptions.CustomerAlreadyExistsException;
 import org.dtu.exceptions.CustomerNotFoundException;
-import org.dtu.exceptions.InvalidCustomerIdException;
 import org.dtu.exceptions.InvalidCustomerNameException;
 import org.dtu.repositories.CustomerRepository;
 import org.dtu.services.CustomerService;
@@ -50,7 +46,7 @@ public class CustomerServiceSteps {
 
     private DTUPayRabbitMQ2 q = new DTUPayRabbitMQ2("localhost") {
         @Override
-        public void publish(Event2 event) {
+        public void publish(MessageEvent event) {
             super.publish(event);
             if (event.getType().equals("CustomerAccountCreated")) {
                 CustomerAccountCreated newEvent = event.getArgument(0, CustomerAccountCreated.class);
@@ -65,7 +61,7 @@ public class CustomerServiceSteps {
         }
 
         @Override
-        public void addHandler(String eventType, Consumer<Event2> handler) { }
+        public void addHandler(String eventType, Consumer<MessageEvent> handler) { }
 
     };
 
@@ -156,7 +152,7 @@ public class CustomerServiceSteps {
         for (int i = 0; i < 5; i++) {
             tokens.add(new Token());
         }
-        service.handleTokensDeleted(new Event2("TokensDeleted", new Object[]{new TokensDeleted(customer)}));
+        service.handleTokensDeleted(new MessageEvent("TokensDeleted", new Object[]{new TokensDeleted(customer)}));
     }
 
     @Then("the customer is deleted")

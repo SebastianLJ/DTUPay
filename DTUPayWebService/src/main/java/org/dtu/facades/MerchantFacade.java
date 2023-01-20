@@ -19,6 +19,9 @@ import java.util.UUID;
 public class MerchantFacade {
     MerchantService service = new MerchantFactory().getService();
 
+    /**
+     * @author Sebastian Lund (s184209)
+     */
     @GET
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -40,9 +43,9 @@ public class MerchantFacade {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response registerMerchant(String firstName, String lastName, String bankAccount) {
+    public Response registerMerchant(User user) {
         try {
-            User newUser = service.registerMerchant(firstName, lastName, bankAccount);
+            User newUser = service.registerMerchant(user);
             return Response.status(Response.Status.OK)
                     .entity(newUser)
                     .build();
@@ -80,13 +83,9 @@ public class MerchantFacade {
                     .build();
         } catch (CustomerTokenAlreadyConsumedException e) {
             return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("customer token already consumed")
+                    .entity("token is invalid")
                     .build();
-        } catch (BankServiceException_Exception e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity("bank rejected the payment")
-                    .build();
-        } catch (InvalidCustomerIdException e) {
+        } catch (BankServiceException_Exception | InvalidCustomerIdException e) {
             return Response.status(Response.Status.BAD_REQUEST)
                     .entity(e.getMessage())
                     .build();

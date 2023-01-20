@@ -18,6 +18,7 @@ Feature: Customer Service
     When the customer is being deleted
     Then the error message "Customer not found!" is returned
 
+  #Sebastian Lund (s184209)
   Scenario: A customer requests tokens
     Given a customer is in the system
     When the customer requests 3 tokens

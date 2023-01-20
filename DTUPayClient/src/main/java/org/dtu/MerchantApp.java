@@ -23,6 +23,9 @@ public class MerchantApp {
     Client c = ClientBuilder.newClient();
     WebTarget r = c.target("http://localhost:8080/");
 
+    /**
+     * @author Sebastian Lund (s184209)
+     */
     public User register(String firstName, String lastName, String bankNumber) throws Exception {
         User user = new User(firstName, lastName, bankNumber);
         Response response = r.path("merchants")
@@ -49,17 +52,19 @@ public class MerchantApp {
             throw new Exception("code: " + response.getStatus());
         }
     }
-
+    /**
+     * @author Sebastian Lund (s184209)
+     */
     public Payment pay(UserId merchantId, Token customerToken, int amount) throws Exception {
         Payment payment = new Payment(customerToken, merchantId.getUuid(), amount);
         Response response = r.path("merchants/payments")
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
                 .post(Entity.entity(payment, MediaType.APPLICATION_JSON));
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+        if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
             return response.readEntity(Payment.class);
         } else {
-            throw new Exception("code: " + response.getStatus());
+            throw new Exception("code: " + response.getStatus() + " message: " + response.readEntity(String.class));
         }
     }
 

@@ -7,6 +7,9 @@ import org.dtu.aggregate.Payment;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * @author Sebastian Lund (s184209)
+ */
 public class PaymentRepository {
 
     private final ArrayList<Payment> payments = new ArrayList<>();

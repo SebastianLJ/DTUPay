@@ -1,5 +1,6 @@
 Feature: Merchant Service
 
+  # @Author Jákup, Noah & Sebastion (Mob programming)
   Scenario: A successful payment has been created
     Given a merchant has a bank account with a balance of 1000
     And the merchant is a member of DTUPay

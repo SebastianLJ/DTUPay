@@ -12,7 +12,6 @@ Feature: reporting
     When merchant2 retrieves a list of payments
     Then the merchant will not be able to see the other merchants payment
 
-
   Scenario: Customer retrieves list of payments
     Given a customer is rregistered in the system
     And the customer has been involved in a payment

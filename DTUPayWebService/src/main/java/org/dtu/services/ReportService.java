@@ -1,8 +1,7 @@
 package org.dtu.services;
 
-import messageUtilities.CorrelationID;
-import messageUtilities.cqrs.events.Event2;
-import messageUtilities.queues.IDTUPayMessage;
+import messageUtilities.cqrs.CorrelationID;
+import messageUtilities.MessageEvent;
 import messageUtilities.queues.IDTUPayMessageQueue2;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.UserId;
