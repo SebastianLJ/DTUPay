@@ -1,24 +1,41 @@
 package org.dtu.services;
 
+import messageUtilities.Message;
 import messageUtilities.cqrs.CorrelationID;
 import messageUtilities.MessageEvent;
+import messageUtilities.queues.IDTUPayMessage;
 import messageUtilities.queues.IDTUPayMessageQueue2;
 import org.dtu.aggregate.Payment;
 import org.dtu.aggregate.UserId;
 import org.dtu.domain.Token;
 import org.dtu.events.CustomerReportGenerated;
+import org.dtu.events.UserTokensGenerated;
+import org.dtu.events.UserTokensRequested;
 import org.dtu.exceptions.PaymentNotFoundException;
 import org.dtu.repositories.PaymentRepository;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class ReportService {
 
     PaymentRepository repository;
     IDTUPayMessageQueue2 messageQueue;
 
+    ConcurrentHashMap<CorrelationID, CompletableFuture<IDTUPayMessage>> publishedEvents = new ConcurrentHashMap<>();
+
+
     public ReportService(IDTUPayMessageQueue2 messageQueue, PaymentRepository repository) {
         this.messageQueue = messageQueue;
+        messageQueue.addHandler("UserTokensGenerated", this::completeEvent);
         this.repository = repository;
+    }
+
+    public void completeEvent(MessageEvent e) {
+        UserTokensGenerated newEvent = e.getArgument(0, UserTokensGenerated.class);
+        publishedEvents.get(newEvent.getCorrelationID()).complete(newEvent);
     }
 
     //TODO implement Event2
@@ -42,10 +59,17 @@ public class ReportService {
         return merchantPayments;
     }
 
-    public List<Payment> getPaymentByCustomerId(UserId id, Token token) throws PaymentNotFoundException {
-        List<Payment> customerPayments = repository.getPaymentsByToken(token);
-        MessageEvent event = new MessageEvent("CustomerReportGenerated", new Object[]{new CustomerReportGenerated(id, customerPayments)});
+    public List<Payment> getPaymentByCustomerId(UserId id) throws PaymentNotFoundException {
+        UserTokensRequested userTokensRequested = new UserTokensRequested(CorrelationID.randomID(),id);
+        MessageEvent event = new MessageEvent("UserTokensRequested", new Object[]{userTokensRequested});
+        publishedEvents.put(userTokensRequested.getCorrelationID(), new CompletableFuture<>());
         messageQueue.publish(event);
+        UserTokensGenerated userTokensGenerated = (UserTokensGenerated) publishedEvents.get(userTokensRequested.getCorrelationID()).join();
+        List<Payment> customerPayments = new ArrayList<>();
+        for(Token token : userTokensGenerated.getTokens()) {
+            customerPayments.add(repository.getPaymentsByToken(token));
+        }
+
         return customerPayments;
 
     }
