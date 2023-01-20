@@ -25,8 +25,8 @@ import java.util.UUID;
  **/
 public class PaymentSteps {
     BankService bankService = new BankServiceService().getBankServicePort();
-    CustomerApp customerApp = new CustomerApp();
-    MerchantApp merchantApp = new MerchantApp();
+    CustomerApp customerApp = AppStart.getInstance().getCustomerApp();
+    MerchantApp merchantApp = AppStart.getInstance().getMerchantApp();
 
     User customer;
     User merchant;

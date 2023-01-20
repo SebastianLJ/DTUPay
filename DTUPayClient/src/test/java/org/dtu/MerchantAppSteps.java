@@ -29,7 +29,7 @@ import static org.wildfly.common.Assert.assertTrue;
 
 public class MerchantAppSteps {
 
-    MerchantApp merchantApp = new MerchantApp();
+    MerchantApp merchantApp = AppStart.getInstance().getMerchantApp();
 
     User merchant;
 

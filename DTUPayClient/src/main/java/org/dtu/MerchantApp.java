@@ -18,14 +18,18 @@ import org.dtu.exceptions.PaymentDoesNotExist;
 import java.util.List;
 
 public class MerchantApp {
-    private Client client = ClientBuilder.newClient();
-    private WebTarget webTarget = client.target("http://localhost:8080/");
+    private final Client client;
+    private final WebTarget webTarget ;
+
+    public MerchantApp(Client client, WebTarget webTarget) {
+        this.client = client;
+        this.webTarget = webTarget;
+    }
 
     /**
      * @author Sebastian Lund (s184209)
      */
     public User register(String firstName, String lastName, String bankNumber) throws Exception {
-        createClient();
         User user = new User(firstName, lastName, bankNumber);
         try (Response response = webTarget.path("merchants")
                 .request()
@@ -38,15 +42,12 @@ public class MerchantApp {
                 System.out.println("!!!! " + response.readEntity(String.class) + " !!!!");
                 throw new Exception("code: " + response.getStatus());
             }
-        } finally {
-            closeClient();
         }
     }
     /**
      * @author Nicklas Olabi (s205347)
      */
     public User deregister(User user) throws Exception {
-        createClient();
         try (Response response = webTarget.path("merchants/" + user.getUserId().getUuid())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
@@ -56,15 +57,12 @@ public class MerchantApp {
             } else {
                 throw new Exception("code: " + response.getStatus());
             }
-        } finally {
-            closeClient();
         }
     }
     /**
      * @author Sebastian Lund (s184209)
      */
     public Payment pay(UserId merchantId, Token customerToken, int amount) throws Exception {
-        createClient();
         Payment payment = new Payment(customerToken, merchantId.getUuid(), amount);
         try (Response response = webTarget.path("merchants/payments")
                 .request()
@@ -75,8 +73,6 @@ public class MerchantApp {
             } else {
                 throw new Exception("code: " + response.getStatus() + " message: " + response.readEntity(String.class));
             }
-        } finally {
-            closeClient();
         }
     }
 
@@ -84,7 +80,6 @@ public class MerchantApp {
      * @author Sebastian Juste pedersen (s205335)
      */
     public User getMerchant(User user) throws MerchantDoesNotExist {
-        createClient();
         try (Response response = webTarget.path("merchants/" + user.getUserId().getUuid())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
@@ -94,17 +89,6 @@ public class MerchantApp {
             } else {
                 throw new MerchantDoesNotExist(response.readEntity(String.class));
             }
-        } finally {
-            closeClient();
         }
-    }
-
-    private void createClient() {
-        client = ClientBuilder.newClient();
-        webTarget = client.target("http://localhost:8080/");
-    }
-
-    private void closeClient() {
-        client.close();
     }
 }

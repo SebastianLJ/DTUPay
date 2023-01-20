@@ -26,9 +26,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ReportsSteps {
 
     BankService bankService = new BankServiceService().getBankServicePort();
-    private final ReportsApp reportsApp = new ReportsApp();
-    private final CustomerApp customerApp = new CustomerApp();
-    private final MerchantApp merchantApp = new MerchantApp();
+    private final ReportsApp reportsApp = AppStart.getInstance().getReportsApp();
+    private final CustomerApp customerApp = AppStart.getInstance().getCustomerApp();
+    private final MerchantApp merchantApp = AppStart.getInstance().getMerchantApp();
     private final List<User> customers = new ArrayList<>();
     private final List<User> merchants = new ArrayList<>();
     private final Map<UserId, List<Token>> customerTokens = new HashMap<>();

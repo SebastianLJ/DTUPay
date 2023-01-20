@@ -12,8 +12,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CustomerSteps {
-    CustomerApp customerApp = new CustomerApp();
+public class CustomerSteps { ;
+    CustomerApp customerApp = AppStart.getInstance().getCustomerApp();
 
     User customer;
     List<Token> tokens;
