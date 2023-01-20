@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ReportServiceSteps {
 
-    MerchantService merchantService = new MerchantService(new DTUPayRabbitMq("localhost"), new MerchantRepository(), new PaymentRepository());
+    MerchantService merchantService = new MerchantService(new DTUPayRabbitMq("localhost"), new MerchantRepository(), PaymentRepository.getInstance());
     CustomerService customerService = new CustomerService(new DTUPayRabbitMq("localhost"), new CustomerRepository());
 
     //ConcurrentHashMap<CorrelationID, CompletableFuture<IDTUPayMessage>> publishedEvents = new ConcurrentHashMap<>();
@@ -76,7 +76,7 @@ public class ReportServiceSteps {
         public void addHandler(String eventType, Consumer<MessageEvent> handler){
         }
     };
-    ReportService reportService = new ReportService(eventQueue, new PaymentRepository());
+    ReportService reportService = new ReportService(eventQueue, PaymentRepository.getInstance());
 
 
 
@@ -141,12 +141,8 @@ public class ReportServiceSteps {
     @When("the customer retrieves a list of payments")
     public void the_customer_retrieves_a_list_of_payments() throws PaymentNotFoundException {
         new Thread(()-> {
-            try {
-                customerPayments = reportService.getPaymentByCustomerId(customer.getUserId());
-                future.complete(customerPayments);
-            } catch (PaymentNotFoundException e) {
-                e.printStackTrace();
-            }
+            customerPayments = reportService.getPaymentByCustomerId(customer.getUserId());
+            future.complete(customerPayments);
         }).start();
 
     }

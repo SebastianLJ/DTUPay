@@ -19,7 +19,7 @@ public class MerchantFactory {
                             "rabbitmq"
                     ),
                     new MerchantRepository(),
-                    new PaymentRepository()
+                    PaymentRepository.getInstance()
             );
         }
         return service;

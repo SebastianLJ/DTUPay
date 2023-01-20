@@ -86,23 +86,4 @@ public class MerchantApp {
             }
         }
     }
-
-    /**
-     * @author Sebastian Juste pedersen (s205335)
-     * @author Nicklas Olabi (s205347)
-     */
-    public List<Payment> getMerchantReport(User user) throws PaymentDoesNotExist {
-        try (Response response = webTarget.path("reports/merchant/" + user.getUserId())
-                .request()
-                .accept(MediaType.APPLICATION_JSON)
-                .get()) {
-            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-                return response.readEntity(new GenericType<List<Payment>>() {
-                });
-            } else {
-                System.out.println(response.getStatus());
-                throw new PaymentDoesNotExist();
-            }
-        }
-    }
 }

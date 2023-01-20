@@ -12,9 +12,14 @@ import java.util.stream.Collectors;
  */
 public class PaymentRepository {
 
+    private final static PaymentRepository instance = new PaymentRepository();
     private final ArrayList<Payment> payments = new ArrayList<>();
 
-    public PaymentRepository() { }
+    private PaymentRepository() { }
+
+    public static PaymentRepository getInstance() {
+        return instance;
+    }
 
     public void save(Payment payment) {
         payments.add(payment);
@@ -43,7 +48,7 @@ public class PaymentRepository {
 
     public Payment getPaymentsByToken(Token token) {
         return payments.stream()
-                .filter(payment -> payment.getToken().equals(token))
+                .filter(payment -> payment.getToken().getId().equals(token.getId()))
                 .collect(Collectors.toList()).get(0);
     }
 

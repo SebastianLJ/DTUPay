@@ -14,7 +14,7 @@ public class ReportFactory {
 
     public synchronized ReportService getService() {
         if (service == null) {
-            service = new ReportService(new DTUPayRabbitMq("rabbitmq"), new PaymentRepository() );
+            service = new ReportService(new DTUPayRabbitMq("rabbitmq"), PaymentRepository.getInstance() );
         }
         return service;
     }

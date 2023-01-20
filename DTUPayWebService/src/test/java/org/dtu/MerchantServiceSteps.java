@@ -54,7 +54,7 @@ public class MerchantServiceSteps {
             }
         }
     };
-    MerchantService merchantService = new MerchantService(queue, repository, new PaymentRepository());
+    MerchantService merchantService = new MerchantService(queue, repository, PaymentRepository.getInstance());
     CustomerService customerService = new CustomerService(queue, customerRepository);
 
     ConcurrentHashMap<Token, CompletableFuture<MessageEvent>> tokenEvents = new ConcurrentHashMap<>();

@@ -60,7 +60,7 @@ public class ReportService {
         return merchantPayments;
     }
 
-    public List<Payment> getPaymentByCustomerId(UserId id) throws PaymentNotFoundException {
+    public List<Payment> getPaymentByCustomerId(UserId id) {
         UserTokensRequested userTokensRequested = new UserTokensRequested(CorrelationID.randomID(),id);
         MessageEvent event = new MessageEvent("UserTokensRequested", new Object[]{userTokensRequested});
         publishedEvents.put(userTokensRequested.getCorrelationID(), new CompletableFuture<>());
