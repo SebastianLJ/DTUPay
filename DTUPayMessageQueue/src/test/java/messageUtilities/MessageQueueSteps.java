@@ -95,7 +95,6 @@ public class MessageQueueSteps {
         new Thread(() -> {
            createdEvent1 = this.producer.produceEvent(requestedEvent1);
            assertNotNull(createdEvent1);
-           createdEventFutures.get(createdEvent1.getCorrelationID()).complete(createdEvent1);
         }).start();
     }
     /**
@@ -105,7 +104,7 @@ public class MessageQueueSteps {
     @Then("The consumer consumes the request")
     public void theConsumerConsumesTheRequest() {
         EventRequestedStub queuedRequestedEvent = (EventRequestedStub) requestedEventFutures.get(requestedEvent1.getCorrelationID()).join();
-        requestedEventFutures.remove(requestedEvent1.getCorrelationID());
+        //requestedEventFutures.remove(requestedEvent1.getCorrelationID());
         assertEquals(requestedEvent1.getCorrelationID(), queuedRequestedEvent.getCorrelationID());
         assertEquals(requestedEvent1.getMessage(), queuedRequestedEvent.getMessage());
     }
@@ -116,7 +115,7 @@ public class MessageQueueSteps {
     @Then("The Producer receives a message back from the consumer")
     public void theProducerReceivesAMessageBackFromTheConsumer() {
         EventCreatedStub queuedCreatedEvent = (EventCreatedStub) createdEventFutures.get(createdEvent1.getCorrelationID()).join();
-        createdEventFutures.remove(createdEvent1.getCorrelationID());
+        //createdEventFutures.remove(createdEvent1.getCorrelationID());
         assertEquals(createdEvent1.getCorrelationID(), queuedCreatedEvent.getCorrelationID());
         assertEquals(createdEvent1.getMessage(), queuedCreatedEvent.getMessage());
     }
