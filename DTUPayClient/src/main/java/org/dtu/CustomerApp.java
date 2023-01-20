@@ -16,26 +16,26 @@ import org.dtu.exceptions.CustomerDoesNotExist;
 import org.dtu.exceptions.PaymentDoesNotExist;
 
 import java.util.List;
-import java.util.UUID;
 
 public class CustomerApp {
-    Client c = ClientBuilder.newClient();
-    WebTarget r = c.target("http://localhost:8080/");
+    private final Client client = ClientBuilder.newClient();
+    private final WebTarget webTarget = client.target("http://localhost:8080/");
 
     /**
      * @author Sebastian Lund (s184209)
      */
     public User register(String firstName, String lastName, String bankNumber) throws Exception {
         User user = new User(firstName, lastName, bankNumber);
-        Response response = r.path("customers")
+        try (Response response = webTarget.path("customers")
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
-                .post(Entity.entity(user, MediaType.APPLICATION_JSON));
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(User.class);
-        } else {
-            System.out.println("!!!! " + response.readEntity(String.class) + " !!!!");
-            throw new Exception("code: " + response.getStatus());
+                .post(Entity.entity(user, MediaType.APPLICATION_JSON))) {
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return response.readEntity(User.class);
+            } else {
+                System.out.println("!!!! " + response.readEntity(String.class) + " !!!!");
+                throw new Exception("code: " + response.getStatus());
+            }
         }
     }
 
@@ -43,15 +43,15 @@ public class CustomerApp {
      * @Autor Jákup Viljam Dam - s185095
      */
     public User deRegisterCustomer(User user) throws Exception {
-        Response response = r.path("customers/" + user.getUserId().getUuid())
+        try (Response response = webTarget.path("customers/" + user.getUserId().getUuid())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
-                .delete();
-
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(User.class);
-        } else {
-            throw new Exception("code: " + response.getStatus());
+                .delete()) {
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return response.readEntity(User.class);
+            } else {
+                throw new Exception("code: " + response.getStatus());
+            }
         }
     }
 
@@ -59,18 +59,16 @@ public class CustomerApp {
      * @author Sebastian Lund (s184209)
      */
     public List<Token> generateTokens(UserId userId, int tokenCount) throws Exception {
-        Response response = r.path(
-                        "customers/"+
-                        userId.getUuid()+
-                        "/tokens"
-                ).request()
+        try (Response response = webTarget.path("customers/" + userId.getUuid() + "/tokens")
+                .request()
                 .accept(MediaType.APPLICATION_JSON)
-                .put(Entity.entity(tokenCount, MediaType.APPLICATION_JSON));
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(new GenericType<List<Token>>() {
-            });
-        } else {
-            throw new Exception("code: " + response.getStatus() + "\n" + response.readEntity(String.class));
+                .put(Entity.entity(tokenCount, MediaType.APPLICATION_JSON))) {
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return response.readEntity(new GenericType<List<Token>>() {
+                });
+            } else {
+                throw new Exception("code: " + response.getStatus() + "\n" + response.readEntity(String.class));
+            }
         }
     }
 
@@ -78,14 +76,15 @@ public class CustomerApp {
      * @author Sebastian Lund (s184209)
      */
     public User getCustomer(User user) throws CustomerDoesNotExist {
-        Response response = r.path("customers/" + user.getUserId().getUuid())
+        try (Response response = webTarget.path("customers/" + user.getUserId().getUuid())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
-                .get();
-        if (response.getStatus() == Response.Status.OK.getStatusCode()) {
-            return response.readEntity(User.class);
-        } else {
-            throw new CustomerDoesNotExist();
+                .get()) {
+            if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                return response.readEntity(User.class);
+            } else {
+                throw new CustomerDoesNotExist();
+            }
         }
     }
 
@@ -94,7 +93,7 @@ public class CustomerApp {
      * @author Nicklas Olabi (s205347)
      */
     public List<Payment> getCustomerReport(User user) throws PaymentDoesNotExist {
-        Response response = r.path("reports/customer/"+user.getUserId())
+        Response response = webTarget.path("reports/customer/"+user.getUserId())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
                 .get();
