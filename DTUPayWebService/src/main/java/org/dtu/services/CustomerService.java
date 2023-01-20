@@ -41,11 +41,11 @@ public class CustomerService {
     /**
      * @author Nicklas Olabi (s205347)
      */
-    public synchronized User getCustomer(UUID id) throws CustomerNotFoundException {
+    public User getCustomer(UUID id) throws CustomerNotFoundException {
         return repository.getCustomer(id);
     }
 
-    public synchronized User addCustomer(String firstName, String lastName) throws CustomerAlreadyExistsException {
+    public User addCustomer(String firstName, String lastName) throws CustomerAlreadyExistsException {
         try {
             return repository.addCustomer(firstName, lastName);
         } catch (CustomerAlreadyExistsException e) {
@@ -53,16 +53,17 @@ public class CustomerService {
         }
     }
 
+
     /**
      @author Noah Christiansen (s184186)
      */
-    public synchronized User addCustomer(User user) throws CustomerAlreadyExistsException, InvalidCustomerNameException {
+    public User addCustomer(User user) throws CustomerAlreadyExistsException, InvalidCustomerNameException {
         MessageEvent event = new MessageEvent("CustomerAccountCreated", new Object[]{new CustomerAccountCreated(user)});
         messageQueue.publish(event);
         return repository.addCustomer(user);
     }
 
-    public synchronized ArrayList<User> getCustomerList() {
+    public ArrayList<User> getCustomerList() {
         return repository.getCustomerList();
     }
 
@@ -71,7 +72,7 @@ public class CustomerService {
      @author Noah Christiansen (s184186)
      */
 
-    public synchronized User deleteCustomer(User user) throws CustomerNotFoundException {
+    public User deleteCustomer(User user) throws CustomerNotFoundException {
         getCustomer(user.getUserId().getUuid());
         repository.deleteCustomer(user);
         deletedCustomer = new CompletableFuture<>();
@@ -84,7 +85,7 @@ public class CustomerService {
     /**
      * @author Sebastian Lund (s184209)
      */
-    public synchronized ArrayList<Token> getTokens(UserId userId, int amount) {
+    public ArrayList<Token> getTokens(UserId userId, int amount) {
         CorrelationID correlationID = CorrelationID.randomID();
         MessageEvent event = new MessageEvent("TokensRequested", new Object[]{new TokensRequested(correlationID, amount, userId)});
         messageQueue.publish(event);
@@ -96,7 +97,7 @@ public class CustomerService {
     /**
      * @autor Jákup Viljam Dam - s185095
      */
-    public synchronized void handleTokensGenerated(MessageEvent event) {
+    public void handleTokensGenerated(MessageEvent event) {
         TokensGenerated newEvent = event.getArgument(0, TokensGenerated.class);
         System.out.println("Received TokensGenerated event: " + newEvent.getCorrelationID());
         if (this.token_events.containsKey(newEvent.getCorrelationID())) {
@@ -107,7 +108,7 @@ public class CustomerService {
     /**
      * @autor Jákup Viljam Dam - s185095
      */
-    public synchronized void handleTokensDeleted(MessageEvent event) {
+    public void handleTokensDeleted(MessageEvent event) {
         TokensDeleted newEvent = event.getArgument(0, TokensDeleted.class);
         this.deletedCustomer.complete(newEvent.getUser());
     }

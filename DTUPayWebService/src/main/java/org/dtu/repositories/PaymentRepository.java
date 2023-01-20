@@ -17,15 +17,15 @@ public class PaymentRepository {
 
     private PaymentRepository() { }
 
-    public synchronized static PaymentRepository getInstance() {
+    public static PaymentRepository getInstance() {
         return instance;
     }
 
-    public synchronized void save(Payment payment) {
+    public void save(Payment payment) {
         payments.add(payment);
     }
 
-    public synchronized Payment getPaymentById(UUID id) throws PaymentNotFoundException {
+    public Payment getPaymentById(UUID id) throws PaymentNotFoundException {
          Optional<Payment> result = payments.stream()
                  .filter(payment -> payment.getId() == id)
                  .findAny();
@@ -36,23 +36,23 @@ public class PaymentRepository {
          }
     }
 
-    public synchronized List<Payment> getPayments() {
+    public List<Payment> getPayments() {
         return new ArrayList<>(payments);
     }
 
-    public synchronized List<Payment> getPaymentsByMerchantId(UUID merchantId) {
+    public List<Payment> getPaymentsByMerchantId(UUID merchantId) {
         return payments.stream()
                 .filter(payment -> payment.getMid().equals(merchantId))
                 .collect(Collectors.toList());
     }
 
-    public synchronized Payment getPaymentsByToken(Token token) {
+    public Payment getPaymentsByToken(Token token) {
         return payments.stream()
                 .filter(payment -> payment.getToken().getId().equals(token.getId()))
                 .collect(Collectors.toList()).get(0);
     }
 
-    public synchronized Payment deletePayment(UUID id) throws PaymentNotFoundException {
+    public Payment deletePayment(UUID id) throws PaymentNotFoundException {
         Payment paymentToRemove = this.getPaymentById(id);
         this.payments.remove(paymentToRemove);
         return paymentToRemove;

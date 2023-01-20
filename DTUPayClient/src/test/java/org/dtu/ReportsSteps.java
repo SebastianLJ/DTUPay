@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class ReportsSteps {
 
-    BankService bankService = new BankServiceService().getBankServicePort();
+    private final BankService bankService = new BankServiceService().getBankServicePort();
     private final ReportsApp reportsApp = AppStart.getInstance().getReportsApp();
     private final CustomerApp customerApp = AppStart.getInstance().getCustomerApp();
     private final MerchantApp merchantApp = AppStart.getInstance().getMerchantApp();
