@@ -24,7 +24,6 @@ public class ReportService {
 
     PaymentRepository repository;
     IDTUPayMessageQueue messageQueue;
-
     ConcurrentHashMap<CorrelationID, CompletableFuture<IDTUPayMessage>> publishedEvents = new ConcurrentHashMap<>();
 
 
@@ -39,8 +38,7 @@ public class ReportService {
         publishedEvents.get(newEvent.getCorrelationID()).complete(newEvent);
     }
 
-    //TODO implement Event2
-    public synchronized List<Payment> getPayments() throws PaymentNotFoundException {
+    public List<Payment> getPayments() throws PaymentNotFoundException {
         List<Payment> payments = repository.getPayments();
         CorrelationID correlationID = CorrelationID.randomID();
         //FullReportGenerated event = new FullReportGenerated(payments);
@@ -50,7 +48,7 @@ public class ReportService {
         return payments;
     }
 
-    public synchronized List<Payment> getPaymentByMerchantId(UserId id) throws PaymentNotFoundException {
+    public List<Payment> getPaymentByMerchantId(UserId id) throws PaymentNotFoundException {
         List<Payment> merchantPayments = repository.getPaymentsByMerchantId(id.getUuid());
         CorrelationID correlationID = CorrelationID.randomID();
         //MerchantReportGenerated event = new MerchantReportGenerated(id, merchantPayments);
@@ -60,7 +58,7 @@ public class ReportService {
         return merchantPayments;
     }
 
-    public synchronized List<Payment> getPaymentByCustomerId(UserId id) {
+    public List<Payment> getPaymentByCustomerId(UserId id) {
         UserTokensRequested userTokensRequested = new UserTokensRequested(CorrelationID.randomID(),id);
         MessageEvent event = new MessageEvent("UserTokensRequested", new Object[]{userTokensRequested});
         publishedEvents.put(userTokensRequested.getCorrelationID(), new CompletableFuture<>());
@@ -77,7 +75,7 @@ public class ReportService {
 
 
 
-    public synchronized void savePayment(Payment payment) {
+    public void savePayment(Payment payment) {
         repository.save(payment);
     }
 }

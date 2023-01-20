@@ -47,18 +47,18 @@ public class MerchantService {
         registerHandlers();
     }
 
-    public synchronized List<User> getMerchants() {
+    public List<User> getMerchants() {
         return merchantRepository.getMerchantList();
     }
 
-    public synchronized User getMerchant (UUID id) throws InvalidMerchantIdException {
+    public User getMerchant (UUID id) throws InvalidMerchantIdException {
          return merchantRepository.getMerchant(id);
     }
 
     /**
      * @Autor Jákup Viljam Dam - s185095
      */
-    public synchronized Payment createPayment(Payment payment) throws InvalidMerchantIdException, BankServiceException_Exception, InvalidCustomerIdException, CustomerNotFoundException, PaymentAlreadyExistsException, CustomerTokenAlreadyConsumedException {
+    public Payment createPayment(Payment payment) throws InvalidMerchantIdException, BankServiceException_Exception, InvalidCustomerIdException, CustomerNotFoundException, PaymentAlreadyExistsException, CustomerTokenAlreadyConsumedException {
         ConsumeToken consumeTokenEvent = new ConsumeToken(new CorrelationID(UUID.randomUUID()), payment.getToken());
         correlations.put(consumeTokenEvent.getCorrelationID(), new CompletableFuture<>());
         MessageEvent newEvent = new MessageEvent("TokenVerificationRequested", new Object[]{consumeTokenEvent});
@@ -86,7 +86,7 @@ public class MerchantService {
     /**
      * @author Sebastian Juste pedersen (s205335)
      */
-    public synchronized User registerMerchant(String firstName, String lastName) throws MerchantAlreadyExistsException {
+    public User registerMerchant(String firstName, String lastName) throws MerchantAlreadyExistsException {
         try {
             return merchantRepository.addMerchant(firstName, lastName);
         } catch (MerchantAlreadyExistsException e) {
@@ -95,7 +95,7 @@ public class MerchantService {
 
     }
 
-    public synchronized User registerMerchant(String firstName, String lastName, String bankAccount) throws MerchantAlreadyExistsException {
+    public User registerMerchant(String firstName, String lastName, String bankAccount) throws MerchantAlreadyExistsException {
         try {
             return merchantRepository.addMerchant(firstName, lastName, bankAccount);
         } catch (MerchantAlreadyExistsException e) {
@@ -106,7 +106,7 @@ public class MerchantService {
     /**
      * @author Sebastian Lund (s184209)
      */
-    public synchronized User registerMerchant(User user) throws MerchantAlreadyExistsException {
+    public User registerMerchant(User user) throws MerchantAlreadyExistsException {
         try {
             return merchantRepository.addMerchant(user);
         } catch (MerchantAlreadyExistsException e) {
@@ -119,19 +119,19 @@ public class MerchantService {
      * @author Nicklas Olabi (s205347)
      */
 
-    public synchronized ArrayList<User> getMerchantList() {
+    public ArrayList<User> getMerchantList() {
         return merchantRepository.getMerchantList();
     }
 
-    public synchronized User deleteMerchant(UUID id) throws PaymentNotFoundException, MerchantNotFoundException, InvalidMerchantIdException {
+    public User deleteMerchant(UUID id) throws PaymentNotFoundException, MerchantNotFoundException, InvalidMerchantIdException {
         return merchantRepository.deleteMerchant(id);
     }
 
-    public synchronized void deletePayment(UUID id) throws PaymentNotFoundException {
+    public void deletePayment(UUID id) throws PaymentNotFoundException {
         paymentRepository.deletePayment(id);
     }
 
-    private synchronized void registerHandlers() {
+    private void registerHandlers() {
         this.messageQueue.addHandler("TokenConsumed", e -> {
             TokenConsumed newEvent = e.getArgument(0, TokenConsumed.class);
             createPaymentConsumedTokenEventResult(newEvent);
@@ -141,7 +141,7 @@ public class MerchantService {
     /**
      * @author Sebastian Lund (s184209)
      */
-    public synchronized void createPaymentConsumedTokenEventResult(TokenConsumed event) {
+    public void createPaymentConsumedTokenEventResult(TokenConsumed event) {
         try {
             correlations.get(event.getCorrelationID()).complete(event);
         } catch (Exception e) {
