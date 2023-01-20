@@ -17,6 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 /**
  *@author Sebastian Lund (s184209)
@@ -41,7 +42,7 @@ public class PaymentSteps {
         dtu.ws.fastmoney.User bankUser = new dtu.ws.fastmoney.User();
         bankUser.setFirstName("Fred");
         bankUser.setLastName("Again");
-        bankUser.setCprNumber("2309958584");
+        bankUser.setCprNumber(UUID.randomUUID().toString());
         merchantBankAccount = bankService.createAccountWithBalance(
                 bankUser,
                 BigDecimal.valueOf(balance)
@@ -63,7 +64,7 @@ public class PaymentSteps {
         dtu.ws.fastmoney.User bankUser = new dtu.ws.fastmoney.User();
         bankUser.setFirstName("Four");
         bankUser.setLastName("Tet");
-        bankUser.setCprNumber("141275292");
+        bankUser.setCprNumber(UUID.randomUUID().toString());
         customerBankAccount = bankService.createAccountWithBalance(
                 bankUser,
                 BigDecimal.valueOf(balance)
@@ -131,17 +132,14 @@ public class PaymentSteps {
      */
     @Before
     public void cleanup2() {
-        if (customerBankAccount != null) {
-            try {
-                bankService.retireAccount(customerBankAccount);
-            } catch (BankServiceException_Exception ignored) {
-            }
+        try {
+            bankService.retireAccount(customerBankAccount);
+        } catch (BankServiceException_Exception ignored) {
         }
-        if (merchantBankAccount != null) {
-            try {
-                bankService.retireAccount(merchantBankAccount);
-            } catch (BankServiceException_Exception ignored) {
-            }
+
+        try {
+            bankService.retireAccount(merchantBankAccount);
+        } catch (BankServiceException_Exception ignored) {
         }
     }
 
@@ -149,11 +147,11 @@ public class PaymentSteps {
     public void cleanup(){
         try {
             bankService.retireAccount(customerBankAccount);
-        } catch (BankServiceException_Exception ignored) {
+        } catch (BankServiceException_Exception ignore) {
         }
         try {
             bankService.retireAccount(merchantBankAccount);
-        } catch (BankServiceException_Exception ignored) {
+        } catch (BankServiceException_Exception ignore) {
         }
     }
 }
