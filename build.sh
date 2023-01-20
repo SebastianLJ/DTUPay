@@ -7,21 +7,21 @@ set -e
 # @author Alexander Faarup Christensen - s174355
 printf "\033[94mStep 1/5: Clean and build projects\033[0m\n"
 pushd DTUPayClient
-mvn clean install -q -DskipTests
+mvn clean install -q -DskipTests -U
 popd
 
 pushd DTUPayMessageQueue
-mvn clean install -q -DskipTests
+mvn clean install -q -DskipTests -U
 popd
 
 # @author Alexander Faarup Christensen - s174355
 pushd DTUPayTokenManagement
-mvn clean install -q -DskipTests
+mvn clean install -q -DskipTests -U
 popd
 
 # @author Jákup Viljam Dam - s185095
 pushd DTUPayWebService
-mvn clean install -q -DskipTests
+mvn clean install -q -DskipTests -U
 mvn package -q -DskipTests
 popd
 
@@ -48,7 +48,7 @@ sleep 5
 # @author Alexander Faarup Christensen - s174355
 printf "\n\033[94mStep 4/5: Run project tests\033[0m\n"
 pushd DTUPayMessageQueue
-#mvn test
+mvn test
 popd
 
 # @author Alexander Faarup Christensen - s174355
