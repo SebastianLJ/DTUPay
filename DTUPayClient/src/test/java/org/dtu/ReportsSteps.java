@@ -20,6 +20,9 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * @author Jákup Viljam Dam (s185095)
+ */
 public class ReportsSteps {
 
     BankService bankService = new BankServiceService().getBankServicePort();

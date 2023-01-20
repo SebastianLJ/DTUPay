@@ -1,3 +1,4 @@
+# @author Jákup VIljam Dam (s185095)
 Feature: Fetch DTUPay reports
   Scenario: Get all reports from DTUPay successfully
     Given There are 4 customers and merchants in the system
