@@ -41,7 +41,7 @@ public class PaymentSteps {
         dtu.ws.fastmoney.User bankUser = new dtu.ws.fastmoney.User();
         bankUser.setFirstName("Fred");
         bankUser.setLastName("Again");
-        bankUser.setCprNumber("23099528585");
+        bankUser.setCprNumber("2309958584");
         merchantBankAccount = bankService.createAccountWithBalance(
                 bankUser,
                 BigDecimal.valueOf(balance)
@@ -63,7 +63,7 @@ public class PaymentSteps {
         dtu.ws.fastmoney.User bankUser = new dtu.ws.fastmoney.User();
         bankUser.setFirstName("Four");
         bankUser.setLastName("Tet");
-        bankUser.setCprNumber("1412752293");
+        bankUser.setCprNumber("141275292");
         customerBankAccount = bankService.createAccountWithBalance(
                 bankUser,
                 BigDecimal.valueOf(balance)

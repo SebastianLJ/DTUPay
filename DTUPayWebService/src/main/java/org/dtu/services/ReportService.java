@@ -67,10 +67,11 @@ public class ReportService {
         for(Token token : userTokensGenerated.getTokens()) {
             customerPayments.add(repository.getPaymentsByToken(token));
         }
-
         return customerPayments;
 
     }
+
+
 
     public void savePayment(Payment payment) {
         repository.save(payment);
