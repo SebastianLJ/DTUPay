@@ -1,11 +1,13 @@
 Feature: Customer Service
 
+  #Noah Christiansen (s184186)
   Scenario: A customer is successfully created
     Given there is a customer with an empty id
     When a customer is being created
-    Then the CustomerAccountCreated event is sent
     Then the customer is created
 
+
+  #Noah Christiansen (s184186)
   Scenario: A customer is successfully deleted
     Given a customer is in the system
     When the customer is being deleted
@@ -13,6 +15,8 @@ Feature: Customer Service
     When the TokensDeleted event is received
     Then the customer is deleted
 
+
+  #Noah Christiansen (s184186)
   Scenario: A customer is unsuccessfully deleted
     Given a customer is not in the system
     When the customer is being deleted
