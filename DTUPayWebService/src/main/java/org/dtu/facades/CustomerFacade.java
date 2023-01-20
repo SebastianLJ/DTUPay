@@ -53,22 +53,6 @@ public class CustomerFacade {
         }
     }
 
-    @Path("/{id}/report")
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getReport(@PathParam("id") String id) {
-        try {
-            UUID uuid = UUID.fromString(id);
-            return Response
-                    .status(Response.Status.OK)
-                    .build();
-        } catch (IllegalArgumentException e) {
-            return Response.status(Response.Status.BAD_REQUEST)
-                    .entity(e.getMessage())
-                    .build();
-        }
-    }
-
     /**
      * @author Sebastian Lund (s184209)
      */
