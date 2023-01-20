@@ -85,10 +85,6 @@ public class ReportsSteps {
             for (int j = 0; j < amount; j++) {
                 User merchant = merchants.get(i);
                 User customer = customers.get(j);
-                System.out.println(merchant.getUserId().getUuid());
-                System.out.println("M bankNumber = " + merchant.getBankNumber());
-                System.out.println(customer.getUserId().getUuid());
-                System.out.println("C bankNUmber = " + customer.getBankNumber());
                 Payment payment = merchantApp.pay(merchant.getUserId(), customerTokens.get(customer.getUserId()).get(0), 100);
                 customerTokens.get(customer.getUserId()).remove(0);
                 allPayments.add(payment);
