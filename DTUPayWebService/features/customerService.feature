@@ -6,7 +6,6 @@ Feature: Customer Service
     When a customer is being created
     Then the customer is created
 
-
   #Noah Christiansen (s184186)
   Scenario: A customer is successfully deleted
     Given a customer is in the system
@@ -14,7 +13,6 @@ Feature: Customer Service
     Then the AccountDeletionRequested event is sent
     When the TokensDeleted event is received
     Then the customer is deleted
-
 
   #Noah Christiansen (s184186)
   Scenario: A customer is unsuccessfully deleted

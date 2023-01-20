@@ -13,7 +13,7 @@ Feature: Merchant Service
     Then The customer's bank account balance is now 1500
     And The merchant's bank account balance is now 1500
 
-      # @Author Jákup, Noah & Sebastion (Mob programming)
+  # @Author Jákup, Noah & Sebastion (Mob programming)
   Scenario: Customer tries to pay with invalid token
     Given a merchant has a bank account with a balance of 1000
     And the merchant is a member of DTUPay
@@ -24,18 +24,18 @@ Feature: Merchant Service
     And the customer shares a token with the merchant
     Then the payment fails
 
-    #Noah Christiansen (s184186)
+  # @Author Noah Christiansen (s184186)
   Scenario: A merchant is successfully created
     When a merchant is created
     Then a merchant is registered in the system
     And the merchant can be found by his ID.
 
-    #Noah Christiansen (s184186)
+  # @Author Noah Christiansen (s184186)
   Scenario: A merchant is successfully deleted
     Given a merchant is in the system
     When a merchant is deleted
     Then the merchant cannot be found
 
-    Scenario: A merchant has a bank account
-      Given a merchant is in the system
-      Then the merchant has a bank account
+  Scenario: A merchant has a bank account
+    Given a merchant is in the system
+    Then the merchant has a bank account
