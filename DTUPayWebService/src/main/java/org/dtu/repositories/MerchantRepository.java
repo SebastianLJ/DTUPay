@@ -19,25 +19,25 @@ public class MerchantRepository {
      * @author Sebastian Juste pedersen (s205335)
      * @author Nicklas Olabi (s205347)
      */
-    public synchronized User addMerchant(String firstName, String lastName) throws MerchantAlreadyExistsException {
+    public User addMerchant(String firstName, String lastName) throws MerchantAlreadyExistsException {
         User merchant = new User(firstName, lastName);
         merchants.add(merchant);
         return merchant;
     }
 
-    public synchronized User addMerchant(String firstName, String lastName, String bankAccount) throws MerchantAlreadyExistsException {
+    public User addMerchant(String firstName, String lastName, String bankAccount) throws MerchantAlreadyExistsException {
         User merchant = new User(firstName, lastName, bankAccount);
         merchants.add(merchant);
         return merchant;
     }
 
-    public synchronized User addMerchant(User user) throws MerchantAlreadyExistsException {
+    public User addMerchant(User user) throws MerchantAlreadyExistsException {
         User merchant = new User(user.getName().getFirstName(), user.getName().getLastName(), user.getBankNumber());
         merchants.add(merchant);
         return merchant;
     }
 
-    public synchronized User getMerchant (UUID id) throws InvalidMerchantIdException {
+    public User getMerchant (UUID id) throws InvalidMerchantIdException {
         for (User merchant:
                 merchants)  {
             if (merchant.getUserId().getUuid().equals(id)) {
@@ -47,11 +47,11 @@ public class MerchantRepository {
         throw new InvalidMerchantIdException();
     }
 
-    public synchronized ArrayList<User> getMerchantList() {
+    public ArrayList<User> getMerchantList() {
         return merchants;
     }
 
-    public synchronized User deleteMerchant(UUID id) throws InvalidMerchantIdException {
+    public User deleteMerchant(UUID id) throws InvalidMerchantIdException {
         User merchantToRemove = getMerchant(id);
         this.merchants.remove(merchantToRemove);
         return merchantToRemove;
