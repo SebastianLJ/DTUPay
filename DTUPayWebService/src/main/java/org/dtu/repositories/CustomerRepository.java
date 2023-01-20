@@ -39,6 +39,9 @@ public class CustomerRepository {
 
     }
 
+    /**
+     * @author Noah Christiansen (s184186)
+     */
     public static User getCustomer(UUID id) throws CustomerNotFoundException {
         for (User customer :
                 customers) {
@@ -53,6 +56,9 @@ public class CustomerRepository {
         return new ArrayList<>(customers);
     }
 
+    /**
+     * @author Noah Christiansen (s184186)
+     */
     public User deleteCustomer(User customer) {
         this.customers.remove(customer);
         return customer;
