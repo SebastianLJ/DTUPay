@@ -8,6 +8,7 @@ sudo apt-get install maven
 ## install docker
 # Set up the repository
 printf "\033[94mStep 2/5: Setup Docker (repository)\033[0m\n"
+sudo apt-get upgrade
 sudo apt-get update
 sudo apt-get install ca-certificates curl gnupg lsb-release
 
