@@ -13,18 +13,18 @@ import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.dtu.exceptions.CustomerDoesNotExist;
-import org.dtu.exceptions.PaymentDoesNotExist;
 
 import java.util.List;
 
 public class CustomerApp {
-    private final Client client = ClientBuilder.newClient();
-    private final WebTarget webTarget = client.target("http://localhost:8080/");
+    private Client client;
+    private WebTarget webTarget;
 
     /**
      * @author Sebastian Lund (s184209)
      */
     public User register(String firstName, String lastName, String bankNumber) throws Exception {
+        createClient();
         User user = new User(firstName, lastName, bankNumber);
         try (Response response = webTarget.path("customers")
                 .request()
@@ -36,6 +36,8 @@ public class CustomerApp {
                 System.out.println("!!!! " + response.readEntity(String.class) + " !!!!");
                 throw new Exception("code: " + response.getStatus());
             }
+        } finally {
+            closeClient();
         }
     }
 
@@ -43,6 +45,7 @@ public class CustomerApp {
      * @Autor Jákup Viljam Dam - s185095
      */
     public User deRegisterCustomer(User user) throws Exception {
+        createClient();
         try (Response response = webTarget.path("customers/" + user.getUserId().getUuid())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
@@ -52,6 +55,8 @@ public class CustomerApp {
             } else {
                 throw new Exception("code: " + response.getStatus());
             }
+        } finally {
+            closeClient();
         }
     }
 
@@ -59,6 +64,7 @@ public class CustomerApp {
      * @author Sebastian Lund (s184209)
      */
     public List<Token> generateTokens(UserId userId, int tokenCount) throws Exception {
+        createClient();
         try (Response response = webTarget.path("customers/" + userId.getUuid() + "/tokens")
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
@@ -69,6 +75,8 @@ public class CustomerApp {
             } else {
                 throw new Exception("code: " + response.getStatus() + "\n" + response.readEntity(String.class));
             }
+        } finally {
+            closeClient();
         }
     }
 
@@ -76,6 +84,7 @@ public class CustomerApp {
      * @author Sebastian Lund (s184209)
      */
     public User getCustomer(User user) throws CustomerDoesNotExist {
+        createClient();
         try (Response response = webTarget.path("customers/" + user.getUserId().getUuid())
                 .request()
                 .accept(MediaType.APPLICATION_JSON)
@@ -85,7 +94,18 @@ public class CustomerApp {
             } else {
                 throw new CustomerDoesNotExist();
             }
+        } finally {
+            closeClient();
         }
+    }
+
+    private void createClient() {
+        client = ClientBuilder.newClient();
+        webTarget = client.target("http://localhost:8080/");
+    }
+
+    private void closeClient() {
+        client.close();
     }
 
 }
