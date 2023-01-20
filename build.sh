@@ -44,7 +44,7 @@ sleep 10
 # @author Alexander Faarup Christensen - s174355
 printf "\n\033[94mStep 4/5: Run project tests\033[0m\n"
 pushd DTUPayMessageQueue
-#mvn test
+mvn test
 popd
 
 # @author Alexander Faarup Christensen - s174355
