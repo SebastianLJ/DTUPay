@@ -89,22 +89,5 @@ public class ReportingFacade {
 //        }
 //    }
 
-//    @Path("/merchant/{payment}")
-//    @POST
-//    @Produces(MediaType.APPLICATION_JSON)
-//    public Response savePayment(@PathParam("payment") String id) {
-//        try {
-//            reportService.savePayment(payment);
-//            return  Response
-//                    .status(Response.Status.OK)
-//                    .entity("Payment saved")
-//                    .build();
-//        } catch(PaymentNotFoundException e) {
-//            return Response
-//                    .status(Response.Status.BAD_REQUEST)
-//                    .entity(e.getMessage())
-//                    .build();
-//        }
-//    }
 
 }
