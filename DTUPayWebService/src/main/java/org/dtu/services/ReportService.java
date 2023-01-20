@@ -69,6 +69,7 @@ public class ReportService {
         List<Payment> customerPayments = new ArrayList<>();
         for(Token token : userTokensGenerated.getTokens()) {
             customerPayments.add(repository.getPaymentsByToken(token));
+
         }
         return customerPayments;
 
