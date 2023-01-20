@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Sebastian Lund (s184209)
+ * @author Noah Christiansen (s184186)
  */
 public class MerchantServiceSteps {
 

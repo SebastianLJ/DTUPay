@@ -18,6 +18,10 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+@author Noah (s184186)
+ */
+
 public class CustomerService {
     CustomerRepository repository;
     IDTUPayMessageQueue messageQueue;

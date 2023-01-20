@@ -17,6 +17,7 @@ import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.UUID;
 
+
 @Path("/customers")
 public class CustomerFacade {
     CustomerService customerService = new CustomerFactory().getService();
@@ -98,6 +99,10 @@ public class CustomerFacade {
         }
     }
 
+
+    /**
+     * @author Noah Christiansen (s184186)
+     */
     @DELETE
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
@@ -120,6 +125,9 @@ public class CustomerFacade {
         }
     }
 
+    /**
+     * @author Noah Christiansen (s184186)
+     */
     @GET
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
